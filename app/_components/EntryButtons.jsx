@@ -50,6 +50,7 @@ function EntryButtons() {
             }
             recorder.current.onstop = (e) => {
                   const blob = new Blob(audioChunks, { type: "audio/webm" });
+                  console.log(blob.size / 1024 /1024)
                   const url = URL.createObjectURL(blob);
         setClientAudioUrl(url);
                 setAudio(blob);

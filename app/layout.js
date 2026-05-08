@@ -1,6 +1,8 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import Navbar from "./_components/Navbar";
+import { Suspense } from "react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -15,12 +17,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html
-      lang="en"
-      className={`${poppins.className} h-full`}
-    >
+    <html lang="en" className={`${poppins.className} h-full`}>
       <body className="h-screen flex flex-col bg-(--background)">
         <Toaster />
+        <div id="root"></div>
+        <Suspense>
+          <Navbar />
+        </Suspense>
         {children}
       </body>
     </html>
