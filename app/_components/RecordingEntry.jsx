@@ -7,14 +7,14 @@ function RecordingEntry({el,i,isDummy=false}) {
     const [isExpand,setIsExpand] = useState(false);
     if(!isDummy)return (
       <div className="w-full">
-        <div className="w-full grid grid-cols-11 px-3 py-2 border-b border-(--border)">
+        <div className="w-full grid grid-cols-8 px-3 py-2 border-b border-(--border)">
           {/* <p>{(page - 1) * 10 + index + 1}</p> */}
-          <p className=" text-xs">1</p>
-          <p className="text-xs tracking-wider col-span-3">
+          <p className="text-[0.60rem] text-xs tracking-wider col-span-2">
             {format(el.createdAt, "d MMM, yyyy")}
           </p>
-          <p className=" col-span-3 text-xs text-left">{el.student}</p>
-          <p className=" col-span-3 text-xs text-left">{el.muhaffiz}</p>
+          <p className=" text-[0.60rem]">{Math.round(el?.duration) || ''} min</p>
+          <p className=" col-span-2 text-[0.60rem] text-left truncate">{el.student}</p>
+          <p className=" col-span-2 text-[0.60rem] text-left truncate">{el.muhaffiz}</p>
           <button
             onClick={() => setIsExpand(!isExpand)}
             className="text-xs flex justify-center"

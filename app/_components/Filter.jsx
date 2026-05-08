@@ -29,10 +29,10 @@ function Filter() {
         <button onClick={() => setIsShowFilter(!isShowFilter)}>
           <IoFilter />
         </button>
-        {isShowFilter && (
-          <div className="rounded-md py-2 tracking-widest font-normal absolute text-white bg-[#A47251] shadow-md right-0 top-full mt-1">
+        
+          <div className={`${isShowFilter ? 'opacity-100 translate-0 pointer-events-auto' :'opacity-0 -translate-y-5 pointer-events-none'} transition-all duration-300 ease-in-out rounded-md py-2 tracking-widest font-normal absolute text-white bg-yellow-800 shadow-md right-0 top-full mt-1`}>
             <button
-              className="px-8"
+              className="px-8 py-1 text-xs"
               onClick={() => {
                 setHeading("select student");
                 setIsShowFilter(false);
@@ -41,9 +41,9 @@ function Filter() {
             >
               students
             </button>
-            <hr className="text-stone-300" />
+            <hr className="text-yellow-600" />
             <button
-              className="px-8"
+              className="px-8 py-1 text-xs"
               onClick={() => {
                 setHeading("select teacher");
                 setIsShowFilter(false);
@@ -53,7 +53,7 @@ function Filter() {
               teacher
             </button>
           </div>
-        )}
+        
         {isShowModal && (
           <Modal onClose={() => setIsShowModal(false)} heading={heading}>
             <CustomSelect options={heading === 'select student' ? students:teachers}/>

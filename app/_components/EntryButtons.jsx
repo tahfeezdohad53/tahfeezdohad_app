@@ -4,7 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { FaSpinner } from "react-icons/fa";
+import { FaMicrophoneAlt, FaSpinner } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
 import { IoMdMic } from "react-icons/io";
 
@@ -16,6 +16,7 @@ function EntryButtons() {
     const [audio,setAudio] = useState(null);
     const [isSubmitting,setIsSubmitting] = useState();
     const [clientAudioUrl,setClientAudioUrl] = useState("");
+    const [isRedirect,setIsRedirect] = useState(false);
     const router = useRouter();
     let audioChunks = [];
     const recorder = useRef(null);
@@ -93,7 +94,8 @@ function EntryButtons() {
             console.log(formData.get('audio'))
             await axios.post(`${process.env.NEXT_PUBLIC_URL}/entry/recording`,formData);
             toast.success('recording uploaded');
-            router.push('/recordings');
+            if(isRedirect) return router.push('https://www.elearningquran.com');
+            else return router.push('/recordings');
         }catch(err){
             toast.error('failed to upload recording');
         }finally{
@@ -102,11 +104,22 @@ function EntryButtons() {
     }
     // let milliseconds = Math.floor((ms % 1000) / 10);
     if(!isRecording && !isRecorded)return (
-      <div className="grid grid-cols-2 gap-3 text-white">
-        <button className="px-2 py-1 rounded-md bg-amber-900 ">present</button>
-        <button className="px-2 py-1 rounded-md bg-amber-900 ">absent</button>
-        <button className="px-2 py-1 rounded-md bg-amber-900 ">holiday</button>
-        <button className="px-2 py-1 rounded-md bg-amber-900 " onClick={startRecording}>record</button>
+      <div className=" text-white flex flex-col items-center gap-2">
+        <button
+          className="px-8 py-2 rounded-md bg-amber-900 flex items-center gap-3 justify-center"
+          onClick={startRecording}
+        >
+          <FaMicrophoneAlt /> record
+        </button>
+        <div className="text-amber-900 text-sm font-bold items-center flex gap-1">
+          <input
+            onInput={(el) => setIsRedirect(el.target.checked)}
+            // onChange={(el) => console.log(el.target.value)}
+            type="checkbox"
+            id="checkbox"
+          />
+          <label htmlFor="checkbox">redirect</label>
+        </div>
       </div>
     );
 

@@ -5,6 +5,8 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { LuAudioLines } from "react-icons/lu";
 import CustomSelect from "../_components/Select";
 import Filter from "../_components/Filter";
+import { FaClock } from "react-icons/fa";
+import { CiClock2 } from "react-icons/ci";
 
 async function Page() {
     let data;
@@ -31,11 +33,11 @@ async function Page() {
 
       <div className="rounded-md px-2 w-full bg-(--layer)  mt-10">
         <div className="w-full shadow border border-(--border) rounded overflow-hidden">
-          <div className="py-2 px-3 w-full grid grid-cols-11 bg-(--background) font-semibold">
-            <div className=" text-sm">no</div>
-            <div className=" col-span-3 text-sm text-left">Date</div>
-            <div className=" col-span-3 text-sm text-left">Student</div>
-            <div className=" col-span-3 text-sm text-left">Muhaffiz</div>
+          <div className="py-2 px-3 w-full grid grid-cols-8 bg-(--background) font-semibold">
+            <div className=" col-span-2 text-xs text-left">Date</div>
+            <div className="text-left"><CiClock2 /></div>
+            <div className=" col-span-2 text-xs text-left">Student</div>
+            <div className=" col-span-2 text-xs text-left">Muhaffiz</div>
             <div className="flex justify-end">
               <Filter />
             </div>
