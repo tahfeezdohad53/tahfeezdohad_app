@@ -4,10 +4,13 @@ import { FaUser, FaUserCircle } from "react-icons/fa"
 import { FaArrowLeftLong } from "react-icons/fa6";
 import ProtectRoutes from "../_components/auth/ProtectRoutes";
 import { auth } from "@/auth";
+import StudentCard from "../_components/students/StudentCard";
 
 async function Page() {
   const session = await auth();
-  console.log('jwt ',session?.jwt);
+  const res = await fetch(`${process.env.URL}/student/getStudents`,{headers:{Authorization:`Bearer ${session?.jwt}`}});
+  const resJson = await res.json();
+  console.log(resJson?.students);
     return (
       <ProtectRoutes>
         <div className=" h-full">
@@ -19,92 +22,18 @@ async function Page() {
           {/* <hr className="mt-5 text-amber-400"/> */}
           <div className="px-5 mt-10">
             <div className="grid grid-cols-2 gap-y-6">
-              <div className="flex justify-center">
-                <Link
-                  href="/entry"
-                  className="border-t-4 border-amber-900 flex flex-col items-center bg-(--layer) w-3/4 p-5 rounded-md shadow border border-x-(--border) border-b-(--border) gap-3"
-                >
-                  {/* <div className="relative h-18 w-18 rounded-full overflow-hidden">
-                  <Image src="/me.jpg" alt="user photo" fill/>
-                </div> */}
-                  <FaUserCircle className="text-5xl text-amber-950" />
-                  <p className="font-semibold text-stone-800 tracking-wider">
-                    Aziz naya
-                  </p>
-                </Link>
-              </div>
-              <div className="flex justify-center">
-                <Link
-                  href="/entry"
-                  className="border-t-4 border-amber-900 flex flex-col items-center bg-(--layer) w-3/4 p-5 rounded-md shadow border border-x-(--border) border-b-(--border) gap-3"
-                >
-                  {/* <div className="relative h-18 w-18 rounded-full overflow-hidden">
-                  <Image src="/me.jpg" alt="user photo" fill/>
-                </div> */}
-                  <FaUserCircle className="text-5xl text-amber-950" />
-                  <p className="font-semibold text-stone-800 tracking-wider">
-                    Aziz naya
-                  </p>
-                </Link>
-              </div>
-              <div className="flex justify-center">
-                <Link
-                  href="/entry"
-                  className="border-t-4 border-amber-900 flex flex-col items-center bg-(--layer) w-3/4 p-5 rounded-md shadow border border-x-(--border) border-b-(--border) gap-3"
-                >
-                  {/* <div className="relative h-18 w-18 rounded-full overflow-hidden">
-                  <Image src="/me.jpg" alt="user photo" fill/>
-                </div> */}
-                  <FaUserCircle className="text-5xl text-amber-950" />
-                  <p className="font-semibold text-stone-800 tracking-wider">
-                    Aziz naya
-                  </p>
-                </Link>
-              </div>
-              <div className="flex justify-center">
-                <Link
-                  href="/entry"
-                  className="border-t-4 border-amber-900 flex flex-col items-center bg-(--layer) w-3/4 p-5 rounded-md shadow border border-x-(--border) border-b-(--border) gap-3"
-                >
-                  {/* <div className="relative h-18 w-18 rounded-full overflow-hidden">
-                  <Image src="/me.jpg" alt="user photo" fill/>
-                </div> */}
-                  <FaUserCircle className="text-5xl text-amber-950" />
-                  <p className="font-semibold text-stone-800 tracking-wider">
-                    Aziz naya
-                  </p>
-                </Link>
-              </div>
-              <div className="flex justify-center">
-                <Link
-                  href="/entry"
-                  className="border-t-4 border-amber-900 flex flex-col items-center bg-(--layer) w-3/4 p-5 rounded-md shadow border border-x-(--border) border-b-(--border) gap-3"
-                >
-                  {/* <div className="relative h-18 w-18 rounded-full overflow-hidden">
-                  <Image src="/me.jpg" alt="user photo" fill/>
-                </div> */}
-                  <FaUserCircle className="text-5xl text-amber-950" />
-                  <p className="font-semibold text-stone-800 tracking-wider">
-                    Aziz naya
-                  </p>
-                </Link>
-              </div>
-              <div className="flex justify-center">
-                <Link
-                  href="/entry"
-                  className="border-t-4 border-amber-900 flex flex-col items-center bg-(--layer) w-3/4 p-5 rounded-md shadow border border-x-(--border) border-b-(--border) gap-3"
-                >
-                  {/* <div className="relative h-18 w-18 rounded-full overflow-hidden">
-                  <Image src="/me.jpg" alt="user photo" fill/>
-                </div> */}
-                  <FaUserCircle className="text-5xl text-amber-950" />
-                  <p className="font-semibold text-stone-800 tracking-wider">
-                    Aziz naya
-                  </p>
-                </Link>
-              </div>
+              {resJson?.students?.length > 0 &&
+                resJson.students.map((el) => (
+                  <StudentCard
+                    key={el._id}
+                    image={el?.profileImage}
+                    name={el.name}
+                    studentId={el._id}
+                  />
+                ))}
             </div>
           </div>
+            {resJson.students?.length < 1 && <h1 className="absolute top-1/2 left-1/2 -translate-1/2 font-bold text-xl tracking-wider text-center w-3/4">you don&apos;t have any students tagged yet!</h1>}
         </div>
       </ProtectRoutes>
     );

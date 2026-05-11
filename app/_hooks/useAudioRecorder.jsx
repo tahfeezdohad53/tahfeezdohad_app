@@ -100,18 +100,16 @@ function useAudioRecorder() {
        setIsRecorded(true);
      }
 
-     async function submitRecording() {
+     async function submitRecording(studentId,jwt) {
        const formData = new FormData();
-       formData.append("audio", audio, "recording.webm");
-       formData.append("student", "aliasgar kagzi");
-       formData.append("muhaffiz", "huzefa ratlam");
+       formData.append("recording", audio, "recording.webm");
        try {
          setIsSubmitting(true);
          setConfirmSubmit(false);
          console.log(formData.get("audio"));
          await axios.post(
-           `${process.env.NEXT_PUBLIC_URL}/entry/recording`,
-           formData,
+           `${process.env.NEXT_PUBLIC_URL}/recording/upload/${studentId}`,
+           formData,{headers:{Authorization:`Bearer ${jwt}`}}
          );
          toast.success("recording uploaded");
          if (isRedirect) return router.push("https://www.elearningquran.com");

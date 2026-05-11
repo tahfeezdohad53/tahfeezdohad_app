@@ -13,8 +13,8 @@ function RecordingEntry({el,i,isDummy=false}) {
             {format(el.createdAt, "d MMM, yyyy")}
           </p>
           <p className=" text-[0.60rem]">{Math.round(el?.duration) || ''} min</p>
-          <p className=" col-span-2 text-[0.60rem] text-left truncate">{el.student}</p>
-          <p className=" col-span-2 text-[0.60rem] text-left truncate">{el.muhaffiz}</p>
+          <p className=" col-span-2 text-[0.60rem] text-left truncate">{el.studentName}</p>
+          <p className=" col-span-2 text-[0.60rem] text-left truncate">{el.teacherName}</p>
           <button
             onClick={() => setIsExpand(!isExpand)}
             className="text-xs flex justify-center"

@@ -8,21 +8,34 @@ import Filter from "../_components/Filter";
 import { FaClock } from "react-icons/fa";
 import { CiClock2 } from "react-icons/ci";
 import ProtectRoutes from "../_components/auth/ProtectRoutes";
+// import { useSession } from "next-auth/react";
+import { auth } from "@/auth";
+import RecordingsTableController from "../_components/recordings/RecordingsTableController";
 
-async function Page() {
-    let data;
-    
+async function Page({searchParams}) {
+    let recordings;
+    let totalRes;
+    const session = await auth();
+    const params = await searchParams;
+    // console.log(params);
     try{
-        console.log('fetchng');
         console.log(process.env.NEXT_PUBLIC_URL);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/recording/get`,{method:'GET',cache:'no-store'});
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_URL}/recording/getRecordings?page=${params.page || 1}&student=${params.student || ""}&teacher=${params.teacher || ""}&startDate=${params.startDate || ""}&endDate=${params.endDate || ""}`,
+          {
+            method: "GET",
+            cache: "no-store",
+            headers: { Authorization: `Bearer ${session.jwt}` },
+          },
+        );
         const resJson = await res.json();
-        data = resJson.recordings;
-        console.log(data);
+        recordings = resJson.recordings;
+        totalRes = resJson.totalResults;
+        // console.log(data);
     }catch(err){
         console.log('failed');
         console.log(err);
-        data = [];
+        recordings = [];
     }
   return (
     <ProtectRoutes>
@@ -33,43 +46,45 @@ async function Page() {
           </h1>
         </div>
 
-        <div className="rounded-md px-2 w-full bg-(--layer)  mt-10">
-          <div className="w-full shadow border border-(--border) rounded overflow-hidden">
-            <div className="py-2 px-3 w-full grid grid-cols-8 bg-(--background) font-semibold">
-              <div className=" col-span-2 text-xs text-left">Date</div>
-              <div className="text-left">
-                <CiClock2 />
-              </div>
-              <div className=" col-span-2 text-xs text-left">Student</div>
-              <div className=" col-span-2 text-xs text-left">Muhaffiz</div>
-              <div className="flex justify-end">
-                <Filter />
-              </div>
-            </div>
+        {recordings.length < 1 && (
+          <h1 className="absolute top-1/2 left-1/2 -translate-1/2 text-center font-bold tracking-wider w-3/4">
+            you don&apos;t have any recordings yet!
+          </h1>
+        )}
 
-            <div className="space-y-2">
-              {data.map((el, i) => (
-                <RecordingEntry key={el._id} el={el} i={i} />
-              ))}
-              {Array.from({ length: 10 - data.length }).map((el, i) => (
-                <RecordingEntry key={i} isDummy />
-              ))}
-              <div className="text-sm flex justify-between items-center gap-x-3 pl-3 pr-1 bg-(--highlight) shadow-sm">
-                <p>1 out of 10 pages</p>
-
-                <div className="space-x-1">
-                  <button className=" px-3 py-[0.4rem] rounded-md">
-                    <IoIosArrowDropleftCircle className="text-2xl text-amber-800" />
-                  </button>
-
-                  <button className=" px-3 py-[0.4rem] rounded-md">
-                    <IoIosArrowDroprightCircle className="text-2xl text-amber-800" />
-                  </button>
+        
+          <div className="relative rounded-md px-2 w-full bg-(--layer)  mt-10">
+            <div className="w-full shadow border border-(--border) rounded overflow-hidden">
+              {(params.startDate || params.student || params.teacher) &&
+                recordings.length < 1 && (
+                  <h1 className="absolute top-1/2 left-1/2 -translate-1/2 font-bold text-lg tracking-wider">
+                    no results found!
+                  </h1>
+                )}
+              <div className="py-2 px-3 w-full grid grid-cols-8 bg-(--background) font-semibold">
+                <div className=" col-span-2 text-xs text-left">Date</div>
+                <div className="text-left">
+                  <CiClock2 />
                 </div>
+                <div className=" col-span-2 text-xs text-left">Student</div>
+                <div className=" col-span-2 text-xs text-left">Muhaffiz</div>
+                <div className="flex justify-end">
+                  <Filter role={session.currentUser.role} />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {recordings.map((el, i) => (
+                  <RecordingEntry key={el._id} el={el} i={i} />
+                ))}
+                {Array.from({ length: 10 - recordings.length }).map((el, i) => (
+                  <RecordingEntry key={i} isDummy />
+                ))}
+                <RecordingsTableController totalRes={totalRes} />
               </div>
             </div>
           </div>
-        </div>
+        
       </div>
     </ProtectRoutes>
   );

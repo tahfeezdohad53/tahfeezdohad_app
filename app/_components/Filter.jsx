@@ -33,6 +33,10 @@ const teachers = [
 
 const students = [
   {
+    label: "all",
+    value: "all",
+  },
+  {
     label: "aliasgar hasham",
     value: "aliasgar hasham",
   },
@@ -49,12 +53,12 @@ const students = [
     value: "burhanuddin soda",
   },
   {
-    label: "husain rang",
-    value: "husain rang",
+    label: "yusuf naya",
+    value: "yusuf naya",
   },
 ];
 
-function Filter() {
+function Filter({role}) {
   const [isShowFilter, setIsShowFilter] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
   const [filterType, setFilterType] = useState("");
@@ -92,7 +96,7 @@ function Filter() {
         </FilterButton>
 
         <div className="h-px bg-yellow-700/40" />
-        <FilterButton
+        {role === 'admin' && <FilterButton
           onClick={() => {
             setFilterType("teacher");
             setIsShowFilter(false);
@@ -100,7 +104,7 @@ function Filter() {
           }}
         >
           <LiaChalkboardTeacherSolid /> Teacher
-        </FilterButton>
+        </FilterButton>}
 
         <div className="h-px bg-yellow-700/40" />
         <FilterButton

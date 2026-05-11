@@ -1,15 +1,20 @@
+// _components/auth/GoogleButton.jsx
 import { handleSignIn } from "@/actions/auth";
 import { FcGoogle } from "react-icons/fc";
 
-export default function GoogleButton() {
+export default function GoogleButton({ role }) {
   return (
     <form action={handleSignIn}>
-      <button className="shadow-lg flex items-center justify-center gap-3 w-full max-w-sm rounded-2xl bg-amber-950 px-5 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-zinc-800 active:scale-[0.98]">
-        <div className="rounded-full bg-white p-1">
+      <input type="hidden" name="role" value={role} />
+
+      <button className="flex w-full items-center justify-center gap-3 rounded-2xl border border-[#4b3425] bg-[#2b1d14] px-5 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:scale-[1.01] hover:bg-[#3a271b] active:scale-[0.98]">
+        <div className="rounded-full bg-white p-1 shadow-sm">
           <FcGoogle className="text-xl" />
         </div>
 
-        <span>Continue with Google</span>
+        <span className="tracking-wide">
+          Continue as <span className="capitalize text-[#f0d8a1]">{role}</span>
+        </span>
       </button>
     </form>
   );

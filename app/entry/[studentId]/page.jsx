@@ -1,10 +1,13 @@
 import Link from "next/link";
-import EntryButtons from "../_components/EntryButtons"
+import EntryButtons from "../../_components/EntryButtons"
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { GrNotes } from "react-icons/gr";
-import ProtectRoutes from "../_components/auth/ProtectRoutes";
+import ProtectRoutes from "../../_components/auth/ProtectRoutes";
+import { auth } from "@/auth";
 
-function Page() {
+async function Page({params}) {
+  const searchParams = await params;
+  const session = await auth();
     return (
       <ProtectRoutes>
         <div className="h-full">
@@ -35,7 +38,7 @@ function Page() {
             </p>
           </div>
           <div className="mt-10 flex justify-center">
-            <EntryButtons />
+            <EntryButtons studentId={searchParams.studentId} jwt={session?.jwt}/>
           </div>
         </div>
       </ProtectRoutes>

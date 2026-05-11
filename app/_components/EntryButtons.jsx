@@ -5,7 +5,7 @@ import userAudioRecorder from "../_hooks/useAudioRecorder";
 import ConfirmSubmit from "./ConfirmSubmit";
 import ConfirmationMenu from "./ConfirmSubmit";
 
-function EntryButtons() {
+function EntryButtons({studentId,jwt}) {
   const {
     states: {
       isRecording,
@@ -36,7 +36,7 @@ function EntryButtons() {
   async function confirmSubmitHandler(){
     setConfirmSubmit(false);
     try{
-      await submitRecording();
+      await submitRecording(studentId,jwt);
     }catch(err){
       console.log(err);
     }
