@@ -13,7 +13,7 @@ function StudentCard({image,name,studentId}) {
                   <Image src={image} alt="user photo" fill/>
                 </div>}
           {!image && <FaUserCircle className="text-5xl text-amber-950" />}
-          <p className="font-semibold text-stone-800 tracking-wider">
+          <p className="font-semibold text-stone-800 tracking-wider text-sm text-center">
             {name}
           </p>
         </Link>
