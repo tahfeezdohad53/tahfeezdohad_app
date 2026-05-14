@@ -39,7 +39,7 @@ async function Page({params,searchParams}) {
             </p>
           </div>
           <div className="mt-10 flex justify-center">
-            <div className="w-fit  rounded-md shadow-lg flex flex-col items-center justify-center bg-(--layer)">
+            <div className="w-fit px-3 rounded-md shadow-lg flex flex-col items-center justify-center bg-(--layer)">
               
               <EntryButtons
                 studentId={searchParam.studentId}

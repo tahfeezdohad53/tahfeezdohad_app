@@ -48,7 +48,7 @@ function EntryButtons({studentId,jwt,studentName}) {
     return (
       <>
         <div className="px-10 py-5 shadow-lg text-white flex flex-col items-center gap-2">
-        <h1 className="text-black font-bold mb-2">
+        <h1 className="text-black font-bold mb-2 text-center">
           You are about to record class of{" "}
           <span className="text-amber-800">{studentName}</span>
         </h1>
@@ -77,7 +77,7 @@ function EntryButtons({studentId,jwt,studentName}) {
     return (
       <>
         <div className="flex flex-col items-center gap-2 px-15 py-8 rounded-md shadow-lg">
-          <h1 className="font-bold mb-1">
+          <h1 className="font-bold mb-1 text-center">
             recording class of{" "}
             <span className="text-amber-800">{studentName}</span>
           </h1>
@@ -136,7 +136,7 @@ function EntryButtons({studentId,jwt,studentName}) {
   if (isRecorded)
     return (
       <div className="flex flex-col items-center gap-2 bg-(--layer) px-10 py-5 rounded-md shadow">
-        <h1 className="font-bold mb-3">
+        <h1 className="font-bold mb-3 text-center">
           Submit class recording of{" "}
           <span className="text-amber-800">{studentName}</span>
         </h1>
