@@ -74,7 +74,7 @@ async function handleGetMyStudents() {
         return [];
     }
 }
-if(!session?.currentUser.role) return null;
+if(!session?.currentUser?.role) return null;
 const customizedTeachers = teachers?.map(el => ({label:el.name,value:el._id}))
   return (
     <div onClick={showContextMenu} className="grid grid-cols-2 gap-y-6">
