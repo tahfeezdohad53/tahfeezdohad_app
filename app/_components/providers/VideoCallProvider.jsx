@@ -12,7 +12,10 @@ function VideoCallProvider({children}) {
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
     const localMedia = useRef(null);
+    const [remoteMedia,setRemoteMedia] = useState(null);
     const [remoteOffer,setRemoteOffer] = useState(null);
+    const [onlineClassBlob,setOnlineClassBlob] = useState(null);
+    const [onlineClassBlobUrl,setOnlineClassBlobUrl] = useState('');
     const peerConnection = useRef(null);
     return (
         <Context.Provider value={{
@@ -27,6 +30,9 @@ function VideoCallProvider({children}) {
             remoteOffer,
             callingTo,
             localMedia,
+            remoteMedia,
+            onlineClassBlob,
+            onlineClassBlobUrl,
             // setter functions
 
             setIsCalling,
@@ -34,7 +40,10 @@ function VideoCallProvider({children}) {
             setIsInCall,
             setCallerId,
             setRemoteOffer,
-            setCallingTo
+            setCallingTo,
+            setRemoteMedia,
+            setOnlineClassBlob,
+            setOnlineClassBlobUrl,
             }}>
             {children}
         </Context.Provider>

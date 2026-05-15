@@ -2,6 +2,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { useVideoCallContext } from "../_components/providers/VideoCallProvider";
 
 function useAudioRecorder() {
     const [isRecording, setIsRecording] = useState(false);
@@ -14,7 +15,7 @@ function useAudioRecorder() {
     const [clientAudioUrl, setClientAudioUrl] = useState("");
     const [isRedirect, setIsRedirect] = useState(false);
     const [confirmSubmit, setConfirmSubmit] = useState(false);
-
+    const {onlineClassBlob,setOnlineClassBlobUrl,setOnlineClassBlob} = useVideoCallContext();
     const router = useRouter();
 
     let audioChunks = [];
@@ -102,16 +103,19 @@ function useAudioRecorder() {
 
      async function submitRecording(studentId,jwt) {
        const formData = new FormData();
-       formData.append("recording", audio, "recording.webm");
+       if(!onlineClassBlob) formData.append("recording", audio, "recording.webm");
+       if(onlineClassBlob) formData.append("recording",onlineClassBlob,"recording.webm")
        try {
-         setIsSubmitting(true);
-         setConfirmSubmit(false);
-         console.log(formData.get("audio"));
-         await axios.post(
-           `${process.env.NEXT_PUBLIC_URL}/recording/upload/${studentId}`,
-           formData,{headers:{Authorization:`Bearer ${jwt}`}}
-         );
-         toast.success("recording uploaded");
+      setIsSubmitting(true);
+      setConfirmSubmit(false);
+      console.log(formData.get("audio"));
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_URL}/recording/upload/${studentId}`,
+        formData,{headers:{Authorization:`Bearer ${jwt}`}}
+      );
+      toast.success("recording uploaded");
+      setOnlineClassBlob(null);
+      setOnlineClassBlobUrl('')
          if (isRedirect) return router.push("https://www.elearningquran.com");
          else return router.push("/recordings");
        } catch (err) {

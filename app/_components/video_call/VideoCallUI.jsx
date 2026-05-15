@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useVideoCallContext } from "../providers/VideoCallProvider";
 import { useCallingFn } from "../socket-listeners/Socket";
 import { useSession } from "next-auth/react";
+
 import {
   FiMic,
   FiMicOff,
@@ -11,14 +12,18 @@ import {
   FiVideoOff,
   FiPhoneOff,
 } from "react-icons/fi";
+import { IoIosCall } from "react-icons/io";
+import { MdCallEnd } from "react-icons/md";
+import Draggable from "react-draggable";
 function VideoCallUI() {
   const session = useSession();
   const videoRef = useRef(null);
-  const {localVideoRef,isCalling,isIncoming,isInCall,callerId,remoteVideoRef} = useVideoCallContext();
-  const {dummyAnsCall,acceptCall} = useCallingFn();
-
+  const {localVideoRef,localMedia,isCalling,isIncoming,isInCall,callerId,remoteVideoRef} = useVideoCallContext();
+  const {dummyAnsCall,acceptCall,endCall} = useCallingFn();
+  const [isMute,setIsMute] = useState(false);
+  const [isVideoOff,setIsVideoOff] = useState(false)
   const [seconds, setSeconds] = useState(0);
-
+  const dragRef = useRef(null);
   useEffect(() => {
     if(!isInCall) return;
     const interval = setInterval(() => {
@@ -72,38 +77,63 @@ function VideoCallUI() {
       stream?.getTracks().forEach((track) => track.stop());
     };
   }, [isCalling]);
-
   return (
     <>
-      <div className="h-[12vh] w-full absolute bottom-0 left-0 bg-black/80 backdrop-blur-md border-t border-white/10 flex items-center justify-between px-6">
+      <div className="h-[10vh] w-full fixed z-9999 bottom-0 left-0 bg-black/80 backdrop-blur-md border-t border-white/10 flex items-center justify-between px-6">
         {/* Timer */}
-        <div className={`${!isInCall && 'opacity-0'} text-white text-lg font-semibold tracking-wide`}>
+        <div
+          className={`${!isInCall && "opacity-0"} text-white text-lg font-semibold tracking-wide`}
+        >
           {formatTime(seconds)}
         </div>
 
         {/* Controls */}
         <div className="flex items-center gap-5">
           {/* Mute Button */}
-          <button className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 flex items-center justify-center text-white shadow-lg active:scale-95">
+          <button
+            onClick={() => {
+              setIsMute(!isMute);
+              const currentState = !isMute;
+              localMedia.current
+                .getAudioTracks()
+                .forEach((track) => (track.enabled = currentState));
+            }}
+            className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 flex items-center justify-center text-white shadow-lg active:scale-95"
+          >
             {/* Change icon conditionally */}
-            <FiMic size={20} />
-            {/* <FiMicOff size={24} /> */}
+            {!isMute && <FiMic size={20} />}
+            {isMute && <FiMicOff size={20} />}
           </button>
 
           {/* Camera Button */}
-          <button className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 flex items-center justify-center text-white shadow-lg active:scale-95">
+          <button
+            onClick={() => {
+              setIsVideoOff(!isVideoOff);
+              const currentState = !isVideoOff;
+              localMedia.current
+                .getVideoTracks()
+                .forEach((track) => (track.enabled = !currentState));
+            }}
+            className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 flex items-center justify-center text-white shadow-lg active:scale-95"
+          >
             {/* Change icon conditionally */}
-            <FiVideo size={20} />
-            {/* <FiVideoOff size={24} /> */}
+            {!isVideoOff && <FiVideo size={20} />}
+            {isVideoOff && <FiVideoOff size={20} />}
           </button>
 
           {/* End Call Button */}
           <button
-            onClick={() => acceptCall(session.data.currentUser._id, callerId)}
+            onClick={endCall}
             className="w-10 h-10 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-200 flex items-center justify-center text-white shadow-xl active:scale-95"
           >
-            <FiPhoneOff size={20} />
+            <MdCallEnd />
           </button>
+          {!isCalling && !isInCall && <button
+            onClick={() => acceptCall(session.data.currentUser._id, callerId)}
+            className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-all duration-200 flex items-center justify-center text-white shadow-xl active:scale-95"
+          >
+            <IoIosCall />
+          </button>}
         </div>
 
         {/* Empty div for perfect center alignment */}
@@ -123,7 +153,7 @@ function VideoCallUI() {
             {!isCalling && isIncoming && (
               <video
                 muted
-                ref={videoRef}
+                ref={localVideoRef}
                 autoPlay
                 className="w-full h-full object-cover"
               ></video>
@@ -135,37 +165,23 @@ function VideoCallUI() {
             <div className="h-full w-full">
               <div className="absolute h-full w-full">
                 <video
-                  className="h-full w-full object-cover z-99999"
+                  className="h-full  w-full object-cover z-99999"
                   ref={remoteVideoRef}
                 ></video>
               </div>
-              <div className="absolute top-0 right-0 w-30 h-40 ">
-                {isIncoming && !isCalling && (
+              <Draggable nodeRef={dragRef}>
+
+              <div ref={dragRef} className="absolute top-3 right-3 rounded-lg border border-black/20 overflow-auto shadow-2xl w-30 h-40 z-999999">
                   <video
                     ref={localVideoRef}
                     muted
                     autoPlay
                     className="h-full w-full object-cover z-99999"
-                  ></video>
-                )}
-                {!isIncoming && isCalling && (
-                  <video
-                    ref={localVideoRef}
-                    muted
-                    autoPlay
-                    className="h-full w-full object-cover z-99999"
-                  ></video>
-                )}
+                    ></video>
+                
               </div>
+                    </Draggable>
             </div>
-            {/* <video
-            ref={videoRef}
-            autoPlay
-            className="h-full w-full object-cover z-99999"
-          /> */}
-            <button className="bg-red-500 absolute bottom-5 left-1/2 -translate-x-1/2">
-              end call
-            </button>
           </>
         )}
       </div>

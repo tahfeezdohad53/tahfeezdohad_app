@@ -38,7 +38,7 @@ function EntryButtons({studentId,jwt,studentName}) {
     },
   } = userAudioRecorder();
   const {startCall,dummyStartCall} = useCallingFn();
-
+  const {onlineClassBlob,onlineClassBlobUrl} = useVideoCallContext();
   const queryClient = useQueryClient();
   async function confirmSubmitHandler(){
     setConfirmSubmit(false);
@@ -50,10 +50,10 @@ function EntryButtons({studentId,jwt,studentName}) {
     }
   }
 
-  if (!isRecording && !isRecorded)
+  if (!isRecording && !isRecorded && !onlineClassBlobUrl)
     return (
       <>
-        <div className="px-10 py-5 shadow-lg text-white flex flex-col items-center gap-2">
+        <div className="px-10 py-5  text-white flex flex-col items-center gap-2">
           <h1 className="text-black font-bold mb-2 text-center">
             You are about to record class of{" "}
             <span className="text-amber-800">{studentName}</span>
@@ -69,14 +69,8 @@ function EntryButtons({studentId,jwt,studentName}) {
               className="px-8 py-2 rounded-md bg-amber-900 flex items-center gap-3 justify-center"
               onClick={() => startCall(studentId,session?.data?.currentUser?._id)}
             >
-              <FaMicrophoneAlt /> online
+               online class
             </button>
-            {/* <button
-              className="px-8 py-2 rounded-md bg-amber-900 flex items-center gap-3 justify-center"
-              onClick={() => dummyStartCall(session.data.currentUser._id)}
-            >
-              <FaMicrophoneAlt /> dummy
-            </button> */}
           </div>
           <div className="text-amber-900 text-sm font-bold items-center flex gap-1">
             <input
@@ -93,10 +87,10 @@ function EntryButtons({studentId,jwt,studentName}) {
     
     
 
-  if (isRecording)
+  if (isRecording && !onlineClassBlobUrl)
     return (
       <>
-        <div className="flex flex-col items-center gap-2 px-15 py-8 rounded-md shadow-lg">
+        <div className="flex flex-col items-center gap-2 px-15 py-8 rounded-md">
           <h1 className="font-bold mb-1 text-center">
             recording class of{" "}
             <span className="text-amber-800">{studentName}</span>
@@ -153,26 +147,37 @@ function EntryButtons({studentId,jwt,studentName}) {
     );
 
 
-  if (isRecorded)
+  if (isRecorded || onlineClassBlobUrl)
     return (
-      <div className="flex flex-col items-center gap-2 bg-(--layer) px-10 py-5 rounded-md shadow">
+      <div className="flex flex-col items-center gap-2 bg-(--layer) px-10 py-5 rounded-md">
         <h1 className="font-bold mb-3 text-center">
           Submit class recording of{" "}
           <span className="text-amber-800">{studentName}</span>
         </h1>
-        <audio controls src={clientAudioUrl || null}></audio>
-        <button
-          onClick={() => setConfirmSubmit(true)}
-          disabled={isSubmitting}
-          className="relative px-4 py-1 rounded-md bg-amber-900 text-white"
-        >
-          <p className={`${isSubmitting && "opacity-0"}`}>submit</p>
-          {isSubmitting && (
-            <span className="absolute top-1/2 left-1/2 -translate-1/2 animate-spin">
-              <ImSpinner2 />
-            </span>
-          )}
-        </button>
+        <audio
+          controls
+          src={onlineClassBlobUrl || clientAudioUrl || null}
+        ></audio>
+        <div className="flex gap-2 mt-2">
+          <button
+            onClick={() => setConfirmSubmit(true)}
+            disabled={isSubmitting}
+            className="relative px-4 py-1 rounded-md bg-amber-900 shadow-2xl text-white"
+          >
+            <p className={`${isSubmitting && "opacity-0"}`}>submit</p>
+            {isSubmitting && (
+              <span className="absolute top-1/2 left-1/2 -translate-1/2 animate-spin">
+                <ImSpinner2 />
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => window.location.reload()}
+            className="relative px-4 py-1 rounded-md bg-red-700 shadow-2xl text-white"
+          >
+            <p>discard</p>
+          </button>
+        </div>
 
         {confirmSubmit && (
           <ConfirmSubmit
