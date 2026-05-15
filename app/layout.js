@@ -6,6 +6,10 @@ import { Suspense } from "react";
 import GlobalQueryProvider from "./_components/providers/GlobalQueryProvider";
 import AppProvider from "./_components/providers/AppProvider";
 import { SessionProvider } from "next-auth/react";
+import SocketProvider from "./_components/providers/SocketProvider";
+import VideoCallProvider from "./_components/providers/VideoCallProvider";
+import Socket, { CallingFnProvider } from "./_components/socket-listeners/Socket";
+import VideoCallWrapper from "./_components/video_call/VideoCallWrapper";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -25,14 +29,23 @@ export default function RootLayout({ children }) {
       <body className="h-screen flex flex-col bg-(--background)">
         <GlobalQueryProvider>
           <SessionProvider>
-            <AppProvider>
-              <Toaster />
-              <div id="root"></div>
-              <Suspense>
-                <Navbar />
-              </Suspense>
-              {children}
-            </AppProvider>
+            <SocketProvider>
+              <AppProvider>
+                <VideoCallProvider>
+                  <CallingFnProvider>
+                    {/* <Socket /> */}
+                    <Toaster />
+                    <VideoCallWrapper />
+                    <div id="root"></div>
+                    <div id="video"></div>
+                    <Suspense>
+                      <Navbar />
+                    </Suspense>
+                    {children}
+                  </CallingFnProvider>
+                </VideoCallProvider>
+              </AppProvider>
+            </SocketProvider>
           </SessionProvider>
         </GlobalQueryProvider>
       </body>

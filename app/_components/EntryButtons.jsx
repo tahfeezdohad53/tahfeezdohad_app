@@ -5,8 +5,12 @@ import userAudioRecorder from "../_hooks/useAudioRecorder";
 import ConfirmSubmit from "./ConfirmSubmit";
 import ConfirmationMenu from "./ConfirmSubmit";
 import { useQueryClient } from "@tanstack/react-query";
+import { useVideoCallContext } from "./providers/VideoCallProvider";
+import { useCallingFn } from "./socket-listeners/Socket";
+import { useSession } from "next-auth/react";
 
 function EntryButtons({studentId,jwt,studentName}) {
+  const session = useSession();
   const {
     states: {
       isRecording,
@@ -33,6 +37,8 @@ function EntryButtons({studentId,jwt,studentName}) {
       setConfirmFinishRecording
     },
   } = userAudioRecorder();
+  const {startCall,dummyStartCall} = useCallingFn();
+
   const queryClient = useQueryClient();
   async function confirmSubmitHandler(){
     setConfirmSubmit(false);
@@ -48,16 +54,30 @@ function EntryButtons({studentId,jwt,studentName}) {
     return (
       <>
         <div className="px-10 py-5 shadow-lg text-white flex flex-col items-center gap-2">
-        <h1 className="text-black font-bold mb-2 text-center">
-          You are about to record class of{" "}
-          <span className="text-amber-800">{studentName}</span>
-        </h1>
-          <button
-            className="px-8 py-2 rounded-md bg-amber-900 flex items-center gap-3 justify-center"
-            onClick={startRecording}
-          >
-            <FaMicrophoneAlt /> record
-          </button>
+          <h1 className="text-black font-bold mb-2 text-center">
+            You are about to record class of{" "}
+            <span className="text-amber-800">{studentName}</span>
+          </h1>
+          <div className="flex gap-3">
+            <button
+              className="px-8 py-2 rounded-md bg-amber-900 flex items-center gap-3 justify-center"
+              onClick={startRecording}
+            >
+              <FaMicrophoneAlt /> record
+            </button>
+            <button
+              className="px-8 py-2 rounded-md bg-amber-900 flex items-center gap-3 justify-center"
+              onClick={() => startCall(studentId,session?.data?.currentUser?._id)}
+            >
+              <FaMicrophoneAlt /> online
+            </button>
+            {/* <button
+              className="px-8 py-2 rounded-md bg-amber-900 flex items-center gap-3 justify-center"
+              onClick={() => dummyStartCall(session.data.currentUser._id)}
+            >
+              <FaMicrophoneAlt /> dummy
+            </button> */}
+          </div>
           <div className="text-amber-900 text-sm font-bold items-center flex gap-1">
             <input
               onInput={(el) => setIsRedirect(el.target.checked)}

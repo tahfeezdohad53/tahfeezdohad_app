@@ -1,17 +1,8 @@
 'use client';
 import Image from "next/image";
 import Link from "next/link";
-import { Item, Separator, useContextMenu } from "react-contexify";
 import { BiDotsVertical } from "react-icons/bi";
-import { FaEdit, FaMicrophone, FaUserCircle } from "react-icons/fa";
-import ContextMenu from "../ContextMenu";
-import { CiMicrophoneOn } from "react-icons/ci";
-import { useState } from "react";
-import Modal from "../Modal";
-import CustomSelect from "../Select";
-import { changeDiary } from "@/actions/student";
-import { MdDelete } from "react-icons/md";
-import { useAppProvider } from "../providers/AppProvider";
+import { FaMicrophone, FaUserCircle } from "react-icons/fa";
 
 function StudentCard({
   image,
@@ -23,6 +14,8 @@ function StudentCard({
   proxyTeacherName,
 }) {
   const isProxy = proxyTeacherId === teacherId;
+
+  
   return (
     <div className="flex justify-center">
       <div className="relative rounded-md w-[80%] border-t-4 border-amber-900 bg-(--layer) shadow border border-x-(--border) border-b-(--border)">
