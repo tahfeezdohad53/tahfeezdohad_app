@@ -82,13 +82,22 @@ export function CallingFnProvider({ children }) {
         },
       ],
     });
-    
+
     peerConnection.current.ontrack = (event) => {
       const stream = event.streams[0];
       setRemoteMedia(stream);
       if (remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = stream;
         remoteVideoRef.current.play().catch((err) => console.log(err));
+      }
+    };
+
+    peerConnection.current.onicecandidate = ({ candidate }) => {
+      if (candidate) {
+        socket.emit("ice-candidate", {
+          to: isIncoming ? callerId : callingTo,
+          candidate,
+        });
       }
     };
 }, [socket]);
@@ -163,17 +172,17 @@ export function CallingFnProvider({ children }) {
     //   };
     // },[peerConnection,socket])
 
-    useEffect(() => {
-      if (!peerConnection.current) return;
-      peerConnection.current.onicecandidate = ({ candidate }) => {
-        if (candidate) {
-          socket.emit("ice-candidate", {
-            to: isIncoming ? callerId : callingTo,
-            candidate,
-          });
-        }
-      };
-    },[callingTo])
+    // useEffect(() => {
+    //   if (!peerConnection.current) return;
+    //   peerConnection.current.onicecandidate = ({ candidate }) => {
+    //     if (candidate) {
+    //       socket.emit("ice-candidate", {
+    //         to: isIncoming ? callerId : callingTo,
+    //         candidate,
+    //       });
+    //     }
+    //   };
+    // },[callingTo])
 
     useEffect(() => {
       if(!localVideoRef.current) return;
