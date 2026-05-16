@@ -105,6 +105,11 @@ export function CallingFnProvider({ children }) {
     localMedia.current.getTracks().forEach(track => peerConnection.current.addTrack(track,localMedia.current));
     const offer = await peerConnection.current.createOffer();
     await peerConnection.current.setLocalDescription(offer);
+    await new Promise((res) =>
+      setTimeout(() => {
+        res();
+      }, 600),
+    );
     socket.emit('incoming-call',{to:receiverId,from:callerId,offer});
     }
 
@@ -116,10 +121,13 @@ export function CallingFnProvider({ children }) {
       );
       const answer = await peerConnection.current.createAnswer();
       await peerConnection.current.setLocalDescription(answer);
-      console.log(candidates.current);
-      for(const candidate of candidates.current){
+      
+      if(candidates.current.length !== 0)for(const candidate of candidates.current){
         peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
       }
+      await new Promise((res) => setTimeout(() => {
+        res();
+      }, 600))
       socket.emit("call-accepted", { to: callerId, from: receiverId, answer });
     }
   
