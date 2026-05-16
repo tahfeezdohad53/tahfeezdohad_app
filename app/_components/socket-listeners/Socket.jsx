@@ -108,7 +108,7 @@ export function CallingFnProvider({ children }) {
     await new Promise((res) =>
       setTimeout(() => {
         res();
-      }, 600),
+      },4000),
     );
     socket.emit('incoming-call',{to:receiverId,from:callerId,offer});
     }
@@ -127,7 +127,7 @@ export function CallingFnProvider({ children }) {
       }
       await new Promise((res) => setTimeout(() => {
         res();
-      }, 600))
+      },4000))
       socket.emit("call-accepted", { to: callerId, from: receiverId, answer });
     }
   
