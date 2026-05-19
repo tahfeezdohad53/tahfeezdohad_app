@@ -10,7 +10,7 @@ async function Page({params}) {
     if(session.currentUser.role === 'student') redirect('/auth');
     const pageParams = await params;
     return (
-      <div className="py-5 px-10 h-full">
+      <div className="py-5 px-5 h-full">
         <div className="flex items-center gap-1 text-sm text-(--text)">
           <button className="shadow-(--shadow-md) bg-(--card) rounded-lg p-2">
             <Link href={"/gurfah"} className="">
