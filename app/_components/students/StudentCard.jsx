@@ -2,7 +2,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BiDotsVertical } from "react-icons/bi";
-import { FaMicrophone, FaUserCircle } from "react-icons/fa";
+import { CiUser } from "react-icons/ci";
+import { FaMicrophone, FaRegUser, FaUser, FaUserCircle } from "react-icons/fa";
+import { LiaGraduationCapSolid } from "react-icons/lia";
+import { LuGraduationCap } from "react-icons/lu";
 
 function StudentCard({
   image,
@@ -27,8 +30,14 @@ function StudentCard({
   }
   return (
     <div className="py relative rounded-md w-full  border-amber-900 bg-(--card) shadow-(--shadow-xl) ">
-
-      {isSelecting && <input onChange={handleSelectedStudent} checked={selectedStudents.includes(studentId)} type="checkbox" className="absolute top-3 left-3"  />}
+      {isSelecting && (
+        <input
+          onChange={handleSelectedStudent}
+          checked={selectedStudents.includes(studentId)}
+          type="checkbox"
+          className="absolute top-3 left-3"
+        />
+      )}
 
       {isProxy && (
         <div className="flex justify-center">
@@ -61,6 +70,22 @@ function StudentCard({
         <p className="font-semibold text-stone-800 tracking-wider text-xs text-center">
           {name}
         </p>
+        <div className="w-full border-t border-(--border) py-2 text-[0.55rem]">
+          <div className=" flex items-center gap-3">
+            <LuGraduationCap className="text-xl text-(--primary)" />
+            <div className="w-full">
+              <p className="text-(--text-muted) text-[0.70rem]">Teacher</p>
+              <p className="text-(--text) truncate">{teacherName}</p>
+            </div>
+          </div>
+          <div className=" border-t border-(--border) py-2 mt-2 flex items-center gap-3">
+            <FaRegUser className="text-xl text-(--primary)" />
+            <div className="w-full">
+              <p className="text-(--text-muted) text-[0.70rem]">Proxy</p>
+              <p className="text-(--text) truncate">{proxyTeacherName || 'no current proxy'}</p>
+            </div>
+          </div>
+        </div>
         <Link
           href={`/entry/${studentId}?studentName=${name}`}
           className=" rounded-lg flex items-center shadow justify-center gap-2 w-full shadow-m p-2 bg-(--primary-soft)/15 text-(--text) text-sm"
