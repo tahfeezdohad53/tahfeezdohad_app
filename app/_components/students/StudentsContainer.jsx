@@ -107,7 +107,7 @@ const customizedTeachers = teachers?.map(el => ({label:el.name,value:el._id}))
         <IoIosCheckboxOutline className="" /> Select
       </button>}
      {isSelecting && <div className="w-full flex items-center justify-between mt-5 bg-(--card) shadow-(--shadow-md) rounded-md py-2 px-4">
-        <p className="text-sm font-bold tracking-wider">2 selected</p>
+        <p className="text-sm font-bold tracking-wider">{selectedStudents.length} selected</p>
         <div className="flex items-center gap-3">
           <button onClick={handleCancelSelection} className="shadow-(--shadow-lg) border border-(--primary)/50 text-sm rounded-lg bg-(--bg-tertiary)/50 py-2 px-3">cancel</button>
           <button onClick={handleSelectAll} className=" bg-(image:--gradient-primary) text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-auto flex items-center gap-2">
