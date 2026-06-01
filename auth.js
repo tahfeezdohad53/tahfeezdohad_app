@@ -34,6 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
           );
           cookieStore.set('jwt',res.data.jwt,{
+            domain:'recording-test-api.onrender.com',
             sameSite:'none',
             httpOnly:true,
             secure:true,
