@@ -34,7 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
           );
           cookieStore.set('jwt',res.data.jwt,{
-            sameSite:'lax',
+            sameSite:'none',
             httpOnly:true,
             secure:false,
             maxAge:10 * 24 * 60 * 60,

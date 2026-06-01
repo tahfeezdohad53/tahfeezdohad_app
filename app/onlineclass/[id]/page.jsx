@@ -19,7 +19,7 @@ async function Page({params}) {
           </button>
           Back
         </div>
-        <StudentWrapper studentId={pageParams.studentId}/>
+        <StudentWrapper id={pageParams.id}/>
       </div>
     );
 }

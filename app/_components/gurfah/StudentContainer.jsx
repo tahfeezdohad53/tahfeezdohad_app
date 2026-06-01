@@ -89,7 +89,7 @@ export default StudentContainer
 
 function StudentCard({name,id}){
     return (
-      <Link href={`/student_gurfah/${id}`} className="flex items-center justify-between p-5 border-b border-(--border) duration-300 ease-in-out transition-all hover:cursor-pointer hover:bg-(--card-hover)">
+      <Link href={`/onlineclass/${id}`} className="flex items-center justify-between p-5 border-b border-(--border) duration-300 ease-in-out transition-all hover:cursor-pointer hover:bg-(--card-hover)">
         <div className="flex items-center gap-6">
           <div className="p-3 rounded-full bg-(--bg-tertiary)/50">
             <FaUser className="text-xl" />

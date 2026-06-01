@@ -3,10 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useUser } from "./UserProvider";
 
 const Context = createContext();
 function AppProvider({ children }) {
-    const session = useSession();
+  const {user} = useUser();
     const [teachers,setTeachers] = useState();
     const [students,setStudents] = useState();
 
@@ -14,13 +15,13 @@ function AppProvider({ children }) {
         queryKey:['students'],
         queryFn:handleGetStudents,
         refetchOnWindowFocus:false,
-        enabled:!!session.data?.jwt,
+        enabled:!!user?.role,
     })
     // console.log(session.data?.jwt);
     
     async function handleGetStudents(){
       try{
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_URL}/student/getAllStudentsAndTeachers`,{headers:{Authorization:`Bearer ${session.data?.jwt}`}})
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_URL}/student/getAllStudentsAndTeachers`,{withCredentials:true})
         console.log(res.data);
         setTeachers(res.data?.teachers);
         setStudents(res.data?.students);

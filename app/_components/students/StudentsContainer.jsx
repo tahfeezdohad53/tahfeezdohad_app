@@ -15,6 +15,7 @@ import StudentsFilter from "./StudentsFilter";
 import { IoIosCheckboxOutline } from "react-icons/io";
 import { PiDotsThreeVertical, PiDotsThreeVerticalBold } from "react-icons/pi";
 import { useUser } from "../providers/UserProvider";
+import CustomContextMenu from "../CustomContextMenu";
 
 function StudentsContainer() {
   const { user } = useUser();
@@ -24,6 +25,7 @@ function StudentsContainer() {
     id: "student",
   });
   const [modal, setModal] = useState({ show: false, type: "" });
+  const [showCustomeContextMenu,setShowCustomContextMenu] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState({
     name: "",
     id: "",
@@ -122,6 +124,15 @@ function StudentsContainer() {
       student.filter((el) => el.name.includes(value)),
     );
   }
+  async function handleChangeMultipleDiaries(teacherId){
+    try{
+      await axios.patch(`${process.env.NEXT_PUBLIC_URL}/student/changeMultipleDiaries`,{teacherId,studentsId:selectedStudents},{withCredentials:true})
+      toast.success(`diary updated of ${selectedStudents.length} students`);
+      setSelectedStudents([]);
+    }catch(err){
+      console.log(err);
+    }
+  }
   if (!user?.role) return null;
   const customizedTeachers = teachers?.map((el) => ({
     label: el.name,
@@ -148,7 +159,7 @@ function StudentsContainer() {
         </button>
       )}
       {isSelecting && (
-        <div className="w-full flex items-center justify-between mt-5 bg-(--card) shadow-(--shadow-md) rounded-md py-2 px-4">
+        <div className="relative w-full flex items-center justify-between mt-5 bg-(--card) shadow-(--shadow-md) rounded-md py-2 px-4">
           <p className="text-sm font-bold tracking-wider">
             {selectedStudents.length} selected
           </p>
@@ -165,9 +176,10 @@ function StudentsContainer() {
             >
               Select All
             </button>
-            <button>
+            <button onClick={()=>setShowCustomContextMenu(!showCustomeContextMenu)} className="">
               <PiDotsThreeVerticalBold />
             </button>
+             {showCustomeContextMenu && <CustomContextMenu options={[{text:'change diary',icon:<FaBook />,handler:handleChangeMultipleDiaries}]}/>}
           </div>
         </div>
       )}

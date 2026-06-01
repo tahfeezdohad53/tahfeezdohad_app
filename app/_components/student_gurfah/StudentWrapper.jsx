@@ -12,7 +12,7 @@ const font = Playfair_Display({
     subsets:['latin'],
     weight:['500','600','700']
 })
-function StudentWrapper({studentId}) {
+function StudentWrapper({id}) {
     const {user} = useUser();
     const {startCall} = useCallingFn();
     const {onlineClassBlob,onlineClassBlobUrl,onlineClassBlobUrlSize} = useVideoCallContext();
@@ -27,7 +27,7 @@ function StudentWrapper({studentId}) {
             Huzefa ratlam
           </h1>
         </div>
-        <button onClick={() => startCall(studentId,user?._id)} className="flex gap-3 items-center w-full justify-center bg-purple-500 shadow-(--shadow-lg) py-4 rounded-lg text-white/90">
+        <button onClick={() => startCall(id,user?._id)} className="flex gap-3 items-center w-full justify-center bg-purple-500 shadow-(--shadow-lg) py-4 rounded-lg text-white/90">
           <FaVideo /> Start video Call
         </button>
 
@@ -64,7 +64,7 @@ function StudentWrapper({studentId}) {
         </div>
       </div>
     );
-    if(onlineClassBlob) return <SubmitRecording audioSize={onlineClassBlobUrlSize} clientAudioUrl={onlineClassBlobUrl} studentId={studentId} submitRecording={submitRecording} isSubmitting={isSubmitting}/>
+    if(onlineClassBlob && user?.role !== 'student') return <SubmitRecording audioSize={onlineClassBlobUrlSize} clientAudioUrl={onlineClassBlobUrl} studentId={id} submitRecording={submitRecording} isSubmitting={isSubmitting}/>
 }
 
 export default StudentWrapper

@@ -10,14 +10,17 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 function AuthForm() {
   const [role,setRole] = useState('student');
   const {register,handleSubmit} = useForm();
   const router = useRouter();
+  const queryClient = useQueryClient();
   async function handleSignin(e){
     try{
       const res = await axios.post(`${process.env.NEXT_PUBLIC_URL}/auth/emailSignin`,{email:e.email,password:e.password,role},{withCredentials:true})
+      queryClient.invalidateQueries();
       if(role === 'student') router.replace('/profile');
       else router.replace('/students');
     }catch(err){
