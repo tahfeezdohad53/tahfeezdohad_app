@@ -1,13 +1,15 @@
 'use client';
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
 
 const Context = createContext();
 function UserProvider({ children }) {
 
+  const session = useSession();
    const { data:user,isFetching } = useQuery({
-     queryKey: ["user"],
+     queryKey: ["user",session.data],
      queryFn: handleGetUser,
      refetchOnWindowFocus: false,
     //  enabled: !!session.data?.jwt,
