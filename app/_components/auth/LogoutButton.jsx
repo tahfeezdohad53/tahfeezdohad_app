@@ -1,4 +1,4 @@
-'use client '
+'use client'
 import { handleLogout } from "@/actions/auth";
 import axios from "axios";
 import { FaSignOutAlt } from "react-icons/fa";

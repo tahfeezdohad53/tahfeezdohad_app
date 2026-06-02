@@ -9,11 +9,11 @@ export async function handleSignIn(data){
     await signIn('google');
 }
 export async function handleLogout(){
-    const cookieStore = await cookies();
-    cookieStore.delete('jwt',{
-        sameSite:'none',
-        httpOnly:true,
-        secure:true,
-    });
+    // const cookieStore = await cookies();
+    // cookieStore.delete('jwt',{
+    //     sameSite:'none',
+    //     httpOnly:true,
+    //     secure:true,
+    // });
     await signOut({redirectTo:'/auth'});
 }
