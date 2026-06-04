@@ -97,7 +97,7 @@ function Form({onClose}){
   }
   }
     return (
-      <Modal onClose={onClose} className="h-fit overflow-y-auto">
+      <Modal onClose={onClose} className="h-fit w-full overflow-y-auto">
         <div className="">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
             Create Maqaarat
