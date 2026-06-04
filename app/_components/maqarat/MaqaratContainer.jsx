@@ -11,14 +11,14 @@ import { format } from "date-fns";
 function MaqaratContainer({query}) {
     const {user} = useUser();
     const {data:maqarat,isLoading} = useQuery({
-        queryKey:['maqarat',query?.batch],
+        queryKey:['maqarat',query],
         queryFn:handleGetMaqarat,
         refetchOnWindowFocus:false,
         placeholderData:keepPreviousData
     })
     async function handleGetMaqarat(){
         try{
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_URL}/maqarat/get?batch=${query?.batch}`,{withCredentials:true});
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_URL}/maqarat/get?batch=${query?.batch || ''}&status=${query?.status || ''}`,{withCredentials:true});
             console.log('sucess')
             console.log(res.data.maqarat.length)
             return res.data.maqarat; 
@@ -30,15 +30,15 @@ function MaqaratContainer({query}) {
     if(!user) return null;
     if(isLoading) return null;
     if(!isLoading && maqarat?.length === 0) return (
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-100 flex items-center justify-center">
        {user?.role === 'admin' && <h1>Start Creating Maqarat Session</h1>}
-       {(user?.role === 'student' || user?.role === 'teacher') && <h1>No Previous sessions found!</h1>}
+       {(user?.role === 'student' || user?.role === 'teacher') && <h1>No sessions found!</h1>}
       </div>
     );
     return (
       // <h1>hello</h1>
-      <div className=" h-[90%] overflow-auto pb-5">
-        <div className="flex flex-col gap-3 mt-3">
+      <div className="">
+        <div className=" flex flex-col gap-3 mt-3">
           {maqarat.map(el => <MaqaratSessionCard key={el._id} juz={el.juz} batch={el.batch} teacher={el.teacher.name} date={el.date} students={el.students}/>)}
           {/* {maqarat.map(el => <MaqaratSessionCard key={el._id} juz={el.juz} batch={el.batch} teacher={el.teacher.name} date={el.date} students={el.students}/>)} */}
         </div>
@@ -58,7 +58,7 @@ function MaqaratSessionCard({juz,batch,teacher,date,students}){
     const isToday = sessionDate.getTime() === today.getTime();
     return (
       <div className="relative flex w-full rounded-md border border-(--border) shadow-(--shadow-sm) p-3 bg-(--card)">
-        <div className={`absolute right-1 top-1 p-1 px-3 ${isToday && 'bg-blue-400'} ${(!isToday && isUpcoming) && 'bg-green-400'} ${(!isToday && !isUpcoming) && 'bg-red-400'} shadow-sm rounded-md`}> 
+        <div className={`absolute right-1 top-1 p-1 px-1 ${isToday && 'bg-blue-400'} ${(!isToday && isUpcoming) && 'bg-green-400'} ${(!isToday && !isUpcoming) && 'bg-red-400'} shadow-sm rounded-md`}> 
             {isToday && <p className="text-[0.60rem] text-white tracking-wider">{isToday && 'today'}</p>}
             {!isToday && <p className="text-[0.60rem] text-white tracking-wider">{isUpcoming ? 'upcoming' :'ended'}</p>}
         </div>

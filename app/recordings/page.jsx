@@ -55,7 +55,7 @@ async function Page({searchParams}) {
       </div>
 
       <div>
-        <div className="relative rounded-2xl w-full bg-(--card) mb-20">
+        <div className="relative rounded-2xl w-full bg-(--card)">
           <div className="w-full shadow border border-(--border) rounded-lg overflow-hidden">
             {/* {(params.startDate || params.student || params.teacher) &&
                 recordings.length < 1 && (
@@ -80,7 +80,7 @@ async function Page({searchParams}) {
               <div className="text-[0.50rem] flex justify-center">Actions</div>
             </div>
 
-            <div className="pb0">
+            <div className="">
               <RecordingsContainer params={params} />
             </div>
 

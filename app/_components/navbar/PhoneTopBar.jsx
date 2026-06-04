@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { FaUser, FaUserFriends } from "react-icons/fa";
 import { FaHouse } from "react-icons/fa6";
 import { LuAudioLines } from "react-icons/lu";
+import { useUser } from "../providers/UserProvider";
 
 const font = Cinzel({
   subsets: ["latin"],
@@ -15,6 +16,7 @@ const font2 = Playfair_Display({
   weight: ["500", "600", "700"],
 });
 function PhoneTopBar() {
+  const {user} = useUser();
   const pathname = usePathname();
   let heading;
   let subHeading;
@@ -26,9 +28,14 @@ function PhoneTopBar() {
     heading = "Gurfah";
     subHeading = "a room for online classes";
   }
+  if (pathname.includes("onlineclass")) {
+    heading = "Gurfah";
+    subHeading = "a room for online classes";
+  }
   if (pathname.includes("maqarat")) {
     heading = "Maqarat Sessions";
-    subHeading = "Create & Manage Maqarat Sessions";
+    if(user?.role === 'admin')subHeading = "Create & Manage Maqarat Sessions";
+    if(user?.role !== 'admin')subHeading = "View Your Maqarat Sessions";
   }
   if (pathname.includes("auth")) return null;
   if (pathname.includes("students"))
@@ -60,6 +67,9 @@ function PhoneTopBar() {
             <LuAudioLines className="text-xl text-(--primary)" />
           )}
           {pathname.includes("gurfah") && (
+            <FaHouse className="text-xl text-(--primary)" />
+          )}
+          {pathname.includes("onlineclass") && (
             <FaHouse className="text-xl text-(--primary)" />
           )}
           {pathname.includes("maqarat") && (

@@ -81,7 +81,7 @@ function Form({onClose}){
   async function handleSubmit(e){
     e.preventDefault();
     const today = new Date();
-    if(new Date(date).getDate() < today.getDate()) return toast.error('you cannot set past dates');
+    // if(new Date(date).getDate() < today.getDate()) return toast.error('you cannot set past dates');
     try{
       const res = await axios.post(`${process.env.NEXT_PUBLIC_URL}/maqarat/create`,{
         teacher,students,juz,date,batch

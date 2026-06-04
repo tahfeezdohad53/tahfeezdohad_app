@@ -44,9 +44,10 @@ export default function RootLayout({ children }) {
                       <div id="video"></div>
                       <Suspense>
                         <Navbar />
-                        <div className=" lg:pb-0 h-screen">
+                        <div className=" lg:pb-0 h-full flex flex-col">
                           <PhoneTopBar />
-                          {children}
+                          <div className="">{children}</div>
+                          <div className="min-h-20"></div>
                         </div>
                         <PhoneNav />
                       </Suspense>

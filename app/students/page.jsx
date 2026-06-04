@@ -4,7 +4,7 @@ import Redirect from "../_components/auth/Redirect";
 async function Page() {
  
     return (
-        <div className="h-full px-5 pb-35">
+        <div className="h-full px-5">
           <Redirect unauthorizedRole={['student']}/>
             <StudentsContainer />
           </div>
