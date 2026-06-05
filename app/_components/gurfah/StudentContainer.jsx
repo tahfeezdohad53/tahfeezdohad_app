@@ -65,7 +65,7 @@ function StudentContainer() {
             );
           }
     return (
-      <div className="h-full w-full flex flex-col">
+      <div className="h-full min-w-full flex flex-col">
         {user?.role !== 'student' && <StudentsFilter handleFilterStudents={handleFilterStudents} />}
         <div className="mt-5 flex flex-col gap-3 w-full h-full overflow-auto">
         {/* <div className="bg-(--card) flex-1 mt-5 rounded-lg shadow-(--shadow-lg)"> */}
@@ -73,6 +73,7 @@ function StudentContainer() {
             filteredStudents.map((el) => (
              <StudentCard key={el._id} name={el.name} id={el._id}/>
             ))}
+          
           {user?.role === 'student' && teachers?.length > 0 &&
             teachers.map((el) => (
              <StudentCard key={el._id} name={el.name} id={el._id}/>

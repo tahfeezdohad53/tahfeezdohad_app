@@ -2,7 +2,7 @@ import StudentContainer from "@/app/_components/gurfah/StudentContainer";
 
 async function Page() {
     return (
-      <div className="p-5 h-full w-full overflow-hidden">
+      <div className="p-5 h-full min-w-full">
         <StudentContainer />
       </div>
     );

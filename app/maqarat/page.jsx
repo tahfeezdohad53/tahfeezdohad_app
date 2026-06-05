@@ -7,7 +7,7 @@ async function Page({searchParams}) {
     const query = await searchParams;
     console.log(query)
     return (
-      <div className="p-2 h-full">
+      <div className="p-3 ">
         <MaqaratHeader />
         {/* {/* <MaqaraatForm /> */}
         <div className="flex justify-between mt-5 items-center">

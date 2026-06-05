@@ -33,8 +33,8 @@ async function Page({searchParams}) {
       </div>
 
       <div>
-        <div className="relative rounded-2xl w-full ">
-          <div className="w-full  rounded-lg overflow-hidden">
+        <div className="relative rounded-2xl w-full lg:pb-2">
+          <div className="w-full rounded-lg overflow-hidden">
               <RecordingsContainer params={params} />
           </div>
         </div>

@@ -44,7 +44,7 @@ function PhoneTopBar() {
   if (pathname.includes("auth")) return null;
   if(pathname.includes('students')) return (
       <div
-        className={`flex lg:hidden justify-between items-center p-3 text-lg border-b border-gray-200`}
+        className={`lg:ml-40 flex justify-between items-center p-3 text-lg border-b border-gray-200`}
       >
         <div>
           <h1 className={`text-xl ${font.className} font-semibold`}>
@@ -63,7 +63,7 @@ function PhoneTopBar() {
       </div>
     );
   return (
-    <div className="flex items-center justify-between p-3 border-b border-(--border)">
+    <div className="lg:ml-40 flex items-center justify-between p-3 border-b border-(--border)">
       <div className="flex items-center gap-4">
         <div className="p-2 rounded-md bg-(--bg-tertiary)/50 w-fit">
           {pathname.includes("recordings") && (

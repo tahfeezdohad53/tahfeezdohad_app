@@ -34,7 +34,7 @@ function RecordingsTableController({totalRes}) {
         router.replace(`${pathname}?${searchParams}`,{scroll:false});
     }
   return (
-    <div className="text-sm flex justify-between items-center gap-x-3 pl-3 pr-1 bg-(--highlight) shadow-sm">
+    <div className="text-sm py-2 flex justify-between items-center gap-x-3 pl-3 pr-1 bg-(--highlight) shadow-sm">
       <p>{page} out of {Math.ceil(totalRes / 10)} pages</p>
 
       <div className="flex items-center gap-2">
