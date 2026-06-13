@@ -1,5 +1,5 @@
 'use client';
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { CiCalendarDate, CiCircleQuestion, CiUser } from "react-icons/ci";
 import { FaGraduationCap, FaUser } from "react-icons/fa";
 import { GrStatusInfo } from "react-icons/gr";
@@ -16,7 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 
 
-function LeaveCard({id,status,name,batch,days,type,reason,from,to}) {
+function LeaveCard({id,status,name,createdAt,batch,days,type,reason,from,to}) {
   const {user} = useUser();
   const queryClient = useQueryClient();
   const [showMenu,setShowMenu] = useState(false);
@@ -26,10 +26,16 @@ function LeaveCard({id,status,name,batch,days,type,reason,from,to}) {
     accepted: "text-green-600 bg-green-100",
     rejected: "text-red-600 bg-red-100",
   };
+  const border = {
+    upcoming: "border-l-blue-600",
+    pending: "border-l-amber-600",
+    accepted: "border-l-green-600",
+    rejected: "border-l-red-600",
+  };
   async function handleUpdate(status){
     try{
       await axios.post(`${process.env.NEXT_PUBLIC_URL}/leave/update`,{leaveId:id,status},{withCredentials:true});
-      queryClient.invalidateQueries(['leaves']);
+      queryClient.invalidateQueries({queryKey:['leaves']});
       toast.success('leave status updated');
     }catch(err){
       console.log(err);
@@ -39,17 +45,30 @@ function LeaveCard({id,status,name,batch,days,type,reason,from,to}) {
   const options = [{icon:<IoCheckmark />,text:'Accept',textColor:'text-green-500',handler:()=>handleUpdate('accepted')},{icon:<RxCross2 />,text:'reject',textColor:'text-red-500',handler:()=>handleUpdate('rejected')}]
     return (
       <div className="relative w-full border-l-4 border-l-amber-800 border-(--border) bg-(--card) p-3 rounded-md shadow-(--shadow-sm)">
-        {user?.role === 'admin' && <div onClick={()=>setShowMenu(!showMenu)} className="absolute right-1 top-2 p-2 rounded-md hover:bg-(--card-hover) hover:border hover:border-(--border) border border-transparent transition-all duration-300 ease-in-out hover:cursor-pointer">
-          <HiOutlineDotsVertical />
-          {showMenu && <CustomContextMenu onClose={()=>setShowMenu(false)} className="w-40 font-semibold" options={options}/>}
-        </div>}
-        <div className="flex  gap-5">
-          <div className="h-20 flex justify-center items-center min-w-20 rounded-full border border-(--border)">
+        {user?.role === "admin" && (
+          <div className="absolute right-1 top-2">
+            <div
+              onClick={() => setShowMenu(!showMenu)}
+              className=" p-2 rounded-md hover:bg-(--card-hover) hover:border hover:border-(--border) border border-transparent transition-all duration-300 ease-in-out hover:cursor-pointer"
+            >
+              <HiOutlineDotsVertical />
+            </div>
+            {showMenu && (
+              <CustomContextMenu
+                onClose={() => setShowMenu(false)}
+                className="w-40 font-semibold"
+                options={options}
+              />
+            )}
+          </div>
+        )}
+        <div className="  gap-5">
+          <div className="h-20 flex justify-center items-center mx-auto  w-20 rounded-full border border-(--border)">
             <CiUser className="text-5xl" />
           </div>
 
           <div className="text-xs text-gray-900 flex flex-col gap-2 ">
-            <h1 className="text-lg font-semibold text-black  wrap-break-word max-w-full pr-7">
+            <h1 className="text-lg text-center border-b pb-2 border-(--border) font-semibold text-black  wrap-break-word max-w-full">
               {name}
             </h1>
             <h1 className="flex items-center gap-1">
@@ -59,14 +78,21 @@ function LeaveCard({id,status,name,batch,days,type,reason,from,to}) {
               <span className="text-amber-800 font-bold mr-1">batch:</span>{" "}
               {batch}
             </h1>
-            <h1 className="flex items-center gap-1">
+            <h1 className="text-amber-800 font-bold flex items-center gap-1 ">
+              <span className="p-1 bg-(--bg-tertiary)/50 rounded-md">
+                <CiCalendarDate className="text-xs" />{" "}
+              </span>
+              <span className="text-amber-800 font-bold mr-1">Applied:</span>{" "}
+              <span className="">{formatDistanceToNow(createdAt,{addSuffix:true})}</span>
+            </h1>
+            {/* <h1 className="flex items-center gap-1">
               <span className="p-1 rounded-md bg-(--bg-tertiary)/50">
                 <TbNotes className="text-orange-800" />
               </span>
               <span className="text-amber-800 font-bold mr-1">Type:</span>{" "}
               {type}
-            </h1>
-            <h1 className="flex items-start gap-1">
+            </h1> */}
+            <h1 className="flex  items- gap-1">
               <div className="flex items-center gap-1">
                 <span className="p-1 rounded-md bg-(--bg-tertiary)/50">
                   <CiCircleQuestion className="text-orange-800" />
@@ -92,7 +118,7 @@ function LeaveCard({id,status,name,batch,days,type,reason,from,to}) {
                 {status}
               </span>
             </p>
-            <h1 className="text-amber-800 font-bold flex items-center gap-1 text-[0.60rem]">
+            <h1 className="text-amber-800 font-bold flex items-center gap-1 ">
               <span className="p-1 bg-(--bg-tertiary)/50 rounded-md">
                 <CiCalendarDate className="text-xs" />{" "}
               </span>

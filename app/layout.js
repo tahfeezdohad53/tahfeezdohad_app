@@ -15,6 +15,7 @@ import PhoneNav from "./_components/navbar/PhoneNav";
 import PhoneTopBar from "./_components/navbar/PhoneTopBar";
 import PlaceHolderDiv from "./_components/PlaceHolderDiv";
 import Sidebar from "./_components/navbar/Sidebar";
+import SidebarPlaceholder from "./_components/navbar/SidebarPlaceholder";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -50,7 +51,7 @@ export default function RootLayout({ children }) {
                               <PhoneTopBar />
                           <div className="lg:flex lg:min-h-full">
                             <Sidebar />
-                            <div className="min-w-40 hidden lg:block border"></div>
+                            <SidebarPlaceholder />
                             <div className="w-full ">
                               {children}
                             </div>

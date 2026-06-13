@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { ImSpinner2 } from "react-icons/im";
+import { useQueryClient } from "@tanstack/react-query";
 
 function CreateLeave() {
     const [showForm,setShowForm] = useState(false);
@@ -25,12 +26,14 @@ export default CreateLeave
 function LeaveForm({onClose}){
 
   const {register,handleSubmit,} = useForm();
+  const queryClient = useQueryClient();
   const [isSubmitting,setIsSubmitting] = useState(false);
   async function handleCreateLeave(e){
     setIsSubmitting(true);
     try{
       const res = await axios.post(`${process.env.NEXT_PUBLIC_URL}/leave/create`,e,{withCredentials:true})
       if(res.data.ok){
+        queryClient.invalidateQueries(['leaves']);
         onClose();
         return toast.success('leave request create'); 
       }
@@ -61,7 +64,7 @@ function LeaveForm({onClose}){
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
             <p className="font-bold text-sm">Leave Topic</p>
             <div className="relative">
               <input
@@ -71,11 +74,8 @@ function LeaveForm({onClose}){
                 type="text"
                 className="placeholder:text-xs p-2 pl-3 rounded-md focus:outline-none w-full border border-(--border)"
               />
-              {/* <div className="p-2 absolute top-1/2 -translate-y-1/2 left-1 rounded-md bg-(--bg-tertiary)/50 shadow-(--shadow-sm)">
-                <LiaStickyNoteSolid />
-              </div> */}
             </div>
-          </div>
+          </div> */}
 
           <div className="flex flex-col gap-2">
             <p className="font-bold text-sm">Reason</p>

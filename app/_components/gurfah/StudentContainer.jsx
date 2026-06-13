@@ -17,7 +17,7 @@ function StudentContainer() {
   // },[user])
     const [filteredStudents,setFilteredStudents] = useState([]);
           const { data: students,isFetching:isLoadingStudents } = useQuery({
-            queryKey: ["myStudents",user?._id],
+            queryKey: ["myStudents"],
             queryFn: handleGetUser,
             refetchOnWindowFocus: false,
             // staleTime:10 * 60 * 1000,

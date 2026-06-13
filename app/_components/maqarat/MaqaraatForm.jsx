@@ -88,7 +88,7 @@ function Form({onClose}){
       },{withCredentials:true});
       if(res.data.ok) {
         toast.success('session created');
-        queryClient.invalidateQueries(['maqarat'])
+        queryClient.invalidateQueries({queryKey:['maqarat']})
         onClose();
       }
     }catch(err){

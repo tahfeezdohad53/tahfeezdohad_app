@@ -31,31 +31,43 @@ function MaqaratFilter({ query }) {
   if(user?.role === 'admin') {
     options = [{
       text: "Baneen",
+      name:'batch',
+      value:'baneen',
       icon: <CiUser />,
       handler: () => handleChangeParam("baneen", "batch"),
     },
     {
       text: "Banaat",
+      name:'batch',
+      value:'banaat',
       icon: <CiUser />,
       handler: () => handleChangeParam("banaat", "batch"),
     },
     {
       text: "upcoming",
+      name:'status',
+      value:'upcoming',
       icon: <CiUser />,
       handler: () => handleChangeParam("upcoming","status"),
     },
     {
       text: "ended",
+      name:'status',
+      value:'ended',
       icon: <CiUser />,
       handler: () => handleChangeParam("ended","status"),
     },
     {
       text: "today",
+      name:'status',
+      value:'today',
       icon: <CiUser />,
       handler: () => handleChangeParam("today","status"),
     },
     {
       text: "reset",
+      name:'',
+      value:'',
       icon: <IoIosRemoveCircleOutline />,
       handler: () => handleChangeParam("","reset"),
     },]
@@ -64,21 +76,29 @@ function MaqaratFilter({ query }) {
     options = [
     {
       text: "upcoming",
+      name:'status',
+      value:'upcoming',
       icon: <CiUser />,
       handler: () => handleChangeParam("upcoming","status"),
     },
     {
       text: "ended",
+      name:'status',
+      value:'ended',
       icon: <CiUser />,
       handler: () => handleChangeParam("ended","status"),
     },
     {
       text: "today",
+      name:'status',
+      value:'today',
       icon: <CiUser />,
       handler: () => handleChangeParam("today","status"),
     },
     {
       text: "reset",
+      name:'',
+      value:'',
       icon: <IoIosRemoveCircleOutline />,
       handler: () => handleChangeParam("","reset"),
     },]
@@ -87,7 +107,7 @@ function MaqaratFilter({ query }) {
   return (
     <div className="flex mb-1 ">
       <div className="relative ml-auto space-x-3">
-        {showFilter && <CustomContextMenu onClose={()=>setShowFilter(false)} className="w-34" options={options} />}
+        {showFilter && <CustomContextMenu onClose={()=>setShowFilter(false)} className="w-40" options={options} />}
         <button
           onClick={() => setShowFilter(!showFilter)}
           className="bg-(--card) p-2 shadow rounded-md"

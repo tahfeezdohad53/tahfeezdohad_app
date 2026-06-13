@@ -8,14 +8,16 @@ import { useUser } from "./UserProvider";
 const Context = createContext();
 function AppProvider({ children }) {
   const {user} = useUser();
-    const [teachers,setTeachers] = useState();
-    const [students,setStudents] = useState();
+    // const [teachers,setTeachers] = useState();
+    // const [students,setStudents] = useState();
 
     const {data} = useQuery({
-        queryKey:['students'],
+        queryKey:['students&teachers'],
         queryFn:handleGetStudents,
         refetchOnWindowFocus:false,
         enabled:!!user?.role,
+        staleTime:Infinity,
+        gcTime:Infinity,
     })
     // console.log(session.data?.jwt);
     
@@ -23,14 +25,15 @@ function AppProvider({ children }) {
       try{
         const res = await axios.get(`${process.env.NEXT_PUBLIC_URL}/student/getAllStudentsAndTeachers`,{withCredentials:true})
         console.log(res.data);
-        setTeachers(res.data?.teachers);
-        setStudents(res.data?.students);
-      return [];
+        return res.data
       }catch(err){
         console.log(err);
         return [];
       }
     }
+
+const teachers = data?.teachers;
+const students = data?.students;
   return <Context.Provider value={{ teachers,students }}>{children}</Context.Provider>;
 }
 

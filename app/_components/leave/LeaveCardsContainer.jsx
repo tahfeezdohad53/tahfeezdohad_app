@@ -24,12 +24,13 @@ function LeaveCardsContainer() {
     // if(leaves?.length < 1) return <div className="text-center mt-15 font-bold">Apply For Leave</div>
     return (
       <div>
-        <h1 className="font-bold mb-1 text-2xl">Leaves</h1>
+        <h1 className="font-bold mb-2 text-2xl">Leaves</h1>
         <div className="lg:grid grid-cols-3 flex flex-col gap-3">
           {leaves?.map((el) => (
             <LeaveCard
               key={el._id}
               id={el._id}
+              createdAt={el.createdAt}
               status={el.status}
               reason={el.reason}
               name={el.name}

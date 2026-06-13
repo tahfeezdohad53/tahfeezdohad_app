@@ -60,7 +60,8 @@ function StudentsContainer() {
         { withCredentials: true },
       );
       if (res.data.ok) {
-        queryClient.invalidateQueries(["myStudents"]);
+                queryClient.invalidateQueries({ queryKey: ["myStudents"] });
+
         setModal({ show: false, type: "" });
         return toast.success("student diary updated");
       }
@@ -77,7 +78,7 @@ function StudentsContainer() {
         { withCredentials: true },
       );
       if (res.data.ok) {
-        queryClient.invalidateQueries(["myStudents"]);
+        queryClient.invalidateQueries({queryKey:  ["myStudents"]});
         setModal({ show: false, type: "" });
         return toast.success("proxy assigned");
       }
