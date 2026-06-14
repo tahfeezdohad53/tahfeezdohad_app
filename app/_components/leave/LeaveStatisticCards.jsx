@@ -1,88 +1,88 @@
-'use client';
+"use client";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { CiCircleCheck } from "react-icons/ci";
+import { CiCalendar, CiCircleCheck } from "react-icons/ci";
 import { GoClock } from "react-icons/go";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { IoCalendarOutline } from "react-icons/io5";
+import { MdOutlineNotes } from "react-icons/md";
 function LeaveStatisticCards() {
   const searchParams = useSearchParams();
-    const {data} = useQuery({
-        queryKey:['leaveStatistics',searchParams.get('user')],
-        queryFn:handleGetLeaveStatistics
-    });
+  const { data } = useQuery({
+    queryKey: ["leaveStatistics", searchParams.get("user")],
+    queryFn: handleGetLeaveStatistics,
+  });
 
-    async function handleGetLeaveStatistics(){
-        try{
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_URL}/leave/getStatistics?user=${searchParams.get('user')}`,{withCredentials:true});
-            return res.data;
-        }catch(err){
-            console.log(err);
-            return [];
-        }
+  async function handleGetLeaveStatistics() {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_URL}/leave/getStatistics?user=${searchParams.get("user")}`,
+        { withCredentials: true },
+      );
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return [];
     }
-  const status = searchParams.get('status');
-    const router = useRouter();
-      const pathname = usePathname();
-      function handleChangeSearchParams(type,value){
-          const params = new URLSearchParams(searchParams);
-          params.set(type, value);
-          router.replace(`${pathname}?${params}`);
-      }
+  }
+  const status = searchParams.get("status");
+  const router = useRouter();
+  const pathname = usePathname();
+  function handleChangeSearchParams(type, value) {
+    const params = new URLSearchParams(searchParams);
+    params.set(type, value);
+    router.replace(`${pathname}?${params}`);
+  }
   return (
-    <div className="grid lg:grid-cols-4 grid-cols-2 gap-x-10 gap-y-4">
-      <button
-        onClick={() => handleChangeSearchParams("status", "upcoming")}
-        className={`border-3   hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all p-5 bg-(--card) text-left shadow-(--shadow-sm) h- rounded-md flex flex-col gap-2 ${status === "upcoming" ? " bg-(--card-highlight) border-3 border-(--border) shadow-(--shadow-sm)" : "border-transparent"}`}
-      >
-        <div className="w-full flex justify-between items-center">
-          <IoCalendarOutline className="text-2xl text-(--primary)" />
-          <p className="flex items-center justify-center h-6 w-6 text-xs rounded-full bg-gray-100 shadow-(--shadow-md) border border-(--border)">
-            {data?.upcoming}
-          </p>
-        </div>
-        <p className="text-sm text-(--primary) font-semibold">Total</p>
-      </button>
+    <div className="rounded-xl p-2 grid grid-cols-2 bg-(--card)">
+      <div className=" border-r border-b border-gray-200 flex items-center gap-5 p-6 ">
+        <p className="p-2 bg-orange-500/7 rounded-md h-fit">
+          <MdOutlineNotes className="text-lg text-amber-600" />
+        </p>
 
-      <button
-        onClick={() => handleChangeSearchParams("status", "accepted")}
-        className={`border-3  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all p-5 bg-(--card) text-left shadow-(--shadow-sm) h- rounded-md flex flex-col gap-2 ${status === "accepted" ? "bg-(--card-highlight) border-3 border-(--border) shadow-(--shadow-sm)" : "border-transparent"}`}
-      >
-        <div className="w-full flex justify-between items-center">
-          <CiCircleCheck className="text-3xl text-green-500" />
-          <p className="flex items-center justify-center h-6 w-6 text-xs rounded-full bg-gray-100 shadow-(--shadow-md) border border-(--border)">
+        <div>
+          <p className="text-xs text-gray-500">Total Leaves</p>
+          <h3 className="font-semibold text-sm capitalize">{}0</h3>
+        </div>
+      </div>
+
+      <div className=" border-b border-gray-200 flex items-center gap-5 p-6 ">
+        <p className="p-2 bg-green-500/10 rounded-md h-fit">
+          <GoClock className="text-lg text-green-600" />
+        </p>
+
+        <div>
+          <p className="text-xs text-gray-500">Pending</p>
+          <h3 className="font-semibold text-sm">{data?.pending}</h3>
+        </div>
+      </div>
+
+      <div className=" border-r border-gray-200 flex items-center gap-5 p-6 ">
+        <p className="p-2 bg-blue-500/10 rounded-md h-fit">
+          <CiCalendar className="text-lg text-blue-600" />
+        </p>
+
+        <div>
+          <p className="text-xs text-gray-500">Accepted</p>
+          <h3 className="font-semibold text-sm">
             {data?.accepted}
-          </p>
+          </h3>
         </div>
-        <p className="text-sm text-(--primary) font-semibold">Accepted</p>
-      </button>
+      </div>
 
-      <button
-        onClick={() => handleChangeSearchParams("status", "rejected")}
-        className={`border-3  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all p-5 bg-(--card) text-left shadow-(--shadow-sm) h- rounded-md flex flex-col gap-2 ${status === "rejected" ? "bg-(--card-highlight) border-3 border-(--border) shadow-(--shadow-sm)" : "border-transparent"}`}
-      >
-        <div className="w-full flex justify-between items-center">
-          <IoIosCloseCircleOutline className="text-3xl text-red-500" />
-          <p className="flex items-center justify-center h-6 w-6 text-xs rounded-full bg-gray-100 shadow-(--shadow-md) border border-(--border)">
+      <div className="  border-gray-200 flex items-center gap-5 p-6 ">
+        <p className="p-2 bg-indigo-500/10 rounded-md h-fit">
+          <CiCalendar className="text-lg text-indigo-600" />
+        </p>
+
+        <div>
+          <p className="text-xs text-gray-500">Rejected</p>
+          <h3 className="font-semibold text-sm">
             {data?.rejected}
-          </p>
+          </h3>
         </div>
-        <p className="text-sm text-(--primary) font-semibold">Rejected</p>
-      </button>
-
-      <button
-        onClick={() => handleChangeSearchParams("status", "pending")}
-        className={`border-3 hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all p-5 bg-(--card) text-left shadow-(--shadow-sm) h- rounded-md flex flex-col gap-2 ${status === "pending" ? "bg-(--card-highlight) border-3 border-(--border) shadow-(--shadow-sm)" : "border-transparent"}`}
-      >
-        <div className="w-full flex justify-between items-center">
-          <GoClock className="text-2xl text-(--primary)" />
-          <p className="flex items-center justify-center h-6 w-6 text-xs rounded-full bg-gray-100 shadow-(--shadow-md) border border-(--border)">
-            {data?.pending}
-          </p>
-        </div>
-        <p className="text-sm text-(--primary) font-semibold">Pending</p>
-      </button>
+      </div>
     </div>
   );
 }
