@@ -3,14 +3,19 @@ import { handleLogout } from "@/actions/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { FaSignOutAlt } from "react-icons/fa";
+import { useUser } from "../providers/UserProvider";
+import { useSocketContext } from "../providers/SocketProvider";
 
 export default function LogoutButton() {
   const queryClient = useQueryClient();
+  const {user,setUser} = useUser();
+  const {socket} = useSocketContext();
   async function handleLogoutClient(){
     try{
       await axios.get(`${process.env.NEXT_PUBLIC_URL}/auth/logout`,{withCredentials:true});
+      // socket?.disconnect();
+      setUser({});
       await handleLogout();
-      // queryClient.invalidateQueries();
     }catch(err){
       console.log(err);
     }

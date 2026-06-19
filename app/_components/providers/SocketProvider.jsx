@@ -11,7 +11,11 @@ function SocketProvider({children}) {
     const {user} = useUser();
     const [socket,setSocket] = useState();
      useEffect(() => {
-
+       console.log(user?._id)
+      if(!user?._id){
+        if(socket) socket?.disconnect();
+        return;
+      }
        const newSocket = io(`${process.env.NEXT_PUBLIC_URL}`, {
          withCredentials:true
        });
@@ -22,7 +26,7 @@ console.log('socket connected: ',newSocket.connected)
          newSocket.disconnect();
          console.log("🔌 Socket disconnected");
        };
-     }, []);
+     }, [user?._id]);
     return (
         <Context.Provider value={{socket}}>
             {children}

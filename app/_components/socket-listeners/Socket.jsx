@@ -216,21 +216,49 @@ export function CallingFnProvider({ children }) {
         })
         socket.on('online',async ({name,role,id}) => {
           if(role === 'teacher'){
-            querClient.setQueryData(["myTeachers"]), (data) => {
-              return data.map((el) => {
+            querClient.setQueriesData({queryKey:["myTeachers"]}, (data) => {
+              console.log(data);
+              return data?.map((el) => {
                 if (el._id !== id) return el;
                 else return { ...el, status: "online" };
               });
-          }
+          })}
+
           if(role === 'student'){
-            querClient.setQueryData(["myStudents"] , (data) => {
-              return data.map(el => {
+            querClient.setQueriesData({queryKey:["myStudents"]} , (data) => {
+              console.log("students data online");
+              console.log(data);
+              const updatedData = data?.map(el => {
                 if(el._id !== id) return el;
                 else return {...el,status:'online'};
               })
+              console.log('after')
+              console.log(updatedData);
+              return updatedData;
             });
           }
-        }})
+        })
+        socket.on('offline',async ({name,role,id}) => {
+          if(role === 'teacher'){
+            querClient.setQueryData(["myTeachers"], (data) => {
+              console.log('teachers data');
+              console.log(data);
+              return data?.map((el) => {
+                if (el._id !== id) return el;
+                else return { ...el, status: "offline" };
+              });
+          })}
+          if(role === 'student'){
+
+            querClient.setQueriesData({queryKey:["myStudents"]} , (data) => {
+              const updatedData = data?.map(el => {
+                if(el._id !== id) return el;
+                else return {...el,status:'offline'};
+              })
+              return updatedData;
+            });
+          }
+        })
 
         socket.on('end-call',() => {
           setIsCalling(false);

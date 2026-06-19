@@ -15,24 +15,23 @@ import { useSearchParams } from "next/navigation";
 function StudentContainer() {
   const {user} = useUser();
   const searchParams = useSearchParams();
-  // useEffect(()=>{
-  //   console.log(!!user?.role && user?.role !== 'student')
-  // },[user])
+  
     const [filteredStudents,setFilteredStudents] = useState([]);
-          const { data: students,isFetching:isLoadingStudents } = useQuery({
+          const { data: students } = useQuery({
             queryKey: ["myStudents",searchParams.get('batch')],
             queryFn: handleGetUser,
             refetchOnWindowFocus: false,
-            // staleTime:10 * 60 * 1000,
             enabled:!!user?.role && user?.role !== 'student',
           });
-          const { data: teachers,isFetching:isLoadingTeacher } = useQuery({
+          const { data: teachers } = useQuery({
             queryKey: ["myTeachers"],
             queryFn: handleGetUser,
             refetchOnWindowFocus: false,
-            // staleTime:Infinity,
             enabled:!!user?.role && user?.role === 'student',
           });
+          useEffect(() => {
+            setFilteredStudents(students ?? []);
+          }, [students]);
 
           async function handleGetUser() {
             try {
@@ -78,7 +77,7 @@ function StudentContainer() {
         <div className=" ">
           <div className="mt-5 flex flex-col lg:grid grid-cols-2 gap-3 w-full ">
             {/* <div className="bg-(--card) flex-1 mt-5 rounded-lg shadow-(--shadow-lg)"> */}
-            {user?.role !== "student" &&
+            {(user?.role === "teacher" || user?.role === 'admin') &&
               filteredStudents?.length > 0 &&
               filteredStudents.map((el) => (
                 <StudentCard key={el._id} name={el.name} id={el._id} status={el.status}/>

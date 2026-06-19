@@ -43,7 +43,7 @@ function UserProvider({ children }) {
         setIsFetching(false);
       }
     }
-  return <Context.Provider value={{ user,isFetching }}>{children}</Context.Provider>;
+  return <Context.Provider value={{ user,isFetching,setUser }}>{children}</Context.Provider>;
 }
 
 export default UserProvider;
