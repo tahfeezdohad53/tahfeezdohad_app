@@ -562,9 +562,9 @@ function PhoneLeaveCard({
           <span className="p-1 rounded-md bg-blue-500/10">
             <GoClock className="text-blue-500" />
           </span>
-          <p className="lg:hidden">
+          <span className="lg:hidden">
             {days} days - {reason.slice(0, 15)}
-          </p>
+          </span>
           <p className="hidden lg:block ">
             {days} days - {reason.slice(0, 60)}
           </p>

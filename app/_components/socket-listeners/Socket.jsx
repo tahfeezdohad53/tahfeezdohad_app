@@ -6,6 +6,7 @@ import { useVideoCallContext } from "../providers/VideoCallProvider";
 import { useUser } from "../providers/UserProvider";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { usePathname, useRouter } from "next/navigation";
 
 const Context = createContext(null);
 
@@ -19,6 +20,8 @@ export function CallingFnProvider({ children }) {
   const recorderRef = useRef(null);
   const chunksRef = useRef([]);
   const targetUserRef = useRef(null);
+  const router = useRouter();
+  const pathname = usePathname();
   function endCall(){
     setIsCalling(false);
     setIsIncoming(false);
@@ -26,6 +29,20 @@ export function CallingFnProvider({ children }) {
   
     if(user?.role !== 'student' && recorderRef.current){
        recorderRef.current.stop();
+       if (pathname.includes("onlineclass")) {
+         const lastIndex = pathname.lastIndexOf("/");
+         const refactoredPathname = pathname.slice(0, lastIndex);
+         router.replace(`${refactoredPathname}/${targetUserRef.current}`, {
+           scroll: false,
+         });
+       } else {
+         const firstIndex = pathname.indexOf("/");
+         const refactoredPathname = pathname.slice(0, firstIndex);
+         router.replace(
+           `${refactoredPathname}/onlineclass/${targetUserRef.current}`,
+           { scroll: false },
+         );
+       }
     }else{
       window.location.reload();
     }
@@ -272,6 +289,20 @@ export function CallingFnProvider({ children }) {
           candidates.current = [];
           if(user?.role !== 'student' && recorderRef.current){
              recorderRef.current.stop();
+             if(pathname.includes('onlineclass')) {
+              const lastIndex = pathname.lastIndexOf("/");
+              const refactoredPathname = pathname.slice(0,lastIndex);
+              router.replace(`${refactoredPathname}/${targetUserRef.current}`,{scroll:false});
+             }
+              else {
+                const firstIndex = pathname.indexOf("/");
+                const refactoredPathname = pathname.slice(0, firstIndex);
+                router.replace(
+                  `${refactoredPathname}/onlineclass/${targetUserRef.current}`,
+                  { scroll: false },
+                );
+              }
+
           }else{
                   window.location.reload();
 
