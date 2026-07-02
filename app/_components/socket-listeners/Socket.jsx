@@ -100,7 +100,9 @@ export function CallingFnProvider({ children }) {
       console.log("socket disconnected");
       console.log('reason: ',reason)
     });
-    
+    socket.onAny((event, ...args) => {
+      console.log("Event:", event, args);
+    });
   
 }, [socket]);
 async function turn() {
