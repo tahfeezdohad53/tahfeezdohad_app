@@ -389,7 +389,7 @@ export function CallingFnProvider({ children }) {
 
         socket.on('end-call',async () => {
     if (user?.role === "student") setVideoCallSeconds(0);
-
+    setIsCalling(false);
           setIsCalling(false);
           setIsIncoming(false);
           setIsInCall(false);
