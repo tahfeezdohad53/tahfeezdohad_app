@@ -17,7 +17,7 @@ function PhoneNav() {
     if(isFetching) return null;
     if(!user.role) return null;
     return (
-      <div className="overflow-x-auto lg:hidden fixed bottom-0 left-0 flex items-center justify-between w-full px-3 h-15 border-t border-(--border) bg-(--card) shadow-(--shadow-lg)">
+      <div className="overflow-x-auto lg:hidden fixed bottom-0 left-0 flex items-center gap-8 w-full px-3 h-15 border-t border-(--border) bg-(--card) shadow-(--shadow-lg)">
         {(role === 'admin'||role ==='teacher') && <Link href={'/students'}
           className={`p-2 flex flex-col items-center gap-1 ${pathname.includes("students") && " bg-(--card-hover) shadow-(--shadow-sm) rounded-md font-bold text-(--primary)"}`}
         >
@@ -40,10 +40,10 @@ function PhoneNav() {
           <IoBookOutline />
           <p className={`text-[0.60rem] ${!pathname.includes('maqaraat') && 'text-gray-500'}`}>Maqaarat</p>
         </Link>
-        {user?.role !== 'admin' && <Link href={'/profile'} className={`p-2 flex flex-col items-center gap-1 ${pathname.includes("profile") && " bg-(--card-hover) shadow-(--shadow-sm) rounded-md font-bold text-(--primary)"}`}>
+        <Link href={'/profile'} className={`p-2 flex flex-col items-center gap-1 ${pathname.includes("profile") && " bg-(--card-hover) shadow-(--shadow-sm) rounded-md font-bold text-(--primary)"}`}>
           <CiUser />
           <p className={`text-[0.60rem] ${!pathname.includes('profile') && 'text-gray-500'}`}>Profile</p>
-        </Link>}
+        </Link>
         {/* {(role === 'admin'||role === 'students') && <Link href={'/fees'} className={`p-2 flex flex-col items-center gap-1 ${pathname.includes("fees") && " bg-(--card-hover) shadow-lg rounded-md font-bold text-(--primary)"}`}>
           <FaMoneyCheck />
           <p className={`text-[0.60rem] ${!pathname.includes('fees') && 'text-gray-500'}`}>Fees</p>

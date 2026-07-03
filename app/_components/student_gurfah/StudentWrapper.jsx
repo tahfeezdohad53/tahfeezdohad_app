@@ -114,6 +114,7 @@ function StudentWrapper() {
 
   async function sendMessage(e){
     e.preventDefault();
+    if(message.length < 1) return;
     queryClient.setQueriesData({queryKey:['messages']},(old) => {
       return [...old, { sender: user?._id, receiver: id, message,createdAt:new Date(),_id:Date.now() }];
     })
@@ -144,7 +145,7 @@ function StudentWrapper() {
     );
   if (!onlineClassBlob)
     return (
-      <div className=" w-full flex flex-col gap-5 items-center  fixed top-0 left-0 h-[82.5%]">
+      <div className=" w-full lg:w-[90%] flex flex-col gap-5 items-center  fixed top-0 left-0 lg:left-[10.5%] h-[82.5%]">
         <div className="min-h-17 w-full bg-(--card) flex items-center">
           <div className="flex items-center gap-1 text-sm text-(--text)">
             <button className="duration-300 ease-in-out hover:cursor-pointer transition-all bg-(--card) rounded-lg p-2">
@@ -167,7 +168,7 @@ function StudentWrapper() {
 
           <div className="ml-3 font-bold">
             <h1 className="text-sm">{data?.user?.name}</h1>
-            <p className="text-xs font-thin">{data?.user?.status}</p>
+            <p className={`text-xs font-thin ${data?.user?.status === 'offline'?'text-red-600':'text-green-600'}`}>{data?.user?.status}</p>
           </div>
 
           <div className="ml-auto mr-7 text-lg">
@@ -193,7 +194,7 @@ function StudentWrapper() {
            })}
         </div>
 
-        <form onSubmit={sendMessage} className="fixed bottom-0 left-0 w-full border-t border-white/10 bg-(--card) px-4 py-3 backdrop-blur-md">
+        <form onSubmit={sendMessage} className="fixed bottom-0 left-0 lg:left-[10.5%] w-full border-t border-white/10 bg-(--card) px-4 py-3 backdrop-blur-md">
           <div className="mx-auto flex max-w-4xl items-center gap-3">
             <input
             ref={inputRef}
