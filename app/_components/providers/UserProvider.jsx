@@ -10,17 +10,17 @@ function UserProvider({ children }) {
 
   const session = useSession();
   const [user,setUser] = useState({});
-  const [isFetching,setIsFetching] = useState(false);
-   const { data:token } = useQuery({
+  // const [isFetching,setIsFetching] = useState(false);
+   const { data:token,isFetching } = useQuery({
      queryKey: ["token",session?.status],
      queryFn:() =>  getCookie(session),
      refetchOnWindowFocus: false,
    });
 
     async function getCookie(session){
-      console.log(session);
       if(session.status === 'loading') return null;
       try{
+        // setIsFetching(true);
         let res;
         if(session?.data?.idToken){
           res = await axios.post(
@@ -29,7 +29,6 @@ function UserProvider({ children }) {
             { withCredentials: true },
           );
         }
-        setIsFetching(true);
         const ress = await axios.get(
          `${process.env.NEXT_PUBLIC_URL}/user/getUser`,
          { withCredentials: true },
@@ -40,7 +39,7 @@ function UserProvider({ children }) {
         console.log('something went wrong');  
         return null;
       }finally{
-        setIsFetching(false);
+        // setIsFetching(false);
       }
     }
   return <Context.Provider value={{ user,isFetching,setUser }}>{children}</Context.Provider>;

@@ -160,11 +160,13 @@ function StudentsContainer() {
   }
   const session = useSession();
   useEffect(() => {
-    if(session?.status === "loading") return;
+    if(session.status === "loading") return;
     if(isFetching) return;
     if(user?.role === 'student') router.replace('/gurfah');
-    if(!user?._id && !isFetching && session.status !== 'loading') router.replace('/auth');
-  },[user?._id,session?.status])
+    if(!user?._id && !isFetching && session.status !== 'loading') {
+      router.replace("/auth");
+    }
+  },[user?.role,session?.status])
 
   if (!user?.role) return null;
   if(user?.role === 'student') return null;
