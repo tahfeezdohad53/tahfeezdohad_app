@@ -317,7 +317,9 @@ export function CallingFnProvider({ children }) {
           peerConnection.current.addTrack(track, localMedia.current),
         );
       localVideoRef.current.srcObject = localMedia.current;
-      setShowCallControls(true);
+      setTimeout(() => {
+        setShowCallControls(true);
+      }, 1000);
     });
     socket.on("call-accepted", async ({ caller, answer }) => {
       setIsInCall(true);
