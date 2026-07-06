@@ -12,7 +12,7 @@ function SocketProvider({children}) {
     const [socket,setSocket] = useState();
      useEffect(() => {
       if(isFetching) return;
-      if(!user?._id){
+      if(!user?._id && !isFetching){
         if(socket) {
           // console.log('disconnecting socket cause no user id');
           socket.disconnect();
@@ -30,7 +30,7 @@ function SocketProvider({children}) {
       //    newSocket.disconnect();
       //    console.log("🔌 Socket disconnected from cleanup");
       //  };
-     }, [user?._id]);
+     }, [user?._id,isFetching]);
     return (
         <Context.Provider value={{socket}}>
             {children}
