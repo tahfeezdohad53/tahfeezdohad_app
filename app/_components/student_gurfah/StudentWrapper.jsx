@@ -245,7 +245,8 @@ function StudentWrapper() {
             return (
               <div key={el._id} className="flex flex-col gap-3">
                 
-                {i === 0 && (
+                {(i === 0 && 
+                    differenceInDays(new Date(), date) < 7) && (
                   <p
                     // key={el._id}
                     className="bg-(image:--gradient-primary) text-white/90 text-sm w-fit px-4 py-1 rounded-md mx-auto"
@@ -267,7 +268,16 @@ function StudentWrapper() {
                           "Yesterday"}
                   </p>
                 )}
-                {i > 0 &&
+                {(i === 0 && 
+                    differenceInDays(new Date(), date) >= 7) && (
+                  <p
+                    // key={el._id}
+                    className="bg-(image:--gradient-primary) text-white/90 text-sm w-fit px-4 py-1 rounded-md mx-auto"
+                  >
+                    {format(date,"do MMMM YYYY")}
+                  </p>
+                )}
+                {(i > 0 && differenceInDays(new Date(), date) < 7) && 
                   (date.getDate() !== prevDate.getDate() ||
                     date.getMonth() !== prevDate.getMonth() ||
                     date.getFullYear() !== prevDate.getFullYear()) && (
@@ -290,6 +300,17 @@ function StudentWrapper() {
                           ? "Today"
                           : date.getDate() === new Date().getDate() - 1 &&
                             "Yesterday"}
+                    </p>
+                  )}
+                {(i > 0 && differenceInDays(new Date(), date) >= 7) && 
+                  (date.getDate() !== prevDate.getDate() ||
+                    date.getMonth() !== prevDate.getMonth() ||
+                    date.getFullYear() !== prevDate.getFullYear()) && (
+                    <p
+                      // key={el._id}
+                      className="bg-(image:--gradient-primary) text-white/90 text-sm w-fit px-4 py-1 rounded-md mx-auto"
+                    >
+                      {format(date,"do MMMM YYYY")}
                     </p>
                   )}
 
