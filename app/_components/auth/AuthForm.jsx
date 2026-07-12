@@ -16,6 +16,7 @@ import { CiLock } from "react-icons/ci";
 function AuthForm() {
   const [role,setRole] = useState('student');
   const {register,handleSubmit} = useForm();
+  const [isSubmitting,setIsSubmitting] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
   async function handleSignin(e){
@@ -102,8 +103,9 @@ function AuthForm() {
             </div>
           </div>
 
-          <button className="w-full rounded-md shadow-(--shadow-md) bg-(image:--gradient-primary) py-3 text-white">
-            Login
+          <button disabled={isSubmitting} className="w-full rounded-md shadow-(--shadow-md) disabled:bg-(image:--gradient-soft) bg-(image:--gradient-primary) py-3 text-white">
+            <p className={`${isSubmitting && 'opacity-0'}`}>Login</p>
+            <p className={`${!isSubmitting && 'opacity-0'}`}>Logging...</p>
           </button>
         </div>
       </form>
