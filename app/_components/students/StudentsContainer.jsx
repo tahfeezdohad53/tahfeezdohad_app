@@ -208,6 +208,7 @@ function StudentsContainer() {
         </div>
       </div>
       <StudentsFilter handleFilterStudents={handleFilterStudents} />
+      <RecordWithNumberCard />
       {!isSelecting && (
         <button
           onClick={() => setIsSelecting(true)}
@@ -381,3 +382,51 @@ function StudentsContainer() {
 }
 
 export default StudentsContainer;
+
+
+import { HiOutlineExclamationCircle } from "react-icons/hi2";
+import { MdOutlinePersonSearch } from "react-icons/md";
+
+function RecordWithNumberCard() {
+  const [showSelector,setShowSelector] = useState(false);
+  const {students} = useAppProvider();
+  const router = useRouter();
+  const formatedStudents = students?.map(el => {
+    const name = el.name.split(' ').filter((el,i) => i !== 1 ? true : false).join(' ');
+    // const name = el.name.split(' ').filter(el => el.toLowerCase() !== 'bhai').join(' ');
+    return { label: name, value: el._id };
+  });
+  function handleSelect({value:id,label:studentName}){
+    router.replace(`/entry/${id}?studentName=${studentName}`);
+  }
+  return (
+    <div className=" my-4 flex items-center justify-between rounded-2xl border border-amber-300 border-dashed bg-red-100 p-4">
+      <div className="flex items-center gap-4 w-[70%]">
+        <div className="flex items-center justify-center rounded-full bg-red-100">
+          <HiOutlineExclamationCircle
+            size={28}
+            className="text-red-700"
+          />
+        </div>
+
+        <div>
+          <h3 className=" font-semibold text-amber-950">
+            Student not tagged?
+          </h3>
+
+          <p className="text-xs text-amber-800/80">
+            student is not in your diary ? just select student from list.
+          </p>
+        </div>
+      </div>
+
+      <button onClick={()=>setShowSelector(true)} className="flex items-center text-xs rounded-md border border-red-400 bg-white p-2 py-2 gap-1 font-semibold text-red-800 transition hover:bg-red-50">
+        {/* <MdOutlinePersonSearch  /> */}
+        Select Student
+      </button>
+      {showSelector && <Modal onClose={()=>setShowSelector(false)} heading={'Select Student'} className="w-[90%]">
+        <CustomSelect options={formatedStudents} handler={handleSelect} handleOnChange/>
+      </Modal>}
+    </div>
+  );
+}
