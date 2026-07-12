@@ -6,9 +6,25 @@ import { useVideoCallContext } from "../providers/VideoCallProvider";
 import RecordingInProgress from "./RecordingInProgress";
 import SubmitRecording from "./SubmitRecording";
 import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useUser } from "../providers/UserProvider";
+import { useRouter } from "next/navigation";
 
 function RecordingWrapper({studentName,studentId}) {
     // const session = useSession();
+    const {user,isFetching} = useUser();
+        const router = useRouter();
+    
+        const session = useSession();
+        useEffect(() => {
+            if(session.status === "loading") return;
+            if(isFetching) return;
+            if(user?.role === 'student') router.replace('/gurfah');
+            if(!user?._id) {
+              router.replace("/auth");
+            }
+            
+          },[user?.role,session?.status,isFetching])
     const {
       states: {
         isRecording,

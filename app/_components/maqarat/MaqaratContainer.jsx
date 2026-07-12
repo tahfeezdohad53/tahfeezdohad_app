@@ -7,8 +7,10 @@ import { IoBookOutline, IoCalendarOutline } from "react-icons/io5";
 import { LuUsers } from "react-icons/lu";
 import { useUser } from "../providers/UserProvider";
 import { format, formatDistanceToNow } from "date-fns";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Inter } from "next/font/google";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const inter = Inter({
   weight:['600','700','800'],
@@ -16,7 +18,19 @@ const inter = Inter({
 })
 
 function MaqaratContainer({}) {
-    const {user} = useUser();
+    const {user,isFetching} = useUser();
+        const router = useRouter();
+    
+        const session = useSession();
+        useEffect(() => {
+            if(session.status === "loading") return;
+            if(isFetching) return;
+            if(user?.role === 'student') router.replace('/gurfah');
+            if(!user?._id) {
+              router.replace("/auth");
+            }
+            
+          },[user?.role,session?.status,isFetching])
     const query = useSearchParams();
     const {data:maqarat,isLoading} = useQuery({
         queryKey:['maqarat',query.get('batch'),query.get('status')],

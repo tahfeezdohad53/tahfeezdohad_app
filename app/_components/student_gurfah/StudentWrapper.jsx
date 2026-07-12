@@ -32,13 +32,15 @@ import { useSocketContext } from "../providers/SocketProvider";
 import { useAppProvider } from "../providers/AppProvider";
 import { LuMessageCircle } from "react-icons/lu";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 const font = Playfair_Display({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
 });
 function StudentWrapper() {
-  const { user } = useUser();
+  const { user,isFetching } = useUser();
   const { socket } = useSocketContext();
   const { containerRef } = useAppProvider();
   const pathname = usePathname();
@@ -60,7 +62,7 @@ function StudentWrapper() {
     states: { isSubmitting },
   } = useAudioRecorder();
 
-  const { data, isFetching } = useQuery({
+  const { data, isFetching:isGurfahDataFetching } = useQuery({
     queryKey: ["gurfahData"],
     queryFn: handleGetQuery,
     refetchOnWindowFocus: false,
@@ -101,6 +103,18 @@ function StudentWrapper() {
   //         containerRef.current.scrollTop = containerRef.current.scrollHeight;
   //       }, 1000);
   // }, [containerRef.current]);
+
+      const router = useRouter();
+          const session = useSession();
+          useEffect(() => {
+              if(session.status === "loading") return;
+              if(isFetching) return;
+              if(user?.role === 'student') router.replace('/gurfah');
+              if(!user?._id) {
+                router.replace("/auth");
+              }
+              
+            },[user?.role,session?.status,isFetching])
 
   useEffect(() => {
     if (!socket) return;
@@ -180,7 +194,7 @@ function StudentWrapper() {
       return [];
     }
   }
-  if (isFetching)
+  if (isGurfahDataFetching)
     return (
       <div>
         <ImSpinner2 className="animate-spin absolute top-1/2 left-1/2 -translate-1/2" />
@@ -274,7 +288,7 @@ function StudentWrapper() {
                     // key={el._id}
                     className="bg-(image:--gradient-primary) text-white/90 text-sm w-fit px-4 py-1 rounded-md mx-auto"
                   >
-                    {format(date,"do MMMM YYYY")}
+                    {format(date,"do MMMM yyyy")}
                   </p>
                 )}
                 {(i > 0 && differenceInDays(new Date(), date) < 7) && 
@@ -310,7 +324,7 @@ function StudentWrapper() {
                       // key={el._id}
                       className="bg-(image:--gradient-primary) text-white/90 text-sm w-fit px-4 py-1 rounded-md mx-auto"
                     >
-                      {format(date,"do MMMM YYYY")}
+                      {format(date,"do MMMM yyyy")}
                     </p>
                   )}
 

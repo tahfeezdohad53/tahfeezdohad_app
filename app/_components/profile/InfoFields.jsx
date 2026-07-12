@@ -1,9 +1,23 @@
 'use client';
 
+import { useSession } from "next-auth/react";
 import { useUser } from "../providers/UserProvider";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 function InfoFields() {
-    const {user} = useUser();
+    const {user,isFetching} = useUser();
+    const router = useRouter();
+        const session = useSession();
+        useEffect(() => {
+            if(session.status === "loading") return;
+            if(isFetching) return;
+            if(user?.role === 'student') router.replace('/gurfah');
+            if(!user?._id) {
+              router.replace("/auth");
+            }
+            
+          },[user?.role,session?.status,isFetching])
     return (
       <>
         <div className="flex flex-col gap-2">

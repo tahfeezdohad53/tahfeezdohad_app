@@ -7,9 +7,23 @@ import { useUser } from "../providers/UserProvider";
 import toast from "react-hot-toast";
 import { PiStudent } from "react-icons/pi";
 import { CiCalendar, CiClock2, CiUser } from "react-icons/ci";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 function RecordingsContainer({params}) {
-  const {user} = useUser();
+  const {user,isFetching} = useUser();
+      const router = useRouter();
+          const session = useSession();
+          useEffect(() => {
+              if(session.status === "loading") return;
+              if(isFetching) return;
+              if(user?.role === 'student') router.replace('/gurfah');
+              if(!user?._id) {
+                router.replace("/auth");
+              }
+              
+            },[user?.role,session?.status,isFetching])
      const { data: recordingsData } = useQuery({
        queryKey: ["recordings",params],
        queryFn: getRecordings,

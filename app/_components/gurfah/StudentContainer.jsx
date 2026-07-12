@@ -10,12 +10,16 @@ import Link from "next/link";
 import { useUser } from "../providers/UserProvider";
 import { ImSpinner2 } from "react-icons/im";
 import ScrollToTopButton from "../ScrollToTopButton";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 function StudentContainer() {
-  const {user} = useUser();
+  const {user,isFetching} = useUser();
+  const session = useSession();
   const searchParams = useSearchParams();
+      const router = useRouter();
+  
   
     const [filteredStudents,setFilteredStudents] = useState([]);
           const { data: students } = useQuery({
@@ -85,6 +89,14 @@ function StudentContainer() {
               });
             });
           }
+          useEffect(() => {
+            if (session.status === "loading") return;
+            if (isFetching) return;
+            if (user?.role === "student") router.replace("/gurfah");
+            if (!user?._id) {
+              router.replace("/auth");
+            }
+          }, [user?.role, session?.status, isFetching]);
           // if(isLoadingTeacher || isLoadingStudents) return <div><ImSpinner2 className="animate-spin absolute top-1/2 left-1/2 -translate-1/2"/></div>;
     return (
       <div className="flex flex-col min-w-full  max-h-full ">
