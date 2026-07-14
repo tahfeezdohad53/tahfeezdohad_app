@@ -35,7 +35,7 @@ function StudentsFilter({ handleFilterStudents,readOnly=false }) {
           <CiSearch className="" />
         </div>
       </div>
-      {user?.role === 'admin' && <div className="text-xs mt-3 flex gap-3">
+      {user?.role === 'admin' && <div className="text-xs px-3 mt-3 justify-center flex-wrap flex gap-3">
         <button
         onClick={()=>handleChangeSearchParams('batch','yaqoot_mardo')}
           className={`${searchParams.get('batch') === 'yaqoot_mardo' ? 'bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)':'bg-(--card) border-transparent'} border-  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all border-(--border) shadow-(--shadow-md)  p-2 rounded-md `}

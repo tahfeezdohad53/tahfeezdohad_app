@@ -180,15 +180,33 @@ function StudentCard({name,id,status,profileImage}){
   const lastName = nameArr[nameArr.length - 1];
   formattedName = firstName.concat(` ${lastName}`);
     return (
-      <Link href={`/onlineclass/${id}`} className="bg-(--card) shadow-(--shadow-sm) border-l-6 border-l-(--primary) flex items-center justify-between px-5 py-3 border rounded-tl-lg rounded-bl-lg rounded-tr-xl rounded-br-xl border-(--border) duration-300 ease-in-out transition-all hover:cursor-pointer hover:bg-(--card-hover)">
+      <Link
+        href={`/onlineclass/${id}`}
+        className="bg-(--card) shadow-(--shadow-sm) border-l-6 border-l-(--primary) flex items-center justify-between px-5 py-3 border rounded-tl-lg rounded-bl-lg rounded-tr-xl rounded-br-xl border-(--border) duration-300 ease-in-out transition-all hover:cursor-pointer hover:bg-(--card-hover)"
+      >
         <div className="flex items-center gap-6">
-          <div className="h-15 w-15 overflow-hidden flex justify-center items-center relative rounded-full bg-(--bg-tertiary)/50">
-            {!profileImage && <FaUser className="text-2xl" />}
-            {profileImage && <Image fill src={profileImage} alt="profile photo"/>}
+          <div className="min-h-13 min-w-13 overflow-hidden flex justify-center items-center relative rounded-full bg-(--bg-tertiary)/50">
+            {!profileImage && (
+              <div>
+                <FaUser className="text-2xl" />
+              </div>
+            )}
+            {profileImage && (
+              <Image fill src={profileImage} alt="profile photo" />
+            )}
           </div>
-          <div className="font-semibold text-xs text-(--text) tracking-wider">{name.split(' ').slice(1,name.split(' ').length).join(' ')} <p className={`text-[0.60rem] ${status==='offline'?'text-red-500/70':'text-green-500/70'}`}>{status}</p></div>
+          <div className="font-semibold text-xs text-(--text) tracking-wider">
+            {name.split(" ").slice(1, name.split(" ").length).join(" ")}{" "}
+            <p
+              className={`text-[0.60rem] ${status === "offline" ? "text-red-500/70" : "text-green-500/70"}`}
+            >
+              {status}
+            </p>
+          </div>
         </div>
-        <div className="p-1 ml-12 rounded-full bg-(--bg-tertiary)/50"><RiArrowDropRightLine className="text-2xl" /></div>
+        <div className="p-1 ml-12 rounded-full bg-(--bg-tertiary)/50">
+          <RiArrowDropRightLine className="text-2xl" />
+        </div>
       </Link>
     );
 }
