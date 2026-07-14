@@ -69,7 +69,7 @@ function PhoneTopBar() {
         >
           <FaUser className="text-amber-900" />
         </Link>
-      <img src="/transparent-logo.png" alt="" className="w-11 h-11 lg:hidden" />
+      <img src="/Dohad.png" alt="" className="w-11 h-11 lg:hidden" />
     </div>
   );
   return (
