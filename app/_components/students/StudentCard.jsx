@@ -54,17 +54,17 @@ function StudentCard({
           </p>
         </div>
       )}
-      
-        <button
-          data-studentid={studentId}
-          data-studentname={name}
-          data-teachername={teacherName}
-          data-proxyteachername={proxyTeacherName}
-          className="menu-btn duration-300 ease-in-out transition-all hover:bg-(--card-hover) hover:cursor-pointer absolute right-2 top-2 w-8 flex justify-center py-1"
-        >
-          <BiDotsVertical className=" text-lg" />
-        </button>
-      
+
+      <button
+        data-studentid={studentId}
+        data-studentname={name}
+        data-teachername={teacherName}
+        data-proxyteachername={proxyTeacherName}
+        className="menu-btn duration-300 ease-in-out transition-all hover:bg-(--card-hover) hover:cursor-pointer absolute right-2 top-2 w-8 flex justify-center py-1"
+      >
+        <BiDotsVertical className=" text-lg" />
+      </button>
+
       <div
         // href={`/entry/${studentId}`}
         className={` flex flex-col items-center justify-center ${!isProxy && "h-full"} w-full px-4 py-5 rounded-md  gap-2`}
@@ -76,8 +76,13 @@ function StudentCard({
         )}
         {!image && <FaUserCircle className="text-5xl text-amber-950" />}
         <div className="font-semibold wrap-break-word text-stone-800 tracking-wider text-xs text-center">
-          {name.split(' ')[0]}
-          <p className="wrap-break-word font-normal text-[0.65rem] mt-1">{name.split(' ').splice(1,name.split(' ').length - 1).join(' ')}</p>
+          <p className="font-bold">ITS - {name.split(" ")[0]}</p>
+          <p className="wrap-break-word font-normal text-[0.65rem] mt-1">
+            {name
+              .split(" ")
+              .splice(1, name.split(" ").length - 1)
+              .join(" ")}
+          </p>
         </div>
         <div className="w-full border-t border-(--border) py-2 text-[0.55rem]">
           <div className=" flex items-center gap-3 w-full ">
@@ -86,7 +91,9 @@ function StudentCard({
             </div>
             <div className="truncate">
               <p className="text-(--text-muted) text-[0.70rem]">Teacher</p>
-              <p className="text-(--text) truncate">{teacherName || 'no teacher assigned'}</p>
+              <p className="text-(--text) truncate">
+                {teacherName || "no teacher assigned"}
+              </p>
             </div>
           </div>
           <div className=" border-t border-(--border) py-2 mt-2 flex items-center gap-3">

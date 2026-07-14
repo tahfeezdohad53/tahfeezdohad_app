@@ -4,7 +4,7 @@ import StudentCard from "./StudentCard";
 import axios from "axios";
 import ContextMenu from "../ContextMenu";
 import { Item, Separator, useContextMenu } from "react-contexify";
-import { FaBook, FaEdit, FaPlus } from "react-icons/fa";
+import { FaBook, FaBookOpen, FaEdit, FaGraduationCap, FaPlus, FaRegLightbulb, FaUserCircle, FaUserShield } from "react-icons/fa";
 import { MdCheckBoxOutlineBlank, MdDelete } from "react-icons/md";
 import CustomSelect from "../Select";
 import Modal from "../Modal";
@@ -19,6 +19,9 @@ import CustomContextMenu from "../CustomContextMenu";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { HiOutlineSearch, HiOutlineChevronRight } from "react-icons/hi";
+
+// import {  FaRegLightbulb } from "react-icons/fa";
 import {
   FaUser,
   FaUserCheck,
@@ -26,6 +29,11 @@ import {
   FaShieldAlt,
 } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
+const recentStudents = [
+  "Ahmed Khan",
+  "Muhammad Ali",
+  "Zainab Fatima",
+];
 function StudentsContainer() {
   const { user,isFetching } = useUser();
   const { teachers } = useAppProvider();
@@ -226,7 +234,13 @@ function StudentsContainer() {
           <FaBook className="text-2xl lg:4xl" />
         </div>
         <div>
-          <p className="text-white">{user.name.split(' ').slice(2,user.name.split(' ').length).join(' ')}&apos;s diary</p>
+          <p className="text-white">
+            {user.name
+              .split(" ")
+              .slice(2, user.name.split(" ").length)
+              .join(" ")}
+            &apos;s diary
+          </p>
           <p className="text-white/80 text-xs">record and manage students</p>
         </div>
       </div>
@@ -266,17 +280,17 @@ function StudentsContainer() {
             </button>
             {showCustomeContextMenu && (
               <CustomContextMenu
-              onClose={()=>setShowCustomContextMenu(false)}
+                onClose={() => setShowCustomContextMenu(false)}
                 options={[
                   {
                     text: "change diary",
-                    icon: <FaBook />,
+                    icon: <FaBook className="text-(--primary)"/>,
                     handler: () =>
                       setModal({ type: "multiple-diary", show: true }),
                   },
                   {
                     text: "assign proxy",
-                    icon: <FaBook />,
+                    icon: <FaBook className="text-(--primary)"/>,
                     handler: () =>
                       setModal({ type: "multiple-proxy", show: true }),
                   },
@@ -284,100 +298,132 @@ function StudentsContainer() {
               />
             )}
             {modal.show && modal.type === "multiple-diary" && (
-  <Modal
-    onClose={() => setModal({ show: false, type: "" })}
-    className="w-[90%] h-fit rounded-3xl"
-    headingStyles="text-xl font-bold text-center"
-    heading="Select teacher to change diaries"
-  >
-    <div className="space-y-6 mt-6">
+              <Modal
+                onClose={() => setModal({ show: false, type: "" })}
+                className="w-[90%] h-fit rounded-3xl"
+                headingStyles="text-xl font-bold text-center"
+              >
+                <div className="space-y-6 mt-6">
+                  <div className="flex flex-col items-center">
+                    {/* Icon Circle */}
+                    <div className="p-4 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center shadow-sm border border-amber-100">
+                      <FaBookOpen className="text-3xl text-amber-700" />
+                    </div>
 
-      {/* Summary Card */}
-      <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm p-4 flex items-center gap-4">
-        <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
-          <FaUsers className="text-amber-700 text-lg" />
-        </div>
+                    {/* Heading */}
+                    <h2 className="mt-5 lg:text-2xl font-bold text-[var(--text-primary)] text-center">
+                      Select teacher to change diaries
+                    </h2>
 
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500 font-medium">
-            Selected Students
-          </p>
-          <p className="text-lg font-bold text-gray-800">
-            {selectedStudents.length}
-          </p>
-        </div>
-      </div>
+                    {/* Decorative Line */}
+                    <div className="flex items-center gap-2 mt-4">
+                      <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
+                      <div className="w-2 h-2 rounded-full bg-amber-600" />
+                      <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
+                    </div>
+                  </div>
+                  {/* Summary Card */}
+                  <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm p-4 flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
+                      <FaUsers className="text-amber-700 text-lg" />
+                    </div>
 
-      <div>
-        <label className="block mb-2 text-sm font-semibold text-gray-700">
-          Select new teacher
-        </label>
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-gray-500 font-medium">
+                        Selected Students
+                      </p>
+                      <p className="text-lg font-bold text-gray-800">
+                        {selectedStudents.length}
+                      </p>
+                    </div>
+                  </div>
 
-        <CustomSelect
-          options={customizedTeachers}
-          isButton
-          handler={handleChangeMultipleDiaries}
-        />
-      </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-semibold text-gray-700">
+                      Select new teacher
+                    </label>
 
-      <div className="flex items-center gap-2 text-xs text-gray-500">
-        <FaShieldAlt className="text-green-600" />
-        <span>
-          This will update the diary teacher for all selected students.
-        </span>
-      </div>
+                    <CustomSelect
+                      options={customizedTeachers}
+                      isButton
+                      handler={handleChangeMultipleDiaries}
+                    />
+                  </div>
 
-    </div>
-  </Modal>
-)}
+                  <div className="flex flex-col items-center text-center gap-2 text-xs text-gray-500">
+                    <span>
+                      This will update the teacher diary for all selected
+                      students.
+                    </span>
+                    {/* <FaShieldAlt className="text-green-600" /> */}
+                  </div>
+                </div>
+              </Modal>
+            )}
 
-{modal.show && modal.type === "multiple-proxy" && (
-  <Modal
-    onClose={() => setModal({ show: false, type: "" })}
-    className="w-[90%] h-fit rounded-3xl"
-    headingStyles="text-xl font-bold text-center"
-    heading="Select teacher to assign proxies"
-  >
-    <div className="space-y-6 mt-6">
+            {modal.show && modal.type === "multiple-proxy" && (
+              <Modal
+                onClose={() => setModal({ show: false, type: "" })}
+                className="w-[90%] h-fit rounded-3xl"
+                headingStyles="text-xl font-bold text-center"
+              >
+                <div className="space-y-6 mt-6">
+                  {/* Summary Card */}
+                  <div className="flex flex-col items-center">
+                    {/* Icon Circle */}
+                    <div className="p-4 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center shadow-sm border border-amber-100">
+                      <FaBookOpen className="text-3xl text-amber-700" />
+                    </div>
 
-      {/* Summary Card */}
-      <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm p-4 flex items-center gap-4">
-        <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
-          <FaUsers className="text-amber-700 text-lg" />
-        </div>
+                    {/* Heading */}
+                    <h2 className="mt-5 lg:text-2xl font-bold text-[var(--text-primary)] text-center">
+                      Select teacher to assign proxies
+                    </h2>
 
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-500 font-medium">
-            Selected Students
-          </p>
-          <p className="text-lg font-bold text-gray-800">
-            {selectedStudents.length}
-          </p>
-        </div>
-      </div>
+                    {/* Decorative Line */}
+                    <div className="flex items-center gap-2 mt-4">
+                      <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
+                      <div className="w-2 h-2 rounded-full bg-amber-600" />
+                      <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm p-4 flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
+                      <FaUsers className="text-amber-700 text-lg" />
+                    </div>
 
-      <div>
-        <label className="block mb-2 text-sm font-semibold text-gray-700">
-          Select proxy teacher
-        </label>
+                    <div>
+                      <p className="text-xs uppercase tracking-wide text-gray-500 font-medium">
+                        Selected Students
+                      </p>
+                      <p className="text-lg font-bold text-gray-800">
+                        {selectedStudents.length}
+                      </p>
+                    </div>
+                  </div>
 
-        <CustomSelect
-          options={customizedTeachers}
-          isButton
-          handler={handleAssignMultipleProxies}
-        />
-      </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-semibold text-gray-700">
+                      Select proxy teacher
+                    </label>
 
-      <div className="flex items-center gap-2 text-xs text-gray-500">
-        <FaShieldAlt className="text-green-600" />
-        <span>
-          This will assign the selected teacher as proxy for all selected students.
-        </span>
-      </div>
+                    <CustomSelect
+                      options={customizedTeachers}
+                      isButton
+                      handler={handleAssignMultipleProxies}
+                    />
+                  </div>
 
-    </div>
-  </Modal>
-)}
+                  <div className="flex items-center flex-col text-center gap-2 text-xs text-gray-500">
+                    <span>
+                      This will assign the selected teacher as proxy for all
+                      selected students.
+                    </span>
+                    {/* <FaShieldAlt className="text-green-600" /> */}
+                  </div>
+                </div>
+              </Modal>
+            )}
           </div>
         </div>
       )}
@@ -406,108 +452,136 @@ function StudentsContainer() {
           </h1>
         )} */}
         {modal.show && (modal.type === "diary" || modal.type === "proxy") && (
-  <Modal
-    onClose={() => setModal({ show: false, type: "" })}
-    className="w-[90%] h-fit rounded-3xl"
-    headingStyles="text-xl font-bold text-center"
-    heading={
-      modal.type === "diary"
-        ? "Select teacher to change diary"
-        : "Select teacher to assign proxy"
-    }
-  >
-    <div className="space-y-6 mt-6">
+          <Modal
+            onClose={() => setModal({ show: false, type: "" })}
+            className="w-[90%] h-fit rounded-3xl"
+            headingStyles="text-xl font-bold text-center"
+            // heading={
+            //   modal.type === "diary"
+            //     ? "Select teacher to change diary"
+            //     : "Select teacher to assign proxy"
+            // }
+          >
+            <div className="space-y-6">
+              <div className="flex flex-col items-center">
+                {/* Icon Circle */}
+                <div className="p-4 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center shadow-sm border border-amber-100">
+                  {modal.type === "diary" ? (
+                    <FaBookOpen className="text-3xl text-amber-700" />
+                  ) : (
+                    <FaUserShield className="text-3xl text-amber-700" />
+                  )}
+                </div>
 
-      {/* Student & Teacher Card */}
-      <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
+                {/* Heading */}
+                <h2 className="mt-5 lg:text-2xl font-bold text-[var(--text-primary)] text-center">
+                  {modal.type === "diary"
+                    ? "Select teacher to change diary"
+                    : "Select teacher to assign proxy"}
+                </h2>
 
-        {/* Student */}
-        <div className="flex gap-3 p-4">
-          <div className="h-11 w-11 rounded-full bg-amber-100 flex items-center justify-center">
-            <FaUser className="text-amber-700 text-lg" />
-          </div>
+                {/* Decorative Line */}
+                <div className="flex items-center gap-2 mt-4">
+                  <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
+                  <div className="w-2 h-2 rounded-full bg-amber-600" />
+                  <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
+                </div>
+              </div>
+              {/* Student & Teacher Card */}
+              <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
+                {/* Student */}
+                <div className="flex gap-3 p-4">
+                  <div className="flex items-center">
+                    <div className="p-3 rounded-full bg-amber-100 flex items-center justify-center">
+                      <FaUser className="text-amber-700 text-lg" />
+                    </div>
+                  </div>
 
-          <div>
-            <p className="text-xs text-gray-500 font-medium uppercase">
-              Student
-            </p>
-            <p className="text-sm font-semibold text-gray-800">
-              {selectedStudent.name}
-            </p>
-          </div>
-        </div>
+                  <div>
+                    <p className="text-xs text-gray-500 font-medium uppercase">
+                      Student
+                    </p>
+                    <p className="text-xs lg:text-sm mt-1 font-semibold text-gray-800">
+                      {selectedStudent.name}
+                    </p>
+                  </div>
+                </div>
 
-        <div className="border-t border-neutral-200" />
+                <div className="border-t border-neutral-200" />
 
-        {/* Current Teacher */}
-        <div className="flex gap-3 p-4">
-          <div className="h-11 w-11 rounded-full bg-amber-100 flex items-center justify-center">
-            <FaChalkboardTeacher className="text-amber-700 text-lg" />
-          </div>
+                {/* Current Teacher */}
+                <div className="flex gap-3 p-4">
+                  <div className="flex items-center">
+                    <div className="p-3 rounded-full bg-amber-100 flex items-center justify-center">
+                      <FaChalkboardTeacher className="text-amber-700 text-lg" />
+                    </div>
+                  </div>
 
-          <div>
-            <p className="text-xs text-gray-500 font-medium uppercase">
-              Current Teacher
-            </p>
-            <p className="text-sm font-semibold text-gray-800">
-              {selectedStudent.teacher}
-            </p>
-          </div>
-        </div>
+                  <div>
+                    <p className="text-xs text-gray-500 font-medium uppercase">
+                      Current Teacher
+                    </p>
+                    <p className="text-xs lg:text-sm mt-1 font-semibold text-gray-800">
+                      {selectedStudent.teacher || "No Teacher Assigned"}
+                    </p>
+                  </div>
+                </div>
 
-        {selectedStudent.proxyTeacher && (
-          <>
-            <div className="border-t border-neutral-200" />
+                {selectedStudent.proxyTeacher && (
+                  <>
+                    <div className="border-t border-neutral-200" />
 
-            <div className="flex gap-3 p-4">
-              <div className="h-11 w-11 rounded-full bg-green-100 flex items-center justify-center">
-                <FaUserCheck className="text-green-700 text-lg" />
+                    <div className="flex gap-3 p-4">
+                      <div className="flex items-center">
+                        <div className="p-3 rounded-full bg-green-100 flex items-center justify-center">
+                          <FaUserCheck className="text-green-700 text-lg" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium uppercase">
+                          Current Proxy
+                        </p>
+                        <p className="text-xs lg:text-sm mt-1 font-semibold text-gray-800">
+                          {selectedStudent.proxyTeacher}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
+              {/* Select */}
               <div>
-                <p className="text-xs text-gray-500 font-medium uppercase">
-                  Current Proxy
-                </p>
-                <p className="text-sm font-semibold text-gray-800">
-                  {selectedStudent.proxyTeacher}
-                </p>
+                <label className="block mb-2 text-sm font-semibold text-gray-700">
+                  {modal.type === "diary"
+                    ? "Select new teacher"
+                    : "Select proxy teacher"}
+                </label>
+
+                <CustomSelect
+                  options={customizedTeachers}
+                  isButton
+                  handler={
+                    modal.type === "diary"
+                      ? handleChangeDiary
+                      : handleAssignProxy
+                  }
+                />
+              </div>
+
+              {/* Footer Note */}
+              <div className="flex items-center gap-2 text-xs justify-center text-gray-500">
+                <FaShieldAlt className="text-green-600" />
+                <span>
+                  {modal.type === "diary"
+                    ? "This will update the diary teacher."
+                    : "This will assign a proxy teacher."}
+                </span>
               </div>
             </div>
-          </>
+          </Modal>
         )}
-      </div>
-
-      {/* Select */}
-      <div>
-        <label className="block mb-2 text-sm font-semibold text-gray-700">
-          {modal.type === "diary"
-            ? "Select new teacher"
-            : "Select proxy teacher"}
-        </label>
-
-        <CustomSelect
-          options={customizedTeachers}
-          isButton
-          handler={
-            modal.type === "diary"
-              ? handleChangeDiary
-              : handleAssignProxy
-          }
-        />
-      </div>
-
-      {/* Footer Note */}
-      <div className="flex items-center gap-2 text-xs text-gray-500">
-        <FaShieldAlt className="text-green-600" />
-        <span>
-          {modal.type === "diary"
-            ? "This will update the diary teacher."
-            : "This will assign a proxy teacher."}
-        </span>
-      </div>
-    </div>
-  </Modal>
-)}
         <ContextMenu>
           {user.role === "admin" && (
             <Item onClick={() => setModal({ show: true, type: "diary" })}>
@@ -533,50 +607,159 @@ function StudentsContainer() {
 
 export default StudentsContainer;
 
-
-import { HiOutlineExclamationCircle } from "react-icons/hi2";
-import { MdOutlinePersonSearch } from "react-icons/md";
+import { HiOutlineUserAdd } from "react-icons/hi";
 
 function RecordWithNumberCard() {
   const [showSelector,setShowSelector] = useState(false);
   const {students} = useAppProvider();
   const router = useRouter();
+  let recentStudents; 
+  try{
+    recentStudents = JSON.parse(localStorage.getItem('recentStudents'))||[];
+  }catch{
+    localStorage.removeItem('recentStudents');
+    recentStudents = [];
+  }
+  // alert(typeof recentStudents);
   const formatedStudents = students?.map(el => {
     // const name = el.name.split(' ').filter((el,i) => i !== 1 ? true : false).join(' ');
     // const name = el.name.split(' ').filter(el => el.toLowerCase() !== 'bhai').join(' ');
     return { label: el.name, value: el._id };
   });
   function handleSelect({value:id,label:studentName}){
+    if(recentStudents?.length === 3){
+      recentStudents.pop();
+      recentStudents.unshift({name:studentName,id});
+      localStorage.setItem('recentStudents',JSON.stringify(recentStudents));
+    }
+    if(recentStudents?.length > 0 && recentStudents?.length < 3){
+      
+      recentStudents.unshift({name:studentName,id});
+      localStorage.setItem('recentStudents',JSON.stringify(recentStudents));
+    }
+    if(recentStudents?.length === 0){
+      const newArr = [];
+      newArr.unshift({name:studentName,id});
+      // alert(JSON.stringify(newArr))
+      localStorage.setItem('recentStudents',JSON.stringify(newArr));
+    }
     router.replace(`/entry/${id}?studentName=${studentName}`);
   }
   return (
-    <div className=" my-4 flex items-center justify-between rounded-2xl border border-amber-300 border-dashed bg-red-100 p-4">
-      <div className="flex items-center gap-4 w-[70%]">
-        <div className="flex items-center justify-center rounded-full bg-red-100">
-          <HiOutlineExclamationCircle
-            size={28}
-            className="text-red-700"
-          />
+    <div className="my-5 flex items-center justify-between rounded-3xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
+      <div className="flex w-[72%] items-center gap-4">
+        <div>
+          <div className="flex p-3 items-center justify-center rounded-full bg-amber-100">
+            <HiOutlineUserAdd className="text-amber-700 text-xl" />
+          </div>
         </div>
 
         <div>
-          <h3 className=" font-semibold text-amber-950">
+          <h3 className="text-sm font-bold text-amber-950">
             Student not tagged?
           </h3>
 
-          <p className="text-xs text-amber-800/80">
-            student not in your diary ? just select student from here.
+          <p className="mt-1 text-xs leading-5 text-amber-800/80">
+            Student not in your diary? Just select the student from here.
           </p>
         </div>
       </div>
 
-      <button onClick={()=>setShowSelector(true)} className="flex items-center text-xs rounded-md border border-red-400 bg-white p-2 py-2 gap-1 font-semibold text-red-800 transition hover:bg-red-50">
-        {/* <MdOutlinePersonSearch  /> */}
+      <button
+        onClick={() => setShowSelector(true)}
+        className="flex items-center hover:cursor-pointer duration-300 ease-in-out transition-all gap-2 rounded-xl bg-amber-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-amber-800 active:scale-95"
+      >
+        <HiOutlineUserAdd size={18} />
         Select
       </button>
-      {showSelector && <Modal onClose={()=>setShowSelector(false)} heading={'Select Student'} className="w-[90%]">
-        <CustomSelect options={formatedStudents} handler={handleSelect} handleOnChange/>
-      </Modal>}
+
+      {showSelector && (
+        <Modal
+          onClose={() => setShowSelector(false)}
+          className="w-[90%] max-w-md h-fit rounded-[30px] border border-amber-100 bg-[#FFFBF7]"
+        >
+          <div className="flex flex-col gap-6">
+            {/* Header */}
+            <div className="flex items-center gap-4">
+              <div className="flex p-3 items-center justify-center rounded-full bg-amber-100">
+                <FaGraduationCap className="text-3xl text-amber-700" />
+              </div>
+
+              <div>
+                <h2 className="lg:text-2xl text-lg font-bold text-amber-950">
+                  Select Student
+                </h2>
+
+                <p className="mt-1 text-gray-500 text-xs lg:text-sm">
+                  Choose a student from the list
+                </p>
+              </div>
+            </div>
+
+            {/* Select */}
+            <CustomSelect
+              options={formatedStudents}
+              handler={handleSelect}
+              handleOnChange
+            />
+
+            {/* Recent */}
+            <div>
+              <div className="mb-4 flex items-center gap-3">
+                <span className="font-semibold text-amber-950">Recent</span>
+
+                <div className="h-px flex-1 bg-gray-200" />
+              </div>
+
+              <div className="space-y-3">
+                {recentStudents?.map((student) => (
+                  <div key={student?.id}>
+                    <Link
+                      href={`/entry/${student?.id}?studentName=${student?.name}`}
+                      key={student}
+                      className="flex w-full items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-4 shadow-sm transition hover:border-amber-200 hover:shadow-md"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex p-2 items-center justify-cente rounded-full bg-amber-50">
+                          <FaUserCircle className="text-2xl text-amber-300" />
+                        </div>
+
+                        <span className="text-xs text-left text-gray-800">
+                          {student?.name.split(" ").slice(1).join(" ")}
+                        </span>
+                      </div>
+
+                      <HiOutlineChevronRight className="text-xl text-amber-700" />
+                    </Link>
+                  </div>
+                ))}
+                {!recentStudents?.length && (
+                  <p className="text-center my-10">
+                    No recent students selected!
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-start gap-4 rounded-2xl border border-amber-100 bg-amber-50 p-4">
+              <div className="flex p-3 items-center justify-center rounded-full bg-amber-100">
+                <FaRegLightbulb className="text-xl text-amber-700" />
+              </div>
+
+              <div>
+                <p className="font-semibold text-amber-900 text-sm">
+                  Can't find the student?
+                </p>
+
+                <p className="mt-1 text-sm text-gray-500 text-xs">
+                  Try searching with a different name.
+                </p>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
