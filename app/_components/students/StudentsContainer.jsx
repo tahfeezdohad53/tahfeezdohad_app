@@ -283,43 +283,100 @@ function StudentsContainer() {
               />
             )}
             {modal.show && modal.type === "multiple-diary" && (
-              <Modal
-                onClose={() => setModal({ show: false, type: "" })}
-                className="h-fit"
-                headingStyles="text-sm decoration-0"
-                heading="select teacher to change diaries"
-              >
-                <div className="mt-8 mb-4 space-y-2">
-                  <h1 className="ml-1 tracking-wider font-semibold text-xs text-(--text-secondary)">
-                    Students: {selectedStudents.length} students
-                  </h1>
-                </div>
-                <CustomSelect
-                  options={customizedTeachers}
-                  isButton={true}
-                  handler={handleChangeMultipleDiaries}
-                />
-              </Modal>
-            )}
-            {modal.show && modal.type === "multiple-proxy" && (
-              <Modal
-                onClose={() => setModal({ show: false, type: "" })}
-                className="h-fit"
-                headingStyles="text-sm decoration-0"
-                heading="select teacher to assign proxies"
-              > 
-                <div className="mt-8 mb-4 space-y-2">
-                  <h1 className="ml-1 tracking-wider font-semibold text-xs text-(--text-secondary)">
-                    Students: {selectedStudents.length} students
-                  </h1>
-                </div>
-                <CustomSelect
-                  options={customizedTeachers}
-                  isButton={true}
-                  handler={handleAssignMultipleProxies}
-                />
-              </Modal>
-            )}
+  <Modal
+    onClose={() => setModal({ show: false, type: "" })}
+    className="max-w-md h-fit rounded-3xl"
+    headingStyles="text-xl font-bold text-center"
+    heading="Select teacher to change diaries"
+  >
+    <div className="space-y-6 mt-6">
+
+      {/* Summary Card */}
+      <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm p-4 flex items-center gap-4">
+        <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
+          <FaUsers className="text-amber-700 text-lg" />
+        </div>
+
+        <div>
+          <p className="text-xs uppercase tracking-wide text-gray-500 font-medium">
+            Selected Students
+          </p>
+          <p className="text-lg font-bold text-gray-800">
+            {selectedStudents.length}
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">
+          Select new teacher
+        </label>
+
+        <CustomSelect
+          options={customizedTeachers}
+          isButton
+          handler={handleChangeMultipleDiaries}
+        />
+      </div>
+
+      <div className="flex items-center gap-2 text-xs text-gray-500">
+        <FaShieldAlt className="text-green-600" />
+        <span>
+          This will update the diary teacher for all selected students.
+        </span>
+      </div>
+
+    </div>
+  </Modal>
+)}
+
+{modal.show && modal.type === "multiple-proxy" && (
+  <Modal
+    onClose={() => setModal({ show: false, type: "" })}
+    className="max-w-md h-fit rounded-3xl"
+    headingStyles="text-xl font-bold text-center"
+    heading="Select teacher to assign proxies"
+  >
+    <div className="space-y-6 mt-6">
+
+      {/* Summary Card */}
+      <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm p-4 flex items-center gap-4">
+        <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
+          <FaUsers className="text-amber-700 text-lg" />
+        </div>
+
+        <div>
+          <p className="text-xs uppercase tracking-wide text-gray-500 font-medium">
+            Selected Students
+          </p>
+          <p className="text-lg font-bold text-gray-800">
+            {selectedStudents.length}
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <label className="block mb-2 text-sm font-semibold text-gray-700">
+          Select proxy teacher
+        </label>
+
+        <CustomSelect
+          options={customizedTeachers}
+          isButton
+          handler={handleAssignMultipleProxies}
+        />
+      </div>
+
+      <div className="flex items-center gap-2 text-xs text-gray-500">
+        <FaShieldAlt className="text-green-600" />
+        <span>
+          This will assign the selected teacher as proxy for all selected students.
+        </span>
+      </div>
+
+    </div>
+  </Modal>
+)}
           </div>
         </div>
       )}
