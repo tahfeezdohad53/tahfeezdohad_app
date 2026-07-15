@@ -82,7 +82,7 @@ function MaqaratContainer({}) {
           </div>
         </div>
       )}
-      {(maqarat?.length < 1 && !query.get('batch') && !query.get('status')) && <div className="w-[90%] lg:w-fit absolute top-[55%] left-[40%] -translate-y-1/2">
+      {(maqarat?.length < 1 && !query.get('batch') && !query.get('status')) && <div className="w-[90%] lg:w-fit absolute top-1/2 left-7 lg:top-[55%] lg:left-[40%] -translate-y-1/2">
         <NoSessionsFound role={user?.role} />
       </div>}
 

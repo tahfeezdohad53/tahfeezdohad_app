@@ -48,7 +48,7 @@ function LeaveForm({onClose}){
       }
     }catch(err){
       console.log(err);
-        return toast.success("failed to submit leave request"); 
+        return toast.error("failed to submit leave request"); 
     }finally{
       setIsSubmitting(false);
     }

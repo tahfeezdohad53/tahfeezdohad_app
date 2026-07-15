@@ -98,9 +98,10 @@ function StudentContainer() {
     }
   }, [user?.role, session?.status, isFetching]);
   // if(isLoadingTeacher || isLoadingStudents) return <div><ImSpinner2 className="animate-spin absolute top-1/2 left-1/2 -translate-1/2"/></div>;
+
   return (
     <div className="flex flex-col min-w-full max-h-full ">
-      {user?.role === "teacher" && (
+      {(user?.role === "teacher" || user?.role === 'admin') && (
         <div className="mb-5 bg-(image:--gradient-primary) rounded-xl p-5 flex items-center gap-5 w-full ">
           <div className="p-3 text-white bg-(--primary-light) rounded-lg">
             <FaGraduationCap className="text-2xl lg:4xl" />
@@ -113,7 +114,10 @@ function StudentContainer() {
           </div>
         </div>
       )}
-      {user?.role !== "student" && students?.length > 0 && (
+      {user?.role === "teacher" && students?.length > 0  && (
+        <StudentsFilter handleFilterStudents={handleFilterStudents} />
+      )}
+      {user?.role === "admin" && (
         <StudentsFilter handleFilterStudents={handleFilterStudents} />
       )}
       <ScrollToTopButton />
