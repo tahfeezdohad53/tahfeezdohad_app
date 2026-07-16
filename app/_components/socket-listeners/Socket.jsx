@@ -484,6 +484,11 @@ export function CallingFnProvider({ children }) {
 
     socket.on("end-call", async () => {
       if (user?.role === "student") setVideoCallSeconds(0);
+       if (audioRef.current) {
+         audioRef.current.loop = false;
+         audioRef.current.pause();
+         audioRef.current.currentTime = 0;
+       }
       // if(localVideoRef?.current)localVideoRef.current
       setIsCalling(false);
       setIsIncoming(false);
