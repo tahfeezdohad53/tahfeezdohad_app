@@ -132,9 +132,9 @@ export function CallingFnProvider({ children }) {
   }
 
   useEffect(() => {
-    if(audioRef.current){
+    
       audioRef.current = new Audio('/ringtone.aac');
-    }
+    
   },[])
 
   useEffect(() => {
