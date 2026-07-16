@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import axios from "axios";
-
 const Context = createContext(null);
 
 export function CallingFnProvider({ children }) {
@@ -47,7 +46,7 @@ export function CallingFnProvider({ children }) {
   const targetUserRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
-
+  const audioRef = useRef(new Audio('@/public/ringtone.aac'));
   async function turn() {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_URL}/turn-credentials`,
@@ -95,6 +94,11 @@ export function CallingFnProvider({ children }) {
     };
   }
   async function endCall() {
+    if (audioRef.current) {
+      audioRef.current.loop = false;
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
     setIsCalling(false);
     setIsIncoming(false);
     setIsInCall(false);
@@ -265,6 +269,11 @@ export function CallingFnProvider({ children }) {
     //   { withCredentials: true },
     // );
     // peerConnection.current = new RTCPeerConnection(res.data);
+    if (audioRef.current) {
+      audioRef.current.loop = false;
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
     setIsInCall(true);
     setOnlineClassBlob(null);
     setOnlineClassBlobUrl("");
@@ -305,7 +314,10 @@ export function CallingFnProvider({ children }) {
       if (isInCall || isIncoming || isCalling)
         return socket.emit("line-busy", { to: caller });
       // await turn();
-
+      if(audioRef.current) {
+        audioRef.current.loop = true;
+        audioRef.current.play().catch(err => console.log(err));
+      }
       setIsIncoming(true);
       setCallerId(caller);
       targetUserRef.current = caller;
