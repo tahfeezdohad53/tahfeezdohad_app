@@ -46,7 +46,7 @@ export function CallingFnProvider({ children }) {
   const targetUserRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
-  const audioRef = useRef(new Audio('/ringtone.aac'));
+  const audioRef = useRef();
   async function turn() {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_URL}/turn-credentials`,
@@ -132,6 +132,13 @@ export function CallingFnProvider({ children }) {
   }
 
   useEffect(() => {
+    if(audioRef.current){
+      audioRef.current = new Audio('/ringtone.aac');
+    }
+  },[])
+
+  useEffect(() => {
+
     if (!isInCall) return;
     if (user?.role === "student") return;
     if (recorderRef?.current?.state === "recording") return;
