@@ -20,6 +20,9 @@ function VideoCallProvider({children}) {
     const [onlineClassBlobUrlSize,setOnlineClassBlobUrlSize] = useState(0);
     const [videoCallSeconds,setVideoCallSeconds] = useState(0);    
     const peerConnection = useRef(null);
+    const [isLap,setIsLap] = useState(false);
+  const recorderRef = useRef(null);
+
     return (
         <Context.Provider value={{
             // states
@@ -39,6 +42,8 @@ function VideoCallProvider({children}) {
             onlineClassBlobUrlSize,
             showCallControls,
             videoCallSeconds,
+            recorderRef,
+            isLap,
             // setter functions
 
             setIsCalling,
@@ -53,6 +58,7 @@ function VideoCallProvider({children}) {
             setOnlineClassBlobUrlSize,
             setShowCallControls,
             setVideoCallSeconds,
+            setIsLap
             }}>
             {children}
         </Context.Provider>

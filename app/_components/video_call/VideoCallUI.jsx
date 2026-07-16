@@ -16,6 +16,14 @@ import { IoIosCall } from "react-icons/io";
 import { MdCallEnd } from "react-icons/md";
 import Draggable from "react-draggable";
 import { useUser } from "../providers/UserProvider";
+import { BsFillRecordCircleFill } from "react-icons/bs";
+import Modal from "../Modal";
+import { FaGraduationCap, FaRegLightbulb } from "react-icons/fa";
+import CustomSelect from "../Select";
+import { useAppProvider } from "../providers/AppProvider";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { HiXMark } from "react-icons/hi2";
 function VideoCallUI() {
   const {user} = useUser();
   const videoRef = useRef(null);
@@ -24,6 +32,7 @@ function VideoCallUI() {
   const [isMute,setIsMute] = useState(false);
   const [isVideoOff,setIsVideoOff] = useState(false)
   const dragRef = useRef(null);
+  const [showModal,setShowModal] = useState(false);
   useEffect(() => {
     if(!isInCall) return;
     const interval = setInterval(() => {
@@ -136,6 +145,12 @@ function VideoCallUI() {
                 <IoIosCall />
               </button>
             )}
+            {user?.role !== 'student' && isInCall && <button
+              onClick={() => setShowModal(!showModal)}
+              className="text-white flex bg-gray-800 px-4 items-center gap-2 text-xs p-2 hover:bg-gray-700 rounded-md duration-300 ease-in-out transition-all hover:cursor-pointer absolute right-5"
+            >
+              Lap <BsFillRecordCircleFill className="" />
+            </button>}
           </div>
 
           {/* Empty div for perfect center alignment */}
@@ -151,7 +166,7 @@ function VideoCallUI() {
                 ref={localVideoRef}
                 autoPlay
                 muted
-                className="h-full w-full object-cover lg:object-contain bg-[url('/videobg.png')] bg-cover bg-center z-99999"
+                className="h-full w-full object-cover lg:object-contain bg-black bg-cover bg-center z-99999"
               />
             )}
             {!isCalling && isIncoming && (
@@ -160,31 +175,34 @@ function VideoCallUI() {
                 muted
                 ref={localVideoRef}
                 autoPlay
-                className="w-full h-full object-cover lg:object-contain bg-[url('/videobg.png')] bg-cover bg-center"
+                className="w-full h-full object-cover lg:object-contain bg-black bg-cover bg-center"
               ></video>
             )}
           </>
         )}
         {(isCalling || isIncoming) && isInCall && (
           <>
-            <div className="h-full w-full">
+          
+            {showModal && <SelectStudent onclose={()=>setShowModal(false)}/>}
+
+            <div onClick={()=>setShowModal(false)} className="h-full w-full">
               <div className="absolute h-full w-full">
                 <video
                   playsInline
-                  className="h-full  w-full object-cover lg:object-contain bg-[url('/videobg.png')]  z-99999"
+                  className="h-full  w-full object-cover lg:object-contain bg-black  z-99999"
                   ref={remoteVideoRef}
                 ></video>
               </div>
               <Draggable nodeRef={dragRef}>
                 <div
                   ref={dragRef}
-                  className="absolute top-3 right-3 rounded-lg border border-black/20 overflow-auto shadow-2xl w-30 h-40 z-999999"
+                  className="absolute top-3 right-3 rounded-lg bg-black border border-black/20 overflow-auto shadow-2xl w-30 h-40 z-999999"
                 >
                   <video
                     ref={localVideoRef}
                     muted
                     autoPlay
-                    className="h-full w-full object-cover lg:object-contain bg--[url('/videobg.png')] z-99999"
+                    className="h-full w-full object-cover lg:object-contain z-99999"
                   ></video>
                 </div>
               </Draggable>
@@ -197,3 +215,154 @@ function VideoCallUI() {
 }
 
 export default VideoCallUI;
+
+
+function SelectStudent({onclose}){
+  const {students} = useAppProvider();
+  const [id,setId] = useState(null);
+  const [error,setError] = useState(false);
+  const {isLap,setIsLap,videoCallSeconds,setVideoCallSeconds,onlineClassBlob,recorderRef,setOnlineClassBlob,setOnlineClassBlobUrl} = useVideoCallContext();
+  const formatedStudents = students?.map((el) => {
+    // const name = el.name.split(' ').filter((el,i) => i !== 1 ? true : false).join(' ');
+    // const name = el.name.split(' ').filter(el => el.toLowerCase() !== 'bhai').join(' ');
+    return { label: el.name, value: el._id };
+  });
+  
+  useEffect(() => {
+    async function submitVideoCallRecording() {
+      if(!id) return setError(true);
+      onclose();
+      setOnlineClassBlob(null);
+      setVideoCallSeconds(0);
+      setOnlineClassBlobUrl("");
+      const toastId = "uploading";
+      toast.success("your recording will be submitted");
+      try {
+        // console.log(data.signedUrl)
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_URL}/recording/signedToken`,
+          { withCredentials: true },
+        );
+
+        await axios.put(data.signedUrl, onlineClassBlob, {
+          headers: {
+            "Content-Type": "audio/webm",
+          },
+        });
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_URL}/recording/create/${id}`,
+          {
+            isOnline: true,
+            url: data.url,
+            duration: videoCallSeconds / 60,
+          },
+          { withCredentials: true },
+        );
+        toast.success("recording submitted!");
+      } catch (err) {
+        console.log(err);
+        toast.error("Upload failed!", {
+          id: toastId,
+        });
+      } finally {
+        setIsLap((val) => !val);
+      }
+    }
+    if(onlineClassBlob) submitVideoCallRecording();
+  },[onlineClassBlob,id])
+  
+  
+  return (
+    <div className="fixed rounded-md lg:w-1/2 z-999999999999999 backdrop-opacity-0 top-1/2 left-1/2 -translate-1/2 bg-(--card) p-10 w-[90%] flex flex-col gap-6">
+      {/* Header */}
+      <button className="absolute right-3 top-3" onClick={onclose}>
+        <HiXMark />
+      </button>
+      <div className="flex items-center gap-4">
+        <div className="flex p-3 items-center justify-center rounded-full bg-amber-100">
+          <FaGraduationCap className="text-3xl text-amber-700" />
+        </div>
+
+        <div>
+          <h2 className="lg:text-2xl text-lg font-bold text-amber-950">
+            Select Student
+          </h2>
+
+          <p className="mt-1 text-gray-500 text-xs lg:text-sm">
+            Choose a student from the list
+          </p>
+        </div>
+      </div>
+
+      {/* Select */}
+      <div>
+        <CustomSelect
+          options={formatedStudents}
+          handler={({ value }) => setId(value)}
+          handleOnChange
+        />
+        {(error && !id) && <p className="text-xs text-red-500 mt-1 font-bold">please select a student</p>}
+      </div>
+      <button
+        onClick={() => recorderRef?.current?.stop?.()}
+        className="bg-(image:--gradient-primary) text-white p-2 rounded-md"
+      >
+        Submit Recording
+      </button>
+      {/* Recent */}
+      {/* <div>
+              <div className="mb-4 flex items-center gap-3">
+                <span className="font-semibold text-amber-950">Recent</span>
+
+                <div className="h-px flex-1 bg-gray-200" />
+              </div>
+
+              <div className="space-y-3">
+                {recentStudents?.map((student) => (
+                  <div key={student?.id}>
+                    <Link
+                      href={`/entry/${student?.id}?studentName=${student?.name}`}
+                      key={student}
+                      className="flex w-full items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-4 shadow-sm transition hover:border-amber-200 hover:shadow-md"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex p-2 items-center justify-cente rounded-full bg-amber-50">
+                          <FaUserCircle className="text-2xl text-amber-300" />
+                        </div>
+
+                        <span className="text-xs text-left text-gray-800">
+                          {student?.name.split(" ").slice(1).join(" ")}
+                        </span>
+                      </div>
+
+                      <HiOutlineChevronRight className="text-xl text-amber-700" />
+                    </Link>
+                  </div>
+                ))}
+                {!recentStudents?.length && (
+                  <p className="text-center my-10">
+                    No recent students selected!
+                  </p>
+                )}
+              </div>
+            </div> */}
+
+      {/* Footer */}
+      <div className="flex items-start gap-4 rounded-2xl border border-amber-100 bg-amber-50 p-4">
+        <div className="flex p-3 items-center justify-center rounded-full bg-amber-100">
+          <FaRegLightbulb className="text-xl text-amber-700" />
+        </div>
+
+        <div>
+          <p className="font-semibold text-amber-900 text-sm">
+            Can't find the student?
+          </p>
+
+          <p className="mt-1 text-sm text-gray-500 text-xs">
+            Try searching with a name, ITS or lastname.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

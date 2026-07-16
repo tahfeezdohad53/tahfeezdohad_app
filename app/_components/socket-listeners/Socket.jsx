@@ -36,12 +36,13 @@ export function CallingFnProvider({ children }) {
     callerId,
     remoteOffer,
     setRemoteOffer,
+    recorderRef,
+    isLap,
   } = useVideoCallContext();
   const { user } = useUser();
   const querClient = useQueryClient();
   const { peerConnection } = useVideoCallContext();
   const candidates = useRef([]);
-  const recorderRef = useRef(null);
   const chunksRef = useRef([]);
   const targetUserRef = useRef(null);
   const router = useRouter();
@@ -161,7 +162,7 @@ export function CallingFnProvider({ children }) {
       chunksRef.current = [];
     };
     recorderRef.current.start();
-  }, [isInCall, user?.role, localMedia, remoteMedia]);
+  }, [isInCall, user?.role, localMedia, remoteMedia,isLap]);
 
   /* eslint-disable */
   useEffect(() => {
