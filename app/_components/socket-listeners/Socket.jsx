@@ -46,7 +46,7 @@ export function CallingFnProvider({ children }) {
   const targetUserRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
-  const audioRef = useRef(new Audio('@/public/ringtone.aac'));
+  const audioRef = useRef(new Audio('/ringtone.aac'));
   async function turn() {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_URL}/turn-credentials`,
