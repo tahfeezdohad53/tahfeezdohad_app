@@ -72,18 +72,25 @@ export function CallingFnProvider({ children }) {
     };
 
     peerConnection.current.onconnectionstatechange = async () => {
-      console.log("connection state: ", peerConnection.current.connectionState);
-      if (!isCalling) return;
-      if (peerConnection.current.connectionState === "failed") {
-        peerConnection.current.restartIce();
-        const offer = await peerConnection.current.createOffer({
-          iceRestart: true,
-        });
-
-        await peerConnection.current.setLocalDescription(offer);
-
-        socket.emit("ice-restart-offer", { offer, to: callingTo });
+      if (
+        peerConnection.iceConnectionState === "failed" ||
+        peerConnection.iceConnectionState === "disconnected" ||
+        peerConnection.iceConnectionState === "closed"
+      ) {
+        endCall();
       }
+      // console.log("connection state: ", peerConnection.current.connectionState);
+      // if (!isCalling) return;
+      // if (peerConnection.current.connectionState === "failed") {
+      //   peerConnection.current.restartIce();
+      //   const offer = await peerConnection.current.createOffer({
+      //     iceRestart: true,
+      //   });
+
+      //   await peerConnection.current.setLocalDescription(offer);
+
+      //   socket.emit("ice-restart-offer", { offer, to: callingTo });
+      // }
     };
   }
   async function endCall() {
