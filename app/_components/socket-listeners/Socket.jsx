@@ -99,6 +99,7 @@ export function CallingFnProvider({ children }) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
+    targetUserRef.current = null;
     setIsCalling(false);
     setIsIncoming(false);
     setIsInCall(false);
@@ -384,7 +385,6 @@ export function CallingFnProvider({ children }) {
       );
       const answer = await peerConnection.current.createAnswer();
       await peerConnection.current.setLocalDescription(answer);
-      console.log("ice restart offer candidates", candidates.current);
       if (candidates.current.length !== 0)
         for (const candidate of candidates.current) {
           peerConnection.current.addIceCandidate(
@@ -396,7 +396,6 @@ export function CallingFnProvider({ children }) {
     });
 
     socket.on("ice-restart-answer", async ({ answer }) => {
-      console.log("ice restart answer", answer);
       await peerConnection.current.setRemoteDescription(
         new RTCSessionDescription(answer),
       );
@@ -441,8 +440,6 @@ export function CallingFnProvider({ children }) {
         });
 
         querClient.setQueriesData({ queryKey: ["gurfahData"] }, (data) => {
-          console.log("runnning");
-
           if (data?.user?._id === id) {
             console.log("running inside");
             return { user: { ...data?.user, status: "online" } };
@@ -455,6 +452,7 @@ export function CallingFnProvider({ children }) {
     });
 
     socket.on("end-call", async () => {
+
       if (user?.role === "student") setVideoCallSeconds(0);
        if (audioRef.current) {
          audioRef.current.loop = false;
@@ -487,6 +485,7 @@ export function CallingFnProvider({ children }) {
       } else {
         // window.location.reload();
       }
+      targetUserRef.current = null;
       localMedia.current.getTracks().forEach((track) => track.stop());
       await turn();
     });
