@@ -1,14 +1,17 @@
+'use client';
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { IoFilterOutline } from "react-icons/io5"
 import { useUser } from "../providers/UserProvider";
+import { HiOutlineXMark } from "react-icons/hi2";
 
-function StudentsFilter({ handleFilterStudents,readOnly=false }) {
+function StudentsFilter({ handleFilterStudents,reset,readOnly=false }) {
   const {user} = useUser();
       const router = useRouter();
       const searchParams = useSearchParams();
       const pathname = usePathname();
+      const [value,setValue] = useState('');
       useEffect(() => {
         if(user?.role !== 'admin') return;
           const params = new URLSearchParams(searchParams);
@@ -21,16 +24,26 @@ function StudentsFilter({ handleFilterStudents,readOnly=false }) {
           params.set(type, value);
           router.replace(`${pathname}?${params}`);
       }
+
+      function handleReset(){
+        setValue('');
+        reset();
+      }
   return (
     <div className="w-full pb-5 lg:w-1/2 lg:mx-auto flex flex-col items-center  gap-5">
       <div className="w-full h-full relative">
         <input
+        value={value}
         readOnly={readOnly}
-          onChange={(e) => handleFilterStudents(e.target.value)}
+          onChange={(e) => {
+            handleFilterStudents(e.target.value);
+            setValue(e.target.value)
+          }}
           type="text"
           placeholder="search students..."
           className="bg-(--card) placeholder:text-sm text-sm shadow focus:outline-none px-10 rounded-full py-3 w-full border border-(--border)"
         />
+        {value.length > 0 && <button onClick={handleReset} className="p-2 rounded-md hover:bg-gray-50 hover:cursor-pointer duration-300 ease-in-out  absolute right-4 top-1/2 -translate-y-1/2"><HiOutlineXMark /></button>}
         <div className="absolute left-4 top-1/2 -translate-y-1/2">
           <CiSearch className="" />
         </div>

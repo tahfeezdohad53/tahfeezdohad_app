@@ -152,11 +152,11 @@ function StudentsContainer() {
           const nameArr = el.name.split(" ");
           const firstName = nameArr[1];
           const lastName = nameArr[nameArr.length - 1];
-          const queryArr = value.split(' ');
+          const queryArr = value.toLowerCase().split(' ');
           if(queryArr.length > 1){
             return ((firstName.includes(queryArr[0]) && lastName.includes(queryArr[1])) || (firstName.includes(queryArr[1] && lastName.includes(queryArr[0]))));
           }
-          return firstName.includes(value) || lastName.includes(value);
+          return firstName.includes(value.toLowerCase()) || lastName.includes(value.toLowerCase());
         })
       }
       
