@@ -609,9 +609,9 @@ export default StudentsContainer;
 
 import { HiOutlineUserAdd } from "react-icons/hi";
 
-export function RecordWithNumberCard({page='entry'}) {
+export function RecordWithNumberCard({page='entry',userType="teacher"}) {
   const [showSelector,setShowSelector] = useState(false);
-  const {students} = useAppProvider();
+  const {students,teachers} = useAppProvider();
   const router = useRouter();
   let recentStudents; 
   try{
@@ -621,11 +621,18 @@ export function RecordWithNumberCard({page='entry'}) {
     recentStudents = [];
   }
   // alert(typeof recentStudents);
-  const formatedStudents = students?.map(el => {
-    // const name = el.name.split(' ').filter((el,i) => i !== 1 ? true : false).join(' ');
-    // const name = el.name.split(' ').filter(el => el.toLowerCase() !== 'bhai').join(' ');
-    return { label: el.name, value: el._id };
-  });
+  let formatedStudents;
+  let formattedTeachers;
+  if(userType === 'teacher') {
+    formatedStudents = students?.map((el) => {
+      return { label: el.name, value: el._id };
+    });
+  }
+  if(userType === 'student') {
+    formattedTeachers = teachers?.map((el) => {
+      return { label: el.name, value: el._id };
+    });
+  }
   function handleSelect({value:id,label:studentName}){
     if(recentStudents?.length === 3){
       recentStudents.pop();
@@ -657,12 +664,15 @@ export function RecordWithNumberCard({page='entry'}) {
 
         <div>
           <h3 className="text-sm font-bold text-amber-950">
-            Student not tagged?
+            {userType === 'teacher' ? 'Student' : 'Teacher'} not tagged?
           </h3>
 
-          <p className="mt-1 text-xs leading-5 text-amber-800/80">
+          {userType === 'teacher' && <p className="mt-1 text-xs leading-5 text-amber-800/80">
             Student not in your diary? Just select the student from here.
-          </p>
+          </p>}
+          {userType === 'student' && <p className="mt-1 text-xs leading-5 text-amber-800/80">
+             select teacher from here.
+          </p>}
         </div>
       </div>
 
@@ -688,24 +698,24 @@ export function RecordWithNumberCard({page='entry'}) {
 
               <div>
                 <h2 className="lg:text-2xl text-lg font-bold text-amber-950">
-                  Select Student
+                  Select {userType === 'teacher' ? 'Student' : 'Teacher'}
                 </h2>
 
                 <p className="mt-1 text-gray-500 text-xs lg:text-sm">
-                  Choose a student from the list
+                  Choose a {userType === 'teacher' ? 'student' : 'teacher'} from the list
                 </p>
               </div>
             </div>
 
             {/* Select */}
             <CustomSelect
-              options={formatedStudents}
+              options={userType === 'teacher' ? formatedStudents : formattedTeachers}
               handler={handleSelect}
               handleOnChange
             />
 
             {/* Recent */}
-            <div>
+            {userType === 'teacher' && <div>
               <div className="mb-4 flex items-center gap-3">
                 <span className="font-semibold text-amber-950">Recent</span>
 
@@ -717,7 +727,6 @@ export function RecordWithNumberCard({page='entry'}) {
                   <div key={student?.id}>
                     <Link
                       href={page === 'entry' ? `/entry/${student?.id}?studentName=${student?.name}` : `/onlineclass/${student?.id}`}
-                      key={student}
                       className="flex w-full items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-4 shadow-sm transition hover:border-amber-200 hover:shadow-md"
                     >
                       <div className="flex items-center gap-4">
@@ -740,7 +749,7 @@ export function RecordWithNumberCard({page='entry'}) {
                   </p>
                 )}
               </div>
-            </div>
+            </div>}
 
             {/* Footer */}
             <div className="flex items-start gap-4 rounded-2xl border border-amber-100 bg-amber-50 p-4">
@@ -750,10 +759,10 @@ export function RecordWithNumberCard({page='entry'}) {
 
               <div>
                 <p className="font-semibold text-amber-900 text-sm">
-                  Can't find the student?
+                  Can't find the {userType === 'teacher' ?  'student' : 'teacher'}?
                 </p>
 
-                <p className="mt-1 text-sm text-gray-500 text-xs">
+                <p className="mt-1 text-sm text-gray-500 ">
                   Search with name , ITS or lastname
                 </p>
               </div>

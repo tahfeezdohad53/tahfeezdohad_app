@@ -129,7 +129,8 @@ function StudentContainer() {
         <StudentsFilter reset={resetFilteredGurfahStudents} handleFilterStudents={handleFilterStudents} />
       )}
 
-      <RecordWithNumberCard page="gurfah"/>
+      {user?.role === 'student' && <RecordWithNumberCard page="gurfah" userType="student"/>}
+      {user?.role === 'teacher' && <RecordWithNumberCard page="gurfah" userType="teacher"/>}
       <ScrollToTopButton />
 
       <div className="h-full">
