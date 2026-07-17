@@ -418,7 +418,7 @@ export function CallingFnProvider({ children }) {
       }
     });
     socket.on("online-broadcast", async ({ name, role, id }) => {
-      if (role === "teacher") {
+      if (role === "teacher" || role === 'admin') {
         querClient.setQueriesData({ queryKey: ["myTeachers"] }, (data) => {
           return data?.map((el) => {
             if (el._id !== id) return el;
@@ -448,9 +448,9 @@ export function CallingFnProvider({ children }) {
         });
       }
     });
-    socket.on("offline", async ({ name, role, id }) => {
+    // socket.on("offline", async ({ name, role, id }) => {
       
-    });
+    // });
 
     socket.on("end-call", async () => {
 
@@ -491,7 +491,7 @@ export function CallingFnProvider({ children }) {
       await turn();
     });
     socket.on("offline-broadcast", async ({id,role}) => {
-      if (role === "teacher") {
+      if (role === "teacher" || role === 'admin') {
         querClient.setQueryData(["myTeachers"], (data) => {
           return data?.map((el) => {
             if (el._id !== id) return el;
