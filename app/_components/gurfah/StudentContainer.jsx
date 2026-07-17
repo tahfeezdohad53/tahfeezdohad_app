@@ -18,14 +18,15 @@ import { IoClose } from "react-icons/io5";
 import { LuHeadphones } from "react-icons/lu";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { RecordWithNumberCard } from "../students/StudentsContainer";
+import { useAppProvider } from "../providers/AppProvider";
 
 function StudentContainer() {
   const { user, isFetching } = useUser();
+  const { filteredGurfahStudents,setGurfahFilteredStudents } = useAppProvider();
   const session = useSession();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [filteredStudents, setFilteredStudents] = useState([]);
   const { data: students } = useQuery({
     queryKey: ["myStudents", searchParams.get("batch")],
     queryFn: handleGetUser,
@@ -43,7 +44,7 @@ function StudentContainer() {
     enabled: !!user?.role && user?.role === "student",
   });
   // useEffect(() => {
-  //   setFilteredStudents(students ?? []);
+  //   setGurfahFilteredStudents(students ?? []);
   // }, [students]);
 
   async function handleGetUser() {
@@ -55,7 +56,7 @@ function StudentContainer() {
             withCredentials: true,
           },
         );
-        setFilteredStudents(res.data.students);
+        setGurfahFilteredStudents(res.data.students);
         return res.data.students;
       } else {
         const res = await axios.get(
@@ -74,9 +75,9 @@ function StudentContainer() {
   }
 
  function handleFilterStudents(value) {
-    if (value.length < 3) return setFilteredStudents(students);
-    setFilteredStudents(students);
-    setFilteredStudents(el => {
+    if (value.length < 3) return setGurfahFilteredStudents(students);
+    setGurfahFilteredStudents(students);
+    setGurfahFilteredStudents(el => {
       const isNumber = Number(value);
       if(isNumber){
         return el.filter((el) => {
@@ -94,8 +95,8 @@ function StudentContainer() {
           return firstName.includes(value.toLowerCase()) || lastName.includes(value.toLowerCase());
         })
       }})}
-      function resetFilteredStudents(){
-        setFilteredStudents(students);
+      function resetGurfahFilteredStudents(){
+        setGurfahFilteredStudents(students);
       }
   useEffect(() => {
     if (session.status === "loading") return;
@@ -122,10 +123,10 @@ function StudentContainer() {
         </div>
       )}
       {user?.role === "teacher" && students?.length > 0  && (
-        <StudentsFilter reset={resetFilteredStudents} handleFilterStudents={handleFilterStudents} />
+        <StudentsFilter reset={resetGurfahFilteredStudents} handleFilterStudents={handleFilterStudents} />
       )}
       {user?.role === "admin" && (
-        <StudentsFilter reset={resetFilteredStudents} handleFilterStudents={handleFilterStudents} />
+        <StudentsFilter reset={resetGurfahFilteredStudents} handleFilterStudents={handleFilterStudents} />
       )}
 
       <RecordWithNumberCard page="gurfah"/>
@@ -156,8 +157,8 @@ function StudentContainer() {
         <div className=" flex flex-col lg:grid grid-cols-2 gap-3 w-full ">
           {/* <div className="bg-(--card) flex-1 mt-5 rounded-lg shadow-(--shadow-lg)"> */}
           {(user?.role === "teacher" || user?.role === "admin") &&
-            filteredStudents?.length > 0 &&
-            filteredStudents.map((el) => (
+            filteredGurfahStudents?.length > 0 &&
+            filteredGurfahStudents.map((el) => (
               <StudentCard
                 profileImage={el?.profileImage}
                 key={el._id}

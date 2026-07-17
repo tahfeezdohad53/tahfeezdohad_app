@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import axios from "axios";
+import { useAppProvider } from "../providers/AppProvider";
 const Context = createContext(null);
 
 export function CallingFnProvider({ children }) {
@@ -38,6 +39,7 @@ export function CallingFnProvider({ children }) {
     recorderRef,
     isLap,
   } = useVideoCallContext();
+  const {setGurfahFilteredStudents} = useAppProvider();
   const { user } = useUser();
   const querClient = useQueryClient();
   const { peerConnection } = useVideoCallContext();
@@ -432,14 +434,19 @@ export function CallingFnProvider({ children }) {
       }
 
       if (role === "student") {
-        querClient.setQueriesData({ queryKey: ["myStudents"] }, (data) => {
-          const updatedData = data?.map((el) => {
-            if (el._id !== id) return el;
-            else return { ...el, status: "online" };
-          });
-          return updatedData;
-        });
-
+        // querClient.setQueriesData({ queryKey: ["myStudents"] }, (data) => {
+        //   const updatedData = data?.map((el) => {
+        //     if (el._id !== id) return el;
+        //     else return { ...el, status: "online" };
+        //   });
+        //   return updatedData;
+        // });
+         setGurfahFilteredStudents((students) => {
+           return students.map((el) => {
+             if (el._id === id) return { ...el, status: "online" };
+             else return el;
+           });
+         });
         querClient.setQueriesData({ queryKey: ["gurfahData"] }, (data) => {
           if (data?.user?._id === id) {
             console.log("running inside");
@@ -500,12 +507,18 @@ export function CallingFnProvider({ children }) {
         });
       }
       if (role === "student") {
-        querClient.setQueriesData({ queryKey: ["myStudents"] }, (data) => {
-          const updatedData = data?.map((el) => {
-            if (el._id !== id) return el;
-            else return { ...el, status: "offline" };
+        // querClient.setQueriesData({ queryKey: ["myStudents"] }, (data) => {
+        //   const updatedData = data?.map((el) => {
+        //     if (el._id !== id) return el;
+        //     else return { ...el, status: "offline" };
+        //   });
+        //   return updatedData;
+        // });
+        setGurfahFilteredStudents((students) => {
+          return students.map(el => {
+            if(el._id === id) return {...el,status:'offline'};
+            else return el;
           });
-          return updatedData;
         });
       }
       querClient.setQueriesData({ queryKey: ["gurfahData"] }, (data) => {
