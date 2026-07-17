@@ -417,31 +417,26 @@ export function CallingFnProvider({ children }) {
         candidates.current.push(candidate);
       }
     });
-    socket.on("online", async ({ name, role, id }) => {
+    socket.on("online-broadcast", async ({ name, role, id }) => {
       if (role === "teacher") {
         querClient.setQueriesData({ queryKey: ["myTeachers"] }, (data) => {
-          console.log(data);
           return data?.map((el) => {
             if (el._id !== id) return el;
             else return { ...el, status: "online" };
           });
         });
         querClient.setQueriesData({ queryKey: ["gurfahData"] }, (data) => {
-          if (data?.user?._id === id)
-            return { user: { ...data?.user, status: "online" } };
+          if (data?.user?._id === id) return { user: { ...data?.user, status: "online" } };
+          else return data;
         });
       }
 
       if (role === "student") {
         querClient.setQueriesData({ queryKey: ["myStudents"] }, (data) => {
-          console.log("students data online");
-          console.log(data);
           const updatedData = data?.map((el) => {
             if (el._id !== id) return el;
             else return { ...el, status: "online" };
           });
-          console.log("after");
-          console.log(updatedData);
           return updatedData;
         });
 
@@ -456,30 +451,7 @@ export function CallingFnProvider({ children }) {
       }
     });
     socket.on("offline", async ({ name, role, id }) => {
-      if (role === "teacher") {
-        querClient.setQueryData(["myTeachers"], (data) => {
-          console.log("teachers data");
-          console.log(data);
-          return data?.map((el) => {
-            if (el._id !== id) return el;
-            else return { ...el, status: "offline" };
-          });
-        });
-      }
-      if (role === "student") {
-        querClient.setQueriesData({ queryKey: ["myStudents"] }, (data) => {
-          const updatedData = data?.map((el) => {
-            if (el._id !== id) return el;
-            else return { ...el, status: "offline" };
-          });
-          return updatedData;
-        });
-      }
-      querClient.setQueriesData({ queryKey: ["gurfahData"] }, (data) => {
-        console.log("runnning");
-        if (data?.user?._id === id) console.log("runnning inside");
-        return { user: { ...data?.user, status: "offline" } };
-      });
+      
     });
 
     socket.on("end-call", async () => {
@@ -518,41 +490,65 @@ export function CallingFnProvider({ children }) {
       localMedia.current.getTracks().forEach((track) => track.stop());
       await turn();
     });
-    socket.on("offline-broadcast", async ({id}) => {
-      if (id !==  targetUserRef.current) return;
-       if (audioRef.current) {
-         audioRef.current.loop = false;
-         audioRef.current.pause();
-         audioRef.current.currentTime = 0;
-       }
-      // if(localVideoRef?.current)localVideoRef.current
-      setIsCalling(false);
-      setIsIncoming(false);
-      setShowCallControls(false);
-      setIsInCall(false);
-      setRemoteMedia(null);
-      candidates.current = [];
-      if (user?.role !== "student" && recorderRef.current) {
-        recorderRef.current.stop();
-        if (pathname.includes("onlineclass")) {
-          const lastIndex = pathname.lastIndexOf("/");
-          const refactoredPathname = pathname.slice(0, lastIndex);
-          router.replace(`${refactoredPathname}/${targetUserRef.current}`, {
-            scroll: false,
+    socket.on("offline-broadcast", async ({id,role}) => {
+      if (role === "teacher") {
+        querClient.setQueryData(["myTeachers"], (data) => {
+          return data?.map((el) => {
+            if (el._id !== id) return el;
+            else return { ...el, status: "offline" };
           });
-        } else {
-          const firstIndex = pathname.indexOf("/");
-          const refactoredPathname = pathname.slice(0, firstIndex);
-          router.replace(
-            `${refactoredPathname}/onlineclass/${targetUserRef.current}`,
-            { scroll: false },
-          );
-        }
-      } else {
-        // window.location.reload();
+        });
       }
-      localMedia.current.getTracks().forEach((track) => track.stop());
-      await turn();
+      if (role === "student") {
+        querClient.setQueriesData({ queryKey: ["myStudents"] }, (data) => {
+          const updatedData = data?.map((el) => {
+            if (el._id !== id) return el;
+            else return { ...el, status: "offline" };
+          });
+          return updatedData;
+        });
+      }
+      querClient.setQueriesData({ queryKey: ["gurfahData"] }, (data) => {
+        if(data?.user?._id === id) return { user: { ...data?.user, status: "offline" } };
+        else return data;
+      });
+      if (id ===  targetUserRef.current){
+         if (audioRef.current) {
+           audioRef.current.loop = false;
+           audioRef.current.pause();
+           audioRef.current.currentTime = 0;
+         }
+         // if(localVideoRef?.current)localVideoRef.current
+         setIsCalling(false);
+         setIsIncoming(false);
+         setShowCallControls(false);
+         setIsInCall(false);
+         setVideoCallSeconds(0);
+         setRemoteMedia(null);
+         candidates.current = [];
+         if (user?.role !== "student" && recorderRef.current) {
+           recorderRef.current.stop();
+           if (pathname.includes("onlineclass")) {
+             const lastIndex = pathname.lastIndexOf("/");
+             const refactoredPathname = pathname.slice(0, lastIndex);
+             router.replace(`${refactoredPathname}/${targetUserRef.current}`, {
+               scroll: false,
+             });
+           } else {
+             const firstIndex = pathname.indexOf("/");
+             const refactoredPathname = pathname.slice(0, firstIndex);
+             router.replace(
+               `${refactoredPathname}/onlineclass/${targetUserRef.current}`,
+               { scroll: false },
+             );
+           }
+         } else {
+           // window.location.reload();
+         }
+         localMedia.current.getTracks().forEach((track) => track.stop());
+         await turn();
+      }
+      
     });
   }, [socket]);
 
