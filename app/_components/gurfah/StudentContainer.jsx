@@ -109,7 +109,7 @@ function StudentContainer() {
 
   return (
     <div className="flex flex-col min-w-full max-h-full ">
-      {(user?.role === "teacher" || user?.role === 'admin') && (
+      {(user?.role === "teacher" || user?.role === "admin") && (
         <div className="mb-5 bg-(image:--gradient-primary) rounded-xl p-5 flex items-center gap-5 w-full ">
           <div className="p-3 text-white bg-(--primary-light) rounded-lg">
             <FaGraduationCap className="text-2xl lg:4xl" />
@@ -122,15 +122,38 @@ function StudentContainer() {
           </div>
         </div>
       )}
-      {user?.role === "teacher" && students?.length > 0  && (
-        <StudentsFilter reset={resetFilteredGurfahStudents} handleFilterStudents={handleFilterStudents} />
+      {user?.role === "student" && (
+        <div className="mb-5 bg-(image:--gradient-primary) rounded-xl p-5 flex items-center gap-5 w-full ">
+          <div className="p-3 text-white bg-(--primary-light) rounded-lg">
+            <FaGraduationCap className="text-2xl lg:4xl" />
+          </div>
+          <div>
+            <p className="text-white">Your Muhaffiz</p>
+            <p className="text-white/80 text-xs">
+              Contact your assigned Muhaffiz from here
+            </p>
+          </div>
+        </div>
+      )}
+      {user?.role === "teacher" && students?.length > 0 && (
+        <StudentsFilter
+          reset={resetFilteredGurfahStudents}
+          handleFilterStudents={handleFilterStudents}
+        />
       )}
       {user?.role === "admin" && (
-        <StudentsFilter reset={resetFilteredGurfahStudents} handleFilterStudents={handleFilterStudents} />
+        <StudentsFilter
+          reset={resetFilteredGurfahStudents}
+          handleFilterStudents={handleFilterStudents}
+        />
       )}
 
-      {user?.role === 'student' && <RecordWithNumberCard page="gurfah" userType="student"/>}
-      {user?.role === 'teacher' && <RecordWithNumberCard page="gurfah" userType="teacher"/>}
+      {user?.role === "student" && (
+        <RecordWithNumberCard page="gurfah" userType="student" />
+      )}
+      {user?.role === "teacher" && (
+        <RecordWithNumberCard page="gurfah" userType="teacher" />
+      )}
       <ScrollToTopButton />
 
       <div className="h-full">
@@ -138,19 +161,6 @@ function StudentContainer() {
             <p className="font-bold text-lg">Your Assigned Teacher &</p>
             <p className="text-xl font-bold"> Proxy Teacher</p>
           </div> */}
-        {user?.role === "student" && (
-          <div className="mb-5 bg-(image:--gradient-primary) rounded-xl p-5 flex items-center gap-5 w-full ">
-            <div className="p-3 text-white bg-(--primary-light) rounded-lg">
-              <FaGraduationCap className="text-2xl lg:4xl" />
-            </div>
-            <div>
-              <p className="text-white">Your Muhaffiz</p>
-              <p className="text-white/80 text-xs">
-                Contact your assigned Muhaffiz from here
-              </p>
-            </div>
-          </div>
-        )}
 
         {user?.role === "student" && teachers?.length < 1 && (
           <NoTeacherAssigned />
@@ -181,11 +191,9 @@ function StudentContainer() {
               />
             ))}
         </div>
-          {students?.length < 1 && user?.role === "teacher" && (
-            
-              <NoStudentsAssigned />
-            
-          )}
+        {students?.length < 1 && user?.role === "teacher" && (
+          <NoStudentsAssigned />
+        )}
       </div>
     </div>
   );
