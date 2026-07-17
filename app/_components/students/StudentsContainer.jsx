@@ -609,7 +609,7 @@ export default StudentsContainer;
 
 import { HiOutlineUserAdd } from "react-icons/hi";
 
-function RecordWithNumberCard() {
+export function RecordWithNumberCard({page='entry'}) {
   const [showSelector,setShowSelector] = useState(false);
   const {students} = useAppProvider();
   const router = useRouter();
@@ -643,7 +643,8 @@ function RecordWithNumberCard() {
       // alert(JSON.stringify(newArr))
       localStorage.setItem('recentStudents',JSON.stringify(newArr));
     }
-    router.replace(`/entry/${id}?studentName=${studentName}`);
+    if(page === 'entry')router.replace(`/entry/${id}?studentName=${studentName}`);
+    if(page === 'gurfah')router.replace(`/onlineclass/${id}`);
   }
   return (
     <div className="my-5 flex items-center justify-between rounded-3xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
@@ -715,7 +716,7 @@ function RecordWithNumberCard() {
                 {recentStudents?.map((student) => (
                   <div key={student?.id}>
                     <Link
-                      href={`/entry/${student?.id}?studentName=${student?.name}`}
+                      href={page === 'entry' ? `/entry/${student?.id}?studentName=${student?.name}` : `/onlineclass/${student?.id}`}
                       key={student}
                       className="flex w-full items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-4 shadow-sm transition hover:border-amber-200 hover:shadow-md"
                     >
@@ -753,7 +754,7 @@ function RecordWithNumberCard() {
                 </p>
 
                 <p className="mt-1 text-sm text-gray-500 text-xs">
-                  Try searching with a different name.
+                  Search with name , ITS or lastname
                 </p>
               </div>
             </div>

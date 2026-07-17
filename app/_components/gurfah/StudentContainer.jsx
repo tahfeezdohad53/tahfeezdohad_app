@@ -17,6 +17,7 @@ import { HiUserGroup } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
 import { LuHeadphones } from "react-icons/lu";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
+import { RecordWithNumberCard } from "../students/StudentsContainer";
 
 function StudentContainer() {
   const { user, isFetching } = useUser();
@@ -120,6 +121,8 @@ function StudentContainer() {
       {user?.role === "admin" && (
         <StudentsFilter handleFilterStudents={handleFilterStudents} />
       )}
+
+      <RecordWithNumberCard page="gurfah"/>
       <ScrollToTopButton />
 
       <div className="h-full">
@@ -195,7 +198,7 @@ function StudentCard({ name, id, status, profileImage }) {
     >
       <div className="flex items-center gap-6">
         <div className=" min-h-13 min-w-13 flex justify-center items-center relative rounded-full bg-(--bg-tertiary)/50">
-        <div className={`h-2 w-2 z-999 absolute right-1 top-1 rounded-full ${status === 'online' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+        <div className={`h-2 w-2 absolute right-1 top-1 rounded-full ${status === 'online' ? 'bg-green-500' : 'bg-red-500'}`}></div>
           {!profileImage && (
             <div className="">
               <FaUser className="text-2xl" />
