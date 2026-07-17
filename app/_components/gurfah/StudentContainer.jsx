@@ -22,7 +22,7 @@ import { useAppProvider } from "../providers/AppProvider";
 
 function StudentContainer() {
   const { user, isFetching } = useUser();
-  const { filteredGurfahStudents,setGurfahFilteredStudents } = useAppProvider();
+  const { filteredGurfahStudents,setFilteredGurfahStudents } = useAppProvider();
   const session = useSession();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -44,7 +44,7 @@ function StudentContainer() {
     enabled: !!user?.role && user?.role === "student",
   });
   // useEffect(() => {
-  //   setGurfahFilteredStudents(students ?? []);
+  //   setFilteredGurfahStudents(students ?? []);
   // }, [students]);
 
   async function handleGetUser() {
@@ -56,7 +56,7 @@ function StudentContainer() {
             withCredentials: true,
           },
         );
-        setGurfahFilteredStudents(res.data.students);
+        setFilteredGurfahStudents(res.data.students);
         return res.data.students;
       } else {
         const res = await axios.get(
@@ -75,9 +75,9 @@ function StudentContainer() {
   }
 
  function handleFilterStudents(value) {
-    if (value.length < 3) return setGurfahFilteredStudents(students);
-    setGurfahFilteredStudents(students);
-    setGurfahFilteredStudents(el => {
+    if (value.length < 3) return setFilteredGurfahStudents(students);
+    setFilteredGurfahStudents(students);
+    setFilteredGurfahStudents(el => {
       const isNumber = Number(value);
       if(isNumber){
         return el.filter((el) => {
@@ -95,8 +95,8 @@ function StudentContainer() {
           return firstName.includes(value.toLowerCase()) || lastName.includes(value.toLowerCase());
         })
       }})}
-      function resetGurfahFilteredStudents(){
-        setGurfahFilteredStudents(students);
+      function resetFilteredGurfahStudents(){
+        setFilteredGurfahStudents(students);
       }
   useEffect(() => {
     if (session.status === "loading") return;
@@ -123,10 +123,10 @@ function StudentContainer() {
         </div>
       )}
       {user?.role === "teacher" && students?.length > 0  && (
-        <StudentsFilter reset={resetGurfahFilteredStudents} handleFilterStudents={handleFilterStudents} />
+        <StudentsFilter reset={resetFilteredGurfahStudents} handleFilterStudents={handleFilterStudents} />
       )}
       {user?.role === "admin" && (
-        <StudentsFilter reset={resetGurfahFilteredStudents} handleFilterStudents={handleFilterStudents} />
+        <StudentsFilter reset={resetFilteredGurfahStudents} handleFilterStudents={handleFilterStudents} />
       )}
 
       <RecordWithNumberCard page="gurfah"/>

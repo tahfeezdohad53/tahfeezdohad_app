@@ -39,7 +39,7 @@ export function CallingFnProvider({ children }) {
     recorderRef,
     isLap,
   } = useVideoCallContext();
-  const {setGurfahFilteredStudents} = useAppProvider();
+  const {setFilteredGurfahStudents} = useAppProvider();
   const { user } = useUser();
   const querClient = useQueryClient();
   const { peerConnection } = useVideoCallContext();
@@ -441,7 +441,7 @@ export function CallingFnProvider({ children }) {
         //   });
         //   return updatedData;
         // });
-         setGurfahFilteredStudents((students) => {
+         setFilteredGurfahStudents((students) => {
            return students.map((el) => {
              if (el._id === id) return { ...el, status: "online" };
              else return el;
@@ -514,7 +514,7 @@ export function CallingFnProvider({ children }) {
         //   });
         //   return updatedData;
         // });
-        setGurfahFilteredStudents((students) => {
+        setFilteredGurfahStudents((students) => {
           return students.map(el => {
             if(el._id === id) return {...el,status:'offline'};
             else return el;
