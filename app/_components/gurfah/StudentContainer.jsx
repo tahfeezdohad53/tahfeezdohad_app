@@ -32,7 +32,7 @@ function StudentContainer() {
     refetchOnWindowFocus: false,
     refetchOnMount:false,
     placeholderData: keepPreviousData,
-    enabled: !!user?.role && user?.role !== "student" && !!searchParams.get('batch'),
+    enabled: !!user?.role && user?.role !== "student",
   });
   const { data: teachers } = useQuery({
     queryKey: ["myTeachers"],
