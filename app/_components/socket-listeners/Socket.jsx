@@ -99,7 +99,6 @@ export function CallingFnProvider({ children }) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
-    targetUserRef.current = null;
     setIsCalling(false);
     setIsIncoming(false);
     setIsInCall(false);
@@ -129,6 +128,8 @@ export function CallingFnProvider({ children }) {
       localMedia.current.getTracks().forEach((track) => track.stop());
     }
     socket.emit("end-call", { to: targetUserRef.current });
+    targetUserRef.current = null;
+
     await turn();
   }
 
