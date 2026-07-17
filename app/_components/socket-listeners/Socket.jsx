@@ -518,6 +518,42 @@ export function CallingFnProvider({ children }) {
       localMedia.current.getTracks().forEach((track) => track.stop());
       await turn();
     });
+    socket.on("offline-broadcast", async ({id}) => {
+      if (id !==  targetUserRef.current) return;
+       if (audioRef.current) {
+         audioRef.current.loop = false;
+         audioRef.current.pause();
+         audioRef.current.currentTime = 0;
+       }
+      // if(localVideoRef?.current)localVideoRef.current
+      setIsCalling(false);
+      setIsIncoming(false);
+      setShowCallControls(false);
+      setIsInCall(false);
+      setRemoteMedia(null);
+      candidates.current = [];
+      if (user?.role !== "student" && recorderRef.current) {
+        recorderRef.current.stop();
+        if (pathname.includes("onlineclass")) {
+          const lastIndex = pathname.lastIndexOf("/");
+          const refactoredPathname = pathname.slice(0, lastIndex);
+          router.replace(`${refactoredPathname}/${targetUserRef.current}`, {
+            scroll: false,
+          });
+        } else {
+          const firstIndex = pathname.indexOf("/");
+          const refactoredPathname = pathname.slice(0, firstIndex);
+          router.replace(
+            `${refactoredPathname}/onlineclass/${targetUserRef.current}`,
+            { scroll: false },
+          );
+        }
+      } else {
+        // window.location.reload();
+      }
+      localMedia.current.getTracks().forEach((track) => track.stop());
+      await turn();
+    });
   }, [socket]);
 
   return (
