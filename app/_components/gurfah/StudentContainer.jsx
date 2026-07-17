@@ -30,19 +30,21 @@ function StudentContainer() {
     queryKey: ["myStudents", searchParams.get("batch")],
     queryFn: handleGetUser,
     refetchOnWindowFocus: false,
+    refetchOnMount:false,
     placeholderData: keepPreviousData,
-    enabled: !!user?.role && user?.role !== "student",
+    enabled: !!user?.role && user?.role !== "student" && !!searchParams.get('batch'),
   });
   const { data: teachers } = useQuery({
     queryKey: ["myTeachers"],
     queryFn: handleGetUser,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
     placeholderData: keepPreviousData,
     enabled: !!user?.role && user?.role === "student",
   });
-  useEffect(() => {
-    setFilteredStudents(students ?? []);
-  }, [students]);
+  // useEffect(() => {
+  //   setFilteredStudents(students ?? []);
+  // }, [students]);
 
   async function handleGetUser() {
     try {
@@ -62,7 +64,7 @@ function StudentContainer() {
             withCredentials: true,
           },
         );
-        console.log(res.data);
+        // console.log(res.data);
         return res.data.teachers;
       }
     } catch (err) {
