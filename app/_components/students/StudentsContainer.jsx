@@ -654,7 +654,7 @@ export function RecordWithNumberCard({page='entry',userType="teacher"}) {
     if(page === 'gurfah')router.replace(`/onlineclass/${id}`);
   }
   return (
-    <div className="my-5 flex items-center justify-between rounded-3xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
+    <div className="mb-5 mt-2 flex items-center justify-between rounded-3xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
       <div className="flex w-[72%] items-center gap-4">
         <div>
           <div className="flex p-3 items-center justify-center rounded-full bg-amber-100">
@@ -681,7 +681,7 @@ export function RecordWithNumberCard({page='entry',userType="teacher"}) {
         className="flex items-center hover:cursor-pointer duration-300 ease-in-out transition-all gap-2 rounded-xl bg-amber-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-amber-800 active:scale-95"
       >
         <HiOutlineUserAdd size={18} />
-        Select
+        
       </button>
 
       {showSelector && (
