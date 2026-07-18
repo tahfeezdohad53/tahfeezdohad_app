@@ -27,7 +27,23 @@ import { HiXMark } from "react-icons/hi2";
 function VideoCallUI() {
   const {user} = useUser();
   const videoRef = useRef(null);
-  const {localVideoRef,setShowCallControls,showCallControls,localMedia,isCalling,isIncoming,isInCall,callerId,remoteVideoRef,setVideoCallSeconds,videoCallSeconds} = useVideoCallContext();
+  const {
+    adminMediaOfferRefOne,
+    adminMediaOfferReftwo,
+    localVideoRef,
+    setShowCallControls,
+    showCallControls,
+    localMedia,
+    isCalling,
+    isIncoming,
+    isInCall,
+    callerId,
+    remoteVideoRef,
+    setVideoCallSeconds,
+    videoCallSeconds,
+    // isAdminJoined,
+    // setIsAdminJoined,
+  } = useVideoCallContext();
   const {dummyAnsCall,acceptCall,endCall} = useCallingFn();
   const [isMute,setIsMute] = useState(false);
   const [isVideoOff,setIsVideoOff] = useState(false)
@@ -86,9 +102,14 @@ function VideoCallUI() {
       stream?.getTracks().forEach((track) => track.stop());
     };
   }, [isCalling]);
+
+  // if(isAdminJoined)return <div className="fixed h-[90%] w-full inset-0 z-10000 lg:flex">
+  //   <video ref={adminMediaOfferRefOne} src="" className="bg-black w-full h-1/2 lg:h-full object-contain" ></video>
+  //   <video ref={adminMediaOfferReftwo} src="" className="bg-gray-500 w-full h-1/2 lg:h-full object-contain" ></video>
+  // </div>;
   return (
     <>
-      {showCallControls && (
+      {(showCallControls || isAdminJoined) && (
         <div className="h-[10%] w-full fixed z-9999 bottom-0 left-0 bg-black backdrop-blur-md border-t border-white/10 flex items-center justify-between px-6">
           {/* Timer */}
           <div

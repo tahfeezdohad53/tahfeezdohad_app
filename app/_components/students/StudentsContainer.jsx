@@ -583,12 +583,12 @@ function StudentsContainer() {
           </Modal>
         )}
         <ContextMenu>
-          {user.role === "admin" && (
+          
             <Item onClick={() => setModal({ show: true, type: "diary" })}>
               <FaEdit className="mr-2" /> change diary
             </Item>
-          )}
-          {user.role === "admin" && <Separator />}
+          
+          <Separator />
 
           <Item onClick={() => setModal({ show: true, type: "proxy" })}>
             <FaEdit className="mr-2" /> assign proxy
