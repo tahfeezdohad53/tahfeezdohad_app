@@ -237,7 +237,7 @@ function StudentsContainer() {
           <p className="text-white">
             {user.name
               .split(" ")
-              .slice(2, user.name.split(" ").length)
+              .slice(1, user.name.split(" ").length)
               .join(" ")}
             &apos;s diary
           </p>
