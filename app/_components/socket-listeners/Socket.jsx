@@ -96,6 +96,7 @@ export function CallingFnProvider({ children }) {
     };
   }
   async function endCall() {
+      document.exitFullscreen();
     if (audioRef.current) {
       audioRef.current.loop = false;
       audioRef.current.pause();
@@ -233,6 +234,7 @@ export function CallingFnProvider({ children }) {
     // await turn();
     setCallingTo(receiverId);
     targetUserRef.current = receiverId;
+    await document.documentElement.requestFullscreen();
     localMedia.current = await navigator.mediaDevices.getUserMedia({
       video: {
         width: { ideal: 1920 },
@@ -334,6 +336,8 @@ export function CallingFnProvider({ children }) {
       targetUserRef.current = caller;
 
       setRemoteOffer(offer);
+    await document.documentElement.requestFullscreen();
+
       localMedia.current = await navigator.mediaDevices.getUserMedia({
         video: {
   width: { ideal: 1920 },
@@ -460,7 +464,7 @@ export function CallingFnProvider({ children }) {
     // });
 
     socket.on("end-call", async () => {
-
+      document.exitFullscreen();
       if (user?.role === "student") setVideoCallSeconds(0);
        if (audioRef.current) {
          audioRef.current.loop = false;
