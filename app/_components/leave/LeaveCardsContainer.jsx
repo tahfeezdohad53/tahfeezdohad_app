@@ -416,7 +416,7 @@ function LeaveCardsContainer({ setShow, show }) {
                   </p>
 
                   <div>
-                    <p className="text-xs text-gray-500">From Date</p>
+                    <p className="text-xs text-gray-500">From</p>
                     <h3 className="font-semibold text-xs">
                       {format(showLeaveDetails.details.from, "dd MMM, yyyy")}
                     </h3>
@@ -429,7 +429,7 @@ function LeaveCardsContainer({ setShow, show }) {
                   </p>
 
                   <div>
-                    <p className="text-xs text-gray-500">To Date</p>
+                    <p className="text-xs text-gray-500">To</p>
                     <h3 className="font-semibold text-xs">
                       {format(showLeaveDetails.details.to, "dd MMM, yyyy")}
                     </h3>
