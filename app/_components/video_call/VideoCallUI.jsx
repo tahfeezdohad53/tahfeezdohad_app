@@ -28,8 +28,6 @@ function VideoCallUI() {
   const {user} = useUser();
   const videoRef = useRef(null);
   const {
-    adminMediaOfferRefOne,
-    adminMediaOfferReftwo,
     localVideoRef,
     setShowCallControls,
     showCallControls,
@@ -41,8 +39,6 @@ function VideoCallUI() {
     remoteVideoRef,
     setVideoCallSeconds,
     videoCallSeconds,
-    // isAdminJoined,
-    // setIsAdminJoined,
   } = useVideoCallContext();
   const {dummyAnsCall,acceptCall,endCall} = useCallingFn();
   const [isMute,setIsMute] = useState(false);
@@ -109,7 +105,7 @@ function VideoCallUI() {
   // </div>;
   return (
     <>
-      {(showCallControls || isAdminJoined) && (
+      {(showCallControls) && (
         <div className="h-[10%] w-full fixed z-9999 bottom-0 left-0 bg-black backdrop-blur-md border-t border-white/10 flex items-center justify-between px-6">
           {/* Timer */}
           <div
