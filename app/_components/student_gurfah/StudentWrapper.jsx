@@ -73,7 +73,7 @@ function StudentWrapper() {
         `${process.env.NEXT_PUBLIC_URL}/gurfah/get/${id}`,
         { withCredentials: true },
       );
-      console.log(res.data)
+      // console.log(res.data)
       return res.data;
     } catch (err) {
       console.log(err);
@@ -211,12 +211,12 @@ function StudentWrapper() {
           </div>
 
           <div>
-            {data?.profileImage && (
+            {data?.user?.profileImage && (
               <div className="relative h-10 w-10 rounded-full overflow-hidden">
-                <Image src={data?.profileImage} alt="user photo" fill />
+                <Image src={data?.user?.profileImage} alt="user photo" fill />
               </div>
             )}
-            {!data?.profileImage && (
+            {!data?.user?.profileImage && (
               <FaUserCircle className="text-4xl text-amber-950" />
             )}
           </div>
