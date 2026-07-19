@@ -248,6 +248,18 @@ function SelectStudent({onclose}){
   useEffect(() => {
     async function submitVideoCallRecording() {
       if(!id) return setError(true);
+      const url = URL.createObjectURL(onlineClassBlob);
+      const audio = new Audio(url);
+      let dur;
+      await new Promise((resolve,reject) => {
+        audio.onloadedmetadata = () => {
+          dur = audio.duration / 60;
+          resolve();
+        }
+        audio.onerror = () => {
+          reject();
+        }
+      })
       onclose();
       setOnlineClassBlob(null);
       setVideoCallSeconds(0);
@@ -271,7 +283,7 @@ function SelectStudent({onclose}){
           {
             isOnline: true,
             url: data.url,
-            duration: videoCallSeconds / 60,
+            duration: dur / 60,
           },
           { withCredentials: true },
         );
@@ -321,7 +333,9 @@ function SelectStudent({onclose}){
         {(error && !id) && <p className="text-xs text-red-500 mt-1 font-bold">please select a student</p>}
       </div>
       <button
-        onClick={() => recorderRef?.current?.stop?.()}
+        onClick={() => {
+          if(id) recorderRef?.current?.stop?.();
+        }}
         className="bg-(image:--gradient-primary) text-white p-2 rounded-md"
       >
         Submit Recording
