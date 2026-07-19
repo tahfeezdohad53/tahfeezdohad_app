@@ -668,7 +668,7 @@ export function RecordWithNumberCard({page='entry',userType="teacher"}) {
           </h3>
 
           {userType === 'teacher' && <p className="mt-1 font-semibold text-xs leading-5 text-amber-800/80">
-            Student not in your diary? select from here.
+            Select student from here.
           </p>}
           {userType === 'student' && <p className="mt-1 text-xs leading-5 text-amber-800/80">
              select teacher from here.
