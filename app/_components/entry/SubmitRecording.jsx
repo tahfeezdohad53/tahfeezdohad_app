@@ -21,7 +21,8 @@ function SubmitRecording({
   setTotalSeconds,
   setIsPause,
   setIsRecording,
-  setvideoCallSeconds
+  setvideoCallSeconds,
+  audioChunks
 }) {
   return (
     <div className="flex justify-center flex-col items-center gap-6 order py-3 px-5 border-(--border) h-full rounded-2xl hadow-2xl">
@@ -85,15 +86,12 @@ function SubmitRecording({
         <button
           disabled={isSubmitting}
           onClick={() => {
-            setOnlineClassBlob?.(null);
-            setOnlineClassBlobUrl?.("");
             setAudio?.(null);
             setClientAudioUrl?.("");
             setIsRecorded?.(false);
             setTotalSeconds?.(0);
             setIsPause?.(false);
-            setIsRecording?.(false);
-            setvideoCallSeconds?.(0);
+            setIsRecording?.(false);  
           }}
           className="relative flex items-center gap-2 justify-center bg-(image:--gradient-danger) mt-5 hover:cursor-pointer hover:scale-102 ease-in-out duration-300 transition-all text-white shadow-lg py-4 rounded-md w-full"
         >

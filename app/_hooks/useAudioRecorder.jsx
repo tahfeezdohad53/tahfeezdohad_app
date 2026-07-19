@@ -19,7 +19,7 @@ function useAudioRecorder() {
     const {onlineClassBlob,setOnlineClassBlobUrl,setOnlineClassBlob,videoCallSeconds,setVideoCallSeconds} = useVideoCallContext();
     const router = useRouter();
 
-    let audioChunks = [];
+    let audioChunks = useRef([]);;
     const recorder = useRef(null);
     const interval = useRef(null);
     const stream = useRef(null);
@@ -30,6 +30,7 @@ function useAudioRecorder() {
     
      async function startRecording() {
        setIsRecording(true);
+       audioChunks.current = [];
        let wakeLock;
        try{
           wakeLock = await navigator.wakeLock.request('screen');
@@ -50,18 +51,18 @@ function useAudioRecorder() {
          setTotalSeconds((seconds) => seconds + 1);
        }, 1000);
 
-       console.log("recording");
+      //  console.log("recording");
        recorder.current = new MediaRecorder(stream.current, {
          mimeType: "audio/webm;codecs=opus",
          audioBitsPerSecond: 256000,
        });
        recorder.current.ondataavailable = (e) => {
          // console.log('data avialable')
-         audioChunks.push(e.data);
+         audioChunks.current.push(e.data);
        };
        recorder.current.onstop = (e) => {
-         const blob = new Blob(audioChunks, { type: "audio/webm" });
-         console.log(blob.size / 1024 / 1024);
+         const blob = new Blob(audioChunks.current, { type: "audio/webm" });
+        //  console.log(blob.size / 1024 / 1024);
          setAudioSize(Number((blob.size / 1024 / 1024).toFixed(1)));
          const url = URL.createObjectURL(blob);
          setClientAudioUrl(url); 
@@ -109,47 +110,46 @@ function useAudioRecorder() {
       const toastId = 'uploading'
       try{
         // console.log(data.signedUrl)
+        toast.success('your recording will be submitted');
+        let blob = audio;
+        setAudio(null)
+        setIsRecording(false);
+        setIsRecorded(false);
+        setClientAudioUrl('');
+        router.replace('/students');
         const { data } = await axios.get(
           `${process.env.NEXT_PUBLIC_URL}/recording/signedToken`,{withCredentials:true}
         );
-        let blob;
-        if (!onlineClassBlob) blob = audio;
-        if (onlineClassBlob) {
-          blob = onlineClassBlob;
-        }
         await axios.put(data.signedUrl, blob, {
           headers: {
             "Content-Type": "audio/webm",
           },
-          onUploadProgress: (progress) => {
-            const percent = Math.round(
-              (progress.loaded * 100) / progress.total,
-            );
+          // onUploadProgress: (progress) => {
+          //   const percent = Math.round(
+          //     (progress.loaded * 100) / progress.total,
+          //   );
 
-            toast.loading(`Uploading... ${percent}%`, {
-              id: toastId,
-            });
+          //   toast.loading(`Uploading... ${percent}%`, {
+          //     id: toastId,
+          //   });
 
-          },
+          // },
         });
         await axios.post(
           `${process.env.NEXT_PUBLIC_URL}/recording/create/${studentId}`,
           {
-            isOnline: onlineClassBlob ? true : false,
+            isOnline: false,
             url: data.url,
-            duration: onlineClassBlob ? videoCallSeconds / 60 : totalSeconds / 60,
+            duration: totalSeconds / 60,
           },{withCredentials:true}
         );
         toast.success("Upload complete!", {
           id: toastId,
         });
-        setOnlineClassBlob(null);
-        setVideoCallSeconds(0);
-        setOnlineClassBlobUrl("");
-        router.replace('/students')
-            // setTimeout(() => {
-            //   if (onlineClassBlob) window.location.reload();
-            // }, 1000);
+        // setOnlineClassBlob(null);
+        // setVideoCallSeconds(0);
+        // setOnlineClassBlobUrl("");
+            
       }catch(err){
         console.log(err);
         toast.error("Upload failed!", {
@@ -173,6 +173,7 @@ function useAudioRecorder() {
         minutes,
         seconds,
         audioSize,
+        audioChunks
       },
 
       actions: {

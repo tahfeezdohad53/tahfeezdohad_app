@@ -38,6 +38,7 @@ function RecordingWrapper({studentName,studentId}) {
         minutes,
         seconds,
         audioSize,
+        audioChunks
       },
 
       actions: {
@@ -81,10 +82,10 @@ function RecordingWrapper({studentName,studentId}) {
     
     // return <StartRecording />
     // return <RecordingInProgress hours={hours} minutes={minutes} seconds={seconds} isPause={isPause} handlePause={handlePause} handleResume={handleResume}/>
-    if (!isRecording && !isRecorded && !onlineClassBlobUrl){
+    if (!isRecording && !isRecorded){
         return<StartRecording startRecording={startRecording} studentName={studentName}/>
     }
-    if (isRecording && !onlineClassBlobUrl){
+    if (isRecording){
         return (
           <RecordingInProgress
             studentName={studentName}
@@ -115,6 +116,7 @@ function RecordingWrapper({studentName,studentId}) {
           studentName={studentName}
           audioSize={audioSize}
           clientAudioUrl={clientAudioUrl}
+          audioChunks={audioChunks}
         />
       );
     }
