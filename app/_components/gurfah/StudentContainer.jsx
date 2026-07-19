@@ -215,7 +215,7 @@ function StudentCard({ name, id, status, profileImage }) {
       <div className="flex items-center gap-6">
         <div className="relative">
           <div
-            className={`h-2 w-2 absolute right-1 top-1 rounded-full ${status === "online" ? "bg-green-500" : "bg-red-500"}`}
+            className={`h-2 w-2 absolute z-50 right-1 top-1 rounded-full ${status === "online" ? "bg-green-500" : "bg-red-500"}`}
           ></div>
 
           <div className=" min-h-13 min-w-13 flex justify-center items-center relative overflow-hidden rounded-full bg-(--bg-tertiary)/50">
