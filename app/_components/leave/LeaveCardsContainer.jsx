@@ -348,7 +348,7 @@ function LeaveCardsContainer({ setShow, show }) {
 
             <div className="lg:w-1/2 mt-5">
               <div className="relative bg-(--card) flex gap-8 items-center border border-gray-300 rounded-md p-3 py-4">
-                <div className="h-15 w-15 overflow-hidden flex justify-center items-center relative rounded-full bg-(--bg-tertiary)/50">
+                <div className="min-h-15 min-w-15 overflow-hidden flex justify-center items-center relative rounded-full bg-(--bg-tertiary)/50">
                   {!showLeaveDetails.details?.profileImage && <FaUser className="text-2xl" />}
                   {showLeaveDetails.details?.profileImage && (
                     <Image fill src={showLeaveDetails.details.profileImage} alt="profile photo" />
@@ -392,7 +392,7 @@ function LeaveCardsContainer({ setShow, show }) {
                   <div>
                     <p className="text-xs text-gray-500">Leave Type</p>
                     <h3 className="font-semibold text-sm capitalize">
-                      {showLeaveDetails.details.type}xs
+                      {showLeaveDetails.details.type}
                     </h3>
                   </div>
                 </div>
