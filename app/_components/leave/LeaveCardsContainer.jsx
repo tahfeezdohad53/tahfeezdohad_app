@@ -574,7 +574,7 @@ function PhoneLeaveCard({
         {profileImage && <Image fill src={profileImage} alt="profile photo" />}
       </div>
       <div className="text-sm space-y-1">
-        <p className="text-sm font-bold">{role !== "admin" ? type : name}</p>
+        <p className="text-sm font-bold">{role !== "admin" ? `${type} leave` : name}</p>
         <p className="text-amber-700 flex items-center gap-1 font-semibold">
           {" "}
           <span className="p-1 rounded-md bg-(--bg-tertiary)/50">
