@@ -115,6 +115,7 @@ function useAudioRecorder() {
         setAudio(null)
         setIsRecording(false);
         setIsRecorded(false);
+        URL.revokeObjectURL(clientAudioUrl);
         setClientAudioUrl('');
         router.replace('/students');
         const { data } = await axios.get(

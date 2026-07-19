@@ -254,6 +254,7 @@ function SelectStudent({onclose}){
       await new Promise((resolve,reject) => {
         audio.onloadedmetadata = () => {
           dur = audio.duration / 60;
+          console.log(audio.duration);
           resolve();
         }
         audio.onerror = () => {
@@ -287,6 +288,7 @@ function SelectStudent({onclose}){
           },
           { withCredentials: true },
         );
+        URL.revokeObjectURL(url);
         toast.success("recording submitted!");
       } catch (err) {
         console.log(err);
