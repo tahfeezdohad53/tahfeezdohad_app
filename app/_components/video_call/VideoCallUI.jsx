@@ -258,6 +258,7 @@ function SelectStudent({onclose}){
           resolve();
         }
         audio.onerror = () => {
+          dur = 1
           reject();
         }
       })
@@ -284,7 +285,7 @@ function SelectStudent({onclose}){
           {
             isOnline: true,
             url: data.url,
-            duration: dur / 60,
+            duration: dur,
           },
           { withCredentials: true },
         );
