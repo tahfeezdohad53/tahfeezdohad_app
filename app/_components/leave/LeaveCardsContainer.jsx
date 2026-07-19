@@ -107,9 +107,7 @@ function LeaveCardsContainer({ setShow, show }) {
           </div>
           {leaves?.length < 1 && (
             <div className="flex py-10">
-              <p className="mt-5 mx-auto font-bold ">
-                No recent requests!
-              </p>
+              <p className="mt-5 mx-auto font-bold ">No recent requests!</p>
             </div>
           )}
           <div className="lg:pb-15  hidden lg:grid lg:grid-cols-2 lg:gap-5">
@@ -350,22 +348,30 @@ function LeaveCardsContainer({ setShow, show }) {
 
             <div className="lg:w-1/2 mt-5">
               <div className="relative bg-(--card) flex gap-8 items-center border border-gray-300 rounded-md p-3 py-4">
-                <div className="p-5 rounded-full border border-gray-200">
-                  <CiUser />
+                <div className="h-15 w-15 overflow-hidden flex justify-center items-center relative rounded-full bg-(--bg-tertiary)/50">
+                  {!showLeaveDetails.details?.profileImage && <FaUser className="text-2xl" />}
+                  {showLeaveDetails.details?.profileImage && (
+                    <Image fill src={showLeaveDetails.details.profileImage} alt="profile photo" />
+                  )}
                 </div>
                 <div className="flex flex-col text-xs w-full gap-1">
                   <h1 className="font-bold text-lg">
-                    {showLeaveDetails.details.name}
+                    {showLeaveDetails.details.name
+                      .split(" ")
+                      .slice(1)
+                      .join(" ")}
                   </h1>
                   {/* <p
                     className={`px-2 py-1 rounded-md ${showLeaveDetails.details.status === "rejected" && "bg-red-500"} ${showLeaveDetails.details.status === "accepted" && "bg-green-500"} ${showLeaveDetails.details.status === "pending" && "bg-yellow-500"} text-white absolute right-2 top-2`}
                   >
                     {showLeaveDetails.details.status}
                   </p> */}
-                  <h1 className="text-gray-600 ml-1 flex items-center gap-1 font-semibold">
-                    <FiUsers className="text-sm" />
-                    batch - {showLeaveDetails.details.batch}
-                  </h1>
+                  {showLeaveDetails.details?.batch && (
+                    <h1 className="text-gray-600 ml-1 flex items-center gap-1 font-semibold">
+                      <FiUsers className="text-sm" />
+                      batch - {showLeaveDetails.details.batch}
+                    </h1>
+                  )}
                   <h1 className="text-amber-800 flex items-center gap-1 font-semibold">
                     <CiCalendar className="text-lg" />
                     Requested on{" "}
@@ -378,7 +384,7 @@ function LeaveCardsContainer({ setShow, show }) {
             <div className="mt-5 space-y-4 lg:w-1/2">
               {/* Info Cards */}
               <div className="rounded-xl p-2 grid grid-cols-2 bg-(--card)">
-                <div className=" border-r border-b border-gray-200 flex items-center gap-5 p-6 ">
+                <div className=" border-r border-b border-gray-200 flex items-center gap-3 p-6 px-3">
                   <p className="p-2 bg-orange-500/7 rounded-md h-fit">
                     <MdOutlineNotes className="text-lg text-amber-600" />
                   </p>
@@ -386,12 +392,12 @@ function LeaveCardsContainer({ setShow, show }) {
                   <div>
                     <p className="text-xs text-gray-500">Leave Type</p>
                     <h3 className="font-semibold text-sm capitalize">
-                      {showLeaveDetails.details.type}
+                      {showLeaveDetails.details.type}xs
                     </h3>
                   </div>
                 </div>
 
-                <div className=" border-b border-gray-200 flex items-center gap-5 p-6 ">
+                <div className=" border-b border-gray-200 flex items-center gap-3 p-6 px-3">
                   <p className="p-2 bg-green-500/10 rounded-md h-fit">
                     <GoClock className="text-lg text-green-600" />
                   </p>
@@ -404,27 +410,27 @@ function LeaveCardsContainer({ setShow, show }) {
                   </div>
                 </div>
 
-                <div className=" border-r border-gray-200 flex items-center gap-5 p-6 ">
+                <div className=" border-r border-gray-200 flex items-center gap-3 p-6 px-3">
                   <p className="p-2 bg-blue-500/10 rounded-md h-fit">
                     <CiCalendar className="text-lg text-blue-600" />
                   </p>
 
                   <div>
                     <p className="text-xs text-gray-500">From Date</p>
-                    <h3 className="font-semibold text-[0.60rem]">
+                    <h3 className="font-semibold text-xs">
                       {format(showLeaveDetails.details.from, "dd MMM, yyyy")}
                     </h3>
                   </div>
                 </div>
 
-                <div className="  border-gray-200 flex items-center gap-5 p-6 ">
+                <div className="  border-gray-200 flex items-center gap-3 p-6 px-3">
                   <p className="p-2 bg-indigo-500/10 rounded-md h-fit">
                     <CiCalendar className="text-lg text-indigo-600" />
                   </p>
 
                   <div>
                     <p className="text-xs text-gray-500">To Date</p>
-                    <h3 className="font-semibold text-[0.60rem]">
+                    <h3 className="font-semibold text-xs">
                       {format(showLeaveDetails.details.to, "dd MMM, yyyy")}
                     </h3>
                   </div>
@@ -557,6 +563,7 @@ function PhoneLeaveCard({
             days,
             createdAt,
             status,
+            profileImage
           },
         })
       }
