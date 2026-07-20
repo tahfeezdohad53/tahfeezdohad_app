@@ -234,7 +234,7 @@ export function CallingFnProvider({ children }) {
     // await turn();
     setCallingTo(receiverId);
     targetUserRef.current = receiverId;
-    await document.documentElement.requestFullscreen();
+    await document.documentElement.requestFullscreen().catch(err => console.log(err));
     localMedia.current = await navigator.mediaDevices.getUserMedia({
       video: {
         width: { ideal: 1920 },
@@ -336,8 +336,7 @@ export function CallingFnProvider({ children }) {
       targetUserRef.current = caller;
 
       setRemoteOffer(offer);
-    await document.documentElement.requestFullscreen();
-
+    await document.documentElement.requestFullscreen().catch(err => console.log(err));
       localMedia.current = await navigator.mediaDevices.getUserMedia({
         video: {
   width: { ideal: 1920 },
