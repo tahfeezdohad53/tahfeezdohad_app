@@ -324,8 +324,10 @@ export function CallingFnProvider({ children }) {
   useEffect(() => {
     if (!socket) return;
     socket.on("incoming-call", async ({ caller, offer }) => {
-      if (isInCall || isIncoming || isCalling)
-        return socket.emit("line-busy", { to: caller });
+      if (isInCall || isIncoming || isCalling){
+        socket.emit("line-busy", { to: caller });
+        return;
+      }
       // await turn();
       if(audioRef.current) {
         audioRef.current.loop = true;
@@ -376,6 +378,7 @@ export function CallingFnProvider({ children }) {
     });
 
     socket.on("line-busy", () => {
+      endCall();
       toast.error("The person you are trying to reach is on another call");
     });
 
