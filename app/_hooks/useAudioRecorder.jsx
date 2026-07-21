@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useVideoCallContext } from "../_components/providers/VideoCallProvider";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
 
 function useAudioRecorder() {
     const [isRecording, setIsRecording] = useState(false);
@@ -110,7 +111,12 @@ function useAudioRecorder() {
       const toastId = 'uploading'
       try{
         // console.log(data.signedUrl)
-        toast.success('your recording will be submitted');
+        toast.success(
+          "your recording will be submitted, do not close or refresh browser before success notification arrives",
+          {
+            icon: <AiOutlineExclamationCircle className="text-yellow-500" />,
+          },
+        );
         let blob = audio;
         setAudio(null)
         setIsRecording(false);

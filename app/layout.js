@@ -41,7 +41,7 @@ export default function RootLayout({ children }) {
                   <VideoCallProvider>
                     <CallingFnProvider>
                       {/* <Socket /> */}
-                      <Toaster />
+                      <Toaster containerStyle={{zIndex:9999999}}/>
                       <VideoCallWrapper />
                       <div id="root"></div>
                       <div id="video"></div>

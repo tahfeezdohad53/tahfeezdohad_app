@@ -9,6 +9,7 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { ImSpinner2 } from "react-icons/im";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
 
 function SubmitVideoCallRecording({
   onlineClassBlob,
@@ -29,7 +30,8 @@ function SubmitVideoCallRecording({
      setVideoCallSeconds(0);
      setOnlineClassBlobUrl("");
     const toastId = "uploading";
-    toast.success('your recording will be submitted');
+    toast.success("your recording will be submitted, do not close or refresh browser before success notification arrives", {
+      icon: <AiOutlineExclamationCircle className="text-yellow-500"/>});
     try {
       // console.log(data.signedUrl)
       const { data } = await axios.get(

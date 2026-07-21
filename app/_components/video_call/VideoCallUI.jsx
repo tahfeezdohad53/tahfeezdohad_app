@@ -24,6 +24,7 @@ import { useAppProvider } from "../providers/AppProvider";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { HiXMark } from "react-icons/hi2";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
 function VideoCallUI() {
   const {user} = useUser();
   const videoRef = useRef(null);
@@ -267,7 +268,12 @@ function SelectStudent({onclose}){
       setVideoCallSeconds(0);
       setOnlineClassBlobUrl("");
       const toastId = "uploading";
-      toast.success("your recording will be submitted");
+      toast.success(
+        "your recording will be submitted, do not close or refresh browser before success notification arrives",
+        {
+          icon: <AiOutlineExclamationCircle className="text-yellow-500" />,
+        },
+      );
       try {
         // console.log(data.signedUrl)
         const { data } = await axios.get(
