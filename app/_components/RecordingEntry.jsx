@@ -67,7 +67,7 @@ function RecordingEntry({el,i,isDummy=false}) {
             onClick={(e) => e.stopPropagation()}
             className="w-full flex justify-center py-2"
           >
-            <div className="relative w-3/4 flex items-center gap-2">
+            <div className="w-full px-3 relative flex items-center gap-2">
               {/* <AudioPlayer
                 customVolumeControls={[]}
                 autoPlay={false}
@@ -79,7 +79,7 @@ function RecordingEntry({el,i,isDummy=false}) {
               <audio
               ref={audioRef}
                 src={el.audio}
-                className="w-full rounded-md  shadow-(--shadow-lg)"
+                className="w-full rounded-md "
                 controls
               ></audio>
               <div className="flex gap-2">
