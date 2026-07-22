@@ -41,7 +41,7 @@ function useAudioRecorder() {
        stream.current = await navigator.mediaDevices.getUserMedia({
          audio: {
            echoCancellation: false,
-           noiseSuppression: true,
+           noiseSuppression: false,
            autoGainControl: false,
            channelCount: 1,
            sampleRate: 48000,
