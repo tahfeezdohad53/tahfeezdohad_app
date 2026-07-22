@@ -387,7 +387,7 @@ export function CallingFnProvider({ children }) {
         // navigator.vibrate(1000);
         toast(
           (t) => (
-            <div className="relative w-fit  lg:w-90 rounded-2xl bg-white p-4 shadow-xl border border-gray-200">
+            <div className="relative w-[80%]  lg:w-90 rounded-2xl bg-white p-4 shadow-xl border border-gray-200">
               {/* Dismiss */}
               <button
                 onClick={() => toast.dismiss(t.id)}
