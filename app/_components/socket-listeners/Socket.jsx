@@ -379,6 +379,7 @@ export function CallingFnProvider({ children }) {
   useEffect(() => {
     if (!socket) return;
     socket.on("message", ({ message, from, to, createdAt, senderName, profileImage }) => {
+      toast.dismiss();
       let id = pathname.includes("onlineclass") ? pathname.slice(pathname.lastIndexOf("/") + 1) : '';
       if (from !== id) {
         notificationRef.current.pause();
