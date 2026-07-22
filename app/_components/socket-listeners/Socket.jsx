@@ -49,6 +49,15 @@ export function CallingFnProvider({ children }) {
   const router = useRouter();
   const pathname = usePathname();
   const audioRef = useRef();
+  const isInCallRef = useRef(false);
+  const isIncomingRef = useRef(false);
+  const isCallingRef = useRef(false);
+
+  useEffect(() => {
+    isInCallRef.current = isInCall;
+    isCallingRef.current = isCalling;
+    isIncomingRef.current = isIncoming;
+  },[isInCall,isIncoming,isCalling])
   async function turn() {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_URL}/turn-credentials`,
@@ -343,7 +352,7 @@ export function CallingFnProvider({ children }) {
   useEffect(() => {
     if (!socket) return;
     socket.on("incoming-call", async ({ caller, offer }) => {
-      if (isInCall || isIncoming || isCalling){
+      if (isInCallRef || isIncomingRef || isCallingRef){
         socket.emit("line-busy", { to: caller });
         return;
       }
@@ -588,7 +597,7 @@ export function CallingFnProvider({ children }) {
       }
       
     });
-  }, [socket,isInCall,isIncoming,isCalling]);
+  }, [socket]);
 
   return (
     <Context.Provider
