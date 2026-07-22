@@ -9,6 +9,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import axios from "axios";
 import { useAppProvider } from "../providers/AppProvider";
+import { MdMessage } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
+import Image from "next/image";
 const Context = createContext(null);
 
 export function CallingFnProvider({ children }) {
@@ -39,7 +42,7 @@ export function CallingFnProvider({ children }) {
     recorderRef,
     isLap,
   } = useVideoCallContext();
-  const {setFilteredGurfahStudents} = useAppProvider();
+  const { setFilteredGurfahStudents } = useAppProvider();
   const { user } = useUser();
   const querClient = useQueryClient();
   const { peerConnection } = useVideoCallContext();
@@ -57,7 +60,7 @@ export function CallingFnProvider({ children }) {
     isInCallRef.current = isInCall;
     isCallingRef.current = isCalling;
     isIncomingRef.current = isIncoming;
-  },[isInCall,isIncoming,isCalling])
+  }, [isInCall, isIncoming, isCalling]);
   async function turn() {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_URL}/turn-credentials`,
@@ -105,7 +108,7 @@ export function CallingFnProvider({ children }) {
     };
   }
   async function endCall() {
-      document.exitFullscreen().catch(err => "can't exit fullscreen");
+    document.exitFullscreen().catch((err) => "can't exit fullscreen");
     if (audioRef.current) {
       audioRef.current.loop = false;
       audioRef.current.pause();
@@ -145,7 +148,7 @@ export function CallingFnProvider({ children }) {
     await turn();
   }
   async function endCallOnLineBusy() {
-      document.exitFullscreen().catch(err => "can't exit fullscreen");
+    document.exitFullscreen().catch((err) => "can't exit fullscreen");
     if (audioRef.current) {
       audioRef.current.loop = false;
       audioRef.current.pause();
@@ -165,13 +168,10 @@ export function CallingFnProvider({ children }) {
   }
 
   useEffect(() => {
-    
-      audioRef.current = new Audio('/ringtone.aac');
-    
-  },[])
+    audioRef.current = new Audio("/ringtone.aac");
+  }, []);
 
   useEffect(() => {
-
     if (!isInCall) return;
     if (user?.role === "student") return;
     if (recorderRef?.current?.state === "recording") return;
@@ -206,7 +206,7 @@ export function CallingFnProvider({ children }) {
       chunksRef.current = [];
     };
     recorderRef.current.start();
-  }, [isInCall, user?.role, localMedia, remoteMedia,isLap]);
+  }, [isInCall, user?.role, localMedia, remoteMedia, isLap]);
 
   /* eslint-disable */
   useEffect(() => {
@@ -252,6 +252,7 @@ export function CallingFnProvider({ children }) {
   //     }
   //   };
   // }
+
   async function startCall(receiverId, callerId) {
     // const res = await axios.get(
     //   `${process.env.NEXT_PUBLIC_URL}/turn-credentials`,
@@ -262,13 +263,15 @@ export function CallingFnProvider({ children }) {
     // await turn();
     setCallingTo(receiverId);
     targetUserRef.current = receiverId;
-    await document.documentElement.requestFullscreen().catch(err => console.log(err));
+    await document.documentElement
+      .requestFullscreen()
+      .catch((err) => console.log(err));
     localMedia.current = await navigator.mediaDevices.getUserMedia({
       video: {
         width: { ideal: 1920 },
         height: { ideal: 1080 },
         frameRate: { ideal: 60 },
-        facingMode:'user',
+        facingMode: "user",
       },
       audio: {
         sampleRate: 48000,
@@ -278,16 +281,16 @@ export function CallingFnProvider({ children }) {
         autoGainControl: true,
       },
     });
-    
+
     localMedia.current
-    .getTracks()
-    .forEach((track) =>
-      peerConnection.current.addTrack(track, localMedia.current),
-  );
-  const offer = await peerConnection.current.createOffer();
-  // localVideoRef.current.srcObject = localMedia.current;
-  await peerConnection.current.setLocalDescription(offer);
-  setIsCalling(true);
+      .getTracks()
+      .forEach((track) =>
+        peerConnection.current.addTrack(track, localMedia.current),
+      );
+    const offer = await peerConnection.current.createOffer();
+    // localVideoRef.current.srcObject = localMedia.current;
+    await peerConnection.current.setLocalDescription(offer);
+    setIsCalling(true);
     setShowCallControls(true);
 
     await new Promise((res) =>
@@ -299,10 +302,10 @@ export function CallingFnProvider({ children }) {
   }
 
   useEffect(() => {
-    if(isCalling){
-    localVideoRef.current.srcObject = localMedia.current;
+    if (isCalling) {
+      localVideoRef.current.srcObject = localMedia.current;
     }
-  },[isCalling])
+  }, [isCalling]);
 
   async function acceptCall(receiverId, callerId) {
     // const res = await axios.get(
@@ -344,6 +347,121 @@ export function CallingFnProvider({ children }) {
     socket.emit("call-accepted", { to: callerId, from: callerId });
   }
 
+  const toastInputRef = useRef(null);
+  async function sendMessageFromToast(e, toastId, sendTo) {
+    e.preventDefault();
+    if (toastInputRef.current.value.length < 1) return;
+
+    try {
+      socket.emit("message", {
+        senderName: user?.name,
+        message: toastInputRef.current.value,
+        to: sendTo,
+        from: user?._id,
+        profileImage:user.profileImage,
+        createdAt: new Date(),
+      });
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_URL}/message/send`,
+        { message: toastInputRef.current.value, to: sendTo },
+        { withCredentials: true },
+      );
+      toast.dismiss(toastId);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("message", ({ message, from, to, createdAt, senderName, profileImage }) => {
+      let id;
+      if (pathname.includes("onlineclass")) {
+        id = pathname.slice(pathname.lastIndexOf("/") + 1);
+      } else id = "";
+      if (from !== id)
+        toast(
+          (t) => (
+            <div className="relative w-90 rounded-2xl bg-white p-4 shadow-xl border border-gray-200">
+              {/* Dismiss */}
+              <button
+                onClick={() => toast.dismiss(t.id)}
+                className="absolute right-3 top-3 rounded-full p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+              >
+                ✕
+              </button>
+
+              {/* Header */}
+              <div className="flex items-start gap-3">
+                <div className=" min-h-10 min-w-10 flex justify-center items-center relative overflow-hidden rounded-full bg-(--bg-tertiary)/50">
+                  {!profileImage && (
+                    <div className="">
+                      <FaUser className="text-xl" />
+                    </div>
+                  )}
+                  {profileImage && (
+                    <Image fill src={profileImage} alt="profile photo" />
+                  )}
+                </div>
+
+                <div className="min-w-0 flex-1 pr-6">
+                  <p className="text-sm font-semibold text-gray-900">
+                    {senderName.split(" ").slice(1).join(" ")}
+                  </p>
+
+                  <p className="mt-1 line-clamp-2 text-xs text-gray-500">
+                    {message}
+                  </p>
+                </div>
+              </div>
+
+              {/* Reply */}
+              <form
+                onSubmit={(e) => sendMessageFromToast(e, t.id, from)}
+                className="mt-4 flex gap-2"
+              >
+                <input
+                  ref={toastInputRef}
+                  type="text"
+                  placeholder="Reply..."
+                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                />
+
+                <button className="rounded-lg bg-(image:--gradient-primary) px-4 py-2 text-sm font-medium text-white transition hover:scale-105 active:scale-95">
+                  Send
+                </button>
+              </form>
+            </div>
+          ),
+          {
+            duration: Infinity,
+            position: "top-center",
+            style: {
+              padding: 0,
+              background: "transparent",
+              boxShadow: "none",
+              maxWidth: "none",
+            },
+          },
+        );
+      if (from === id) {
+        querClient.setQueriesData({ queryKey: ["messages"] }, (old) => {
+          return [
+            ...old,
+            {
+              sender: from,
+              receiver: to,
+              message,
+              createdAt,
+              _id: Date.now(),
+            },
+          ];
+        });
+      }
+    });
+
+    return () => socket.off("message");
+  }, [socket, pathname]);
+
   useEffect(() => {
     if (!localVideoRef.current) return;
     localVideoRef.current.srcObject = localMedia.current;
@@ -352,28 +470,34 @@ export function CallingFnProvider({ children }) {
   useEffect(() => {
     if (!socket) return;
     socket.on("incoming-call", async ({ caller, offer }) => {
-      if (isInCallRef.current || isIncomingRef.current || isCallingRef.current){
+      if (
+        isInCallRef.current ||
+        isIncomingRef.current ||
+        isCallingRef.current
+      ) {
         socket.emit("line-busy", { to: caller });
         return;
       }
       // await turn();
-      if(audioRef.current) {
+      if (audioRef.current) {
         audioRef.current.loop = true;
-        audioRef.current.play().catch(err => console.log(err));
+        audioRef.current.play().catch((err) => console.log(err));
       }
       setIsIncoming(true);
       setCallerId(caller);
       targetUserRef.current = caller;
 
       setRemoteOffer(offer);
-    await document.documentElement.requestFullscreen().catch(err => console.log(err));
+      await document.documentElement
+        .requestFullscreen()
+        .catch((err) => console.log(err));
       localMedia.current = await navigator.mediaDevices.getUserMedia({
         video: {
-  width: { ideal: 1920 },
-  height: { ideal: 1080 },
-  frameRate: { ideal: 60 },
-  facingMode:'user'
-},
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          frameRate: { ideal: 60 },
+          facingMode: "user",
+        },
         audio: {
           sampleRate: 48000,
           channelCount: 2,
@@ -454,7 +578,7 @@ export function CallingFnProvider({ children }) {
       }
     });
     socket.on("online-broadcast", async ({ name, role, id }) => {
-      if (role === "teacher" || role === 'admin') {
+      if (role === "teacher" || role === "admin") {
         querClient.setQueriesData({ queryKey: ["myTeachers"] }, (data) => {
           return data?.map((el) => {
             if (el._id !== id) return el;
@@ -462,7 +586,8 @@ export function CallingFnProvider({ children }) {
           });
         });
         querClient.setQueriesData({ queryKey: ["gurfahData"] }, (data) => {
-          if (data?.user?._id === id) return { user: { ...data?.user, status: "online" } };
+          if (data?.user?._id === id)
+            return { user: { ...data?.user, status: "online" } };
           else return data;
         });
       }
@@ -475,12 +600,12 @@ export function CallingFnProvider({ children }) {
         //   });
         //   return updatedData;
         // });
-         setFilteredGurfahStudents((students) => {
-           return students.map((el) => {
-             if (el._id === id) return { ...el, status: "online" };
-             else return el;
-           });
-         });
+        setFilteredGurfahStudents((students) => {
+          return students.map((el) => {
+            if (el._id === id) return { ...el, status: "online" };
+            else return el;
+          });
+        });
         querClient.setQueriesData({ queryKey: ["gurfahData"] }, (data) => {
           if (data?.user?._id === id) {
             console.log("running inside");
@@ -490,17 +615,19 @@ export function CallingFnProvider({ children }) {
       }
     });
     // socket.on("offline", async ({ name, role, id }) => {
-      
+
     // });
 
     socket.on("end-call", async () => {
-      document.exitFullscreen().catch(err => console.log("can't exit full screen"));
+      document
+        .exitFullscreen()
+        .catch((err) => console.log("can't exit full screen"));
       if (user?.role === "student") setVideoCallSeconds(0);
-       if (audioRef.current) {
-         audioRef.current.loop = false;
-         audioRef.current.pause();
-         audioRef.current.currentTime = 0;
-       }
+      if (audioRef.current) {
+        audioRef.current.loop = false;
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
       // if(localVideoRef?.current)localVideoRef.current
       setIsCalling(false);
       setIsIncoming(false);
@@ -531,8 +658,8 @@ export function CallingFnProvider({ children }) {
       localMedia.current.getTracks().forEach((track) => track.stop());
       await turn();
     });
-    socket.on("offline-broadcast", async ({id,role}) => {
-      if (role === "teacher" || role === 'admin') {
+    socket.on("offline-broadcast", async ({ id, role }) => {
+      if (role === "teacher" || role === "admin") {
         querClient.setQueryData(["myTeachers"], (data) => {
           return data?.map((el) => {
             if (el._id !== id) return el;
@@ -549,53 +676,53 @@ export function CallingFnProvider({ children }) {
         //   return updatedData;
         // });
         setFilteredGurfahStudents((students) => {
-          return students.map(el => {
-            if(el._id === id) return {...el,status:'offline'};
+          return students.map((el) => {
+            if (el._id === id) return { ...el, status: "offline" };
             else return el;
           });
         });
       }
       querClient.setQueriesData({ queryKey: ["gurfahData"] }, (data) => {
-        if(data?.user?._id === id) return { user: { ...data?.user, status: "offline" } };
+        if (data?.user?._id === id)
+          return { user: { ...data?.user, status: "offline" } };
         else return data;
       });
-      if (id ===  targetUserRef.current){
-         if (audioRef.current) {
-           audioRef.current.loop = false;
-           audioRef.current.pause();
-           audioRef.current.currentTime = 0;
-         }
-         // if(localVideoRef?.current)localVideoRef.current
-         setIsCalling(false);
-         setIsIncoming(false);
-         setShowCallControls(false);
-         setIsInCall(false);
-         setVideoCallSeconds(0);
-         setRemoteMedia(null);
-         candidates.current = [];
-         if (user?.role !== "student" && recorderRef.current) {
-           recorderRef.current.stop();
-           if (pathname.includes("onlineclass")) {
-             const lastIndex = pathname.lastIndexOf("/");
-             const refactoredPathname = pathname.slice(0, lastIndex);
-             router.replace(`${refactoredPathname}/${targetUserRef.current}`, {
-               scroll: false,
-             });
-           } else {
-             const firstIndex = pathname.indexOf("/");
-             const refactoredPathname = pathname.slice(0, firstIndex);
-             router.replace(
-               `${refactoredPathname}/onlineclass/${targetUserRef.current}`,
-               { scroll: false },
-             );
-           }
-         } else {
-           // window.location.reload();
-         }
-         localMedia.current.getTracks().forEach((track) => track.stop());
-         await turn();
+      if (id === targetUserRef.current) {
+        if (audioRef.current) {
+          audioRef.current.loop = false;
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
+        // if(localVideoRef?.current)localVideoRef.current
+        setIsCalling(false);
+        setIsIncoming(false);
+        setShowCallControls(false);
+        setIsInCall(false);
+        setVideoCallSeconds(0);
+        setRemoteMedia(null);
+        candidates.current = [];
+        if (user?.role !== "student" && recorderRef.current) {
+          recorderRef.current.stop();
+          if (pathname.includes("onlineclass")) {
+            const lastIndex = pathname.lastIndexOf("/");
+            const refactoredPathname = pathname.slice(0, lastIndex);
+            router.replace(`${refactoredPathname}/${targetUserRef.current}`, {
+              scroll: false,
+            });
+          } else {
+            const firstIndex = pathname.indexOf("/");
+            const refactoredPathname = pathname.slice(0, firstIndex);
+            router.replace(
+              `${refactoredPathname}/onlineclass/${targetUserRef.current}`,
+              { scroll: false },
+            );
+          }
+        } else {
+          // window.location.reload();
+        }
+        localMedia.current.getTracks().forEach((track) => track.stop());
+        await turn();
       }
-      
     });
   }, [socket]);
 

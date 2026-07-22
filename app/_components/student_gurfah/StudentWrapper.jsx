@@ -33,6 +33,8 @@ import { useAppProvider } from "../providers/AppProvider";
 import { LuMessageCircle } from "react-icons/lu";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import { useSession } from "next-auth/react";
+import { MdMessage } from "react-icons/md";
+import toast from "react-hot-toast";
 
 const font = Playfair_Display({
   subsets: ["latin"],
@@ -88,6 +90,7 @@ function StudentWrapper() {
     placeholderData: keepPreviousData,
   });
   const inputRef = useRef(null);
+  const toastInputRef = useRef(null);
   const [message, setMessage] = useState("");
   useEffect(() => {
     // console.log(containerRef.current)
@@ -114,28 +117,116 @@ function StudentWrapper() {
               
             },[user?.role,session?.status,isFetching])
 
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("message", ({ message, from, to, createdAt }) => {
-      console.log("message recived");
-      if (from === id) {
-        queryClient.setQueriesData({ queryKey: ["messages"] }, (old) => {
-          return [
-            ...old,
-            {
-              sender: from,
-              receiver: to,
-              message,
-              createdAt,
-              _id: Date.now(),
-            },
-          ];
-        });
-      }
-    });
+  //           async function sendMessageFromToast(e,toastId) {
+  //             e.preventDefault();
+  //             if(toastInputRef.current.value.length < 1) return;
+  //             queryClient.setQueriesData({ queryKey: ["messages"] }, (old) => {
+  //               return [
+  //                 ...old,
+  //                 {
+  //                   sender: user?._id,
+  //                   receiver: id,
+  //                   message: toastInputRef.current.value,
+  //                   createdAt: new Date(),
+  //                   _id: Date.now(),
+  //                 },
+  //               ];
+  //             });
 
-    return () => socket.off("message");
-  }, [socket]);
+  //             try {
+  //               socket.emit("message", {
+  //                 senderName: user?.name,
+  //                 message: toastInputRef.current.value,
+  //                 to: id,
+  //                 from: user?._id,
+  //                 createdAt: new Date(),
+  //               });
+  //               const { data } = await axios.post(
+  //                 `${process.env.NEXT_PUBLIC_URL}/message/send`,
+  //                 { message: toastInputRef.current.value, to: id },
+  //                 { withCredentials: true },
+  //               );
+  //               toast.dismiss(toastId)
+  //             } catch (err) {
+  //               console.log(err);
+  //             }
+  //           }
+
+  // useEffect(() => {
+  //   if (!socket) return;
+  //   socket.on("message", ({ message, from, to, createdAt, senderName }) => {
+  //      if(from === id)toast(
+  //        (t) => (
+  //          <div className="relative w-90 rounded-2xl bg-white p-4 shadow-xl border border-gray-200">
+  //            {/* Dismiss */}
+  //            <button
+  //              onClick={() => toast.dismiss(t.id)}
+  //              className="absolute right-3 top-3 rounded-full p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+  //            >
+  //              ✕
+  //            </button>
+
+  //            {/* Header */}
+  //            <div className="flex items-start gap-3">
+  //              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+  //                <MdMessage size={22} />
+  //              </div>
+
+  //              <div className="min-w-0 flex-1 pr-6">
+  //                <p className="text-sm font-semibold text-gray-900">
+  //                  {senderName.split(' ').slice(1).join(' ')}
+  //                </p>
+
+  //                <p className="mt-1 line-clamp-2 text-xs text-gray-500">
+  //                  {message}
+  //                </p>
+  //              </div>
+  //            </div>
+
+  //            {/* Reply */}
+  //            <form onSubmit={(e) => sendMessageFromToast(e,t.id)} className="mt-4 flex gap-2">
+  //              <input
+  //              ref={toastInputRef}
+  //                type="text"
+  //                placeholder="Reply..."
+  //                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+  //              />
+
+  //              <button className="rounded-lg bg-(image:--gradient-primary) px-4 py-2 text-sm font-medium text-white transition hover:scale-105 active:scale-95">
+  //                Send
+  //              </button>
+  //            </form>
+  //          </div>
+  //        ),
+  //        {
+  //          duration: Infinity,
+  //          position: "top-center",
+  //          style: {
+  //            padding: 0,
+  //            background: "transparent",
+  //            boxShadow: "none",
+  //            maxWidth: "none",
+  //          },
+  //        },
+  //      );
+  //     if (from === id) {
+  //       queryClient.setQueriesData({ queryKey: ["messages"] }, (old) => {
+  //         return [
+  //           ...old,
+  //           {
+  //             sender: from,
+  //             receiver: to,
+  //             message,
+  //             createdAt,
+  //             _id: Date.now(),
+  //           },
+  //         ];
+  //       });
+  //     }
+  //   });
+
+  //   return () => socket.off("message");
+  // }, [socket]);
 
   // useEffect(() => {
   //   if(!containerRef.current) return;
@@ -156,6 +247,7 @@ function StudentWrapper() {
           sender: user?._id,
           receiver: id,
           message,
+          profileImage:user.profileImage,
           createdAt: new Date(),
           _id: Date.now(),
         },
@@ -165,6 +257,7 @@ function StudentWrapper() {
     inputRef.current.focus();
     try {
       socket.emit("message", {
+        senderName:user?.name,
         message,
         to: id,
         from: user?._id,
@@ -179,6 +272,7 @@ function StudentWrapper() {
       console.log(err);
     }
   }
+  
   async function getMessages(e) {
     try {
       const { data } = await axios.get(
