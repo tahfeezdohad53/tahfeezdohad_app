@@ -40,20 +40,32 @@ function useAudioRecorder() {
        }
        stream.current = await navigator.mediaDevices.getUserMedia({
          audio: {
-           echoCancellation: true,
+           echoCancellation: false,
            noiseSuppression: true,
-           autoGainControl: true,
+           autoGainControl: false,
            channelCount: 1,
            sampleRate: 48000,
          },
          video: false,
        });
+       const ctx = new AudioContext();
+
+       const source = ctx.createMediaStreamSource(stream.current);
+
+       const gainNode = ctx.createGain();
+       gainNode.gain.value = 1.5; // Increase volume by 50%
+
+       const destination = ctx.createMediaStreamDestination();
+
+       source.connect(gainNode).connect(destination);
+
+       const processedStream = destination.stream;
        interval.current = setInterval(() => {
          setTotalSeconds((seconds) => seconds + 1);
        }, 1000);
 
       //  console.log("recording");
-       recorder.current = new MediaRecorder(stream.current, {
+       recorder.current = new MediaRecorder(processedStream, {
          mimeType: "audio/webm;codecs=opus",
          audioBitsPerSecond: 256000,
        });
