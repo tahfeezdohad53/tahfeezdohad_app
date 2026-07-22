@@ -96,7 +96,7 @@ export function CallingFnProvider({ children }) {
     };
   }
   async function endCall() {
-      document.exitFullscreen();
+      document.exitFullscreen().catch(err => "can't exit fullscreen");
     if (audioRef.current) {
       audioRef.current.loop = false;
       audioRef.current.pause();
@@ -131,6 +131,25 @@ export function CallingFnProvider({ children }) {
       localMedia.current.getTracks().forEach((track) => track.stop());
     }
     socket.emit("end-call", { to: targetUserRef.current });
+    targetUserRef.current = null;
+
+    await turn();
+  }
+  async function endCallOnLineBusy() {
+      document.exitFullscreen().catch(err => "can't exit fullscreen");
+    if (audioRef.current) {
+      audioRef.current.loop = false;
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsCalling(false);
+    setIsIncoming(false);
+    setIsInCall(false);
+    setShowCallControls(false);
+    setRemoteMedia(null);
+    if (localMedia.current) {
+      localMedia.current.getTracks().forEach((track) => track.stop());
+    }
     targetUserRef.current = null;
 
     await turn();
@@ -378,7 +397,7 @@ export function CallingFnProvider({ children }) {
     });
 
     socket.on("line-busy", () => {
-      endCall();
+      endCallOnLineBusy();
       toast.error("The person you are trying to reach is on another call");
     });
 
@@ -466,7 +485,7 @@ export function CallingFnProvider({ children }) {
     // });
 
     socket.on("end-call", async () => {
-      document.exitFullscreen();
+      document.exitFullscreen().catch(err => console.log("can't exit full screen"));
       if (user?.role === "student") setVideoCallSeconds(0);
        if (audioRef.current) {
          audioRef.current.loop = false;
@@ -569,7 +588,7 @@ export function CallingFnProvider({ children }) {
       }
       
     });
-  }, [socket]);
+  }, [socket,isInCall,isIncoming,isCalling]);
 
   return (
     <Context.Provider
