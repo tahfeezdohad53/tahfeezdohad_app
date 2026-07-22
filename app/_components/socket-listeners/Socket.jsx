@@ -55,6 +55,8 @@ export function CallingFnProvider({ children }) {
   const isInCallRef = useRef(false);
   const isIncomingRef = useRef(false);
   const isCallingRef = useRef(false);
+  const toastInputRef = useRef(null);
+  const notificationRef = useRef(null);
 
   useEffect(() => {
     isInCallRef.current = isInCall;
@@ -347,7 +349,6 @@ export function CallingFnProvider({ children }) {
     socket.emit("call-accepted", { to: callerId, from: callerId });
   }
 
-  const toastInputRef = useRef(null);
   async function sendMessageFromToast(e, toastId, sendTo) {
     e.preventDefault();
     if (toastInputRef.current.value.length < 1) return;
@@ -371,9 +372,16 @@ export function CallingFnProvider({ children }) {
       console.log(err);
     }
   }
+
+  useEffect(() => {
+    notificationRef.current = new Audio('/notification.mp3');
+  },[])
   useEffect(() => {
     if (!socket) return;
     socket.on("message", ({ message, from, to, createdAt, senderName, profileImage }) => {
+      notificationRef.current.pause();
+      notificationRef.current.currentTime = 0;
+      notificationRef.current.play();
       let id;
       if (pathname.includes("onlineclass")) {
         id = pathname.slice(pathname.lastIndexOf("/") + 1);
