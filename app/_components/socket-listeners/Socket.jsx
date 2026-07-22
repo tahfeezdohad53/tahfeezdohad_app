@@ -384,7 +384,7 @@ export function CallingFnProvider({ children }) {
         notificationRef.current.pause();
         notificationRef.current.currentTime = 0;
         notificationRef.current.play();
-        navigator.vibrate(1000);
+        // navigator.vibrate(1000);
         toast(
           (t) => (
             <div className="relative w-fit  lg:w-90 rounded-2xl bg-white p-4 shadow-xl border border-gray-200">
