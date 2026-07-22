@@ -352,11 +352,9 @@ export function CallingFnProvider({ children }) {
   useEffect(() => {
     if (!socket) return;
     socket.on("incoming-call", async ({ caller, offer }) => {
-      if (isInCallRef || isCallingRef){
-        if(isIncomingRef && targetUserRef.current !== caller){
-          socket.emit("line-busy", { to: caller });
-          return;
-        }
+      if (isInCallRef.current || isIncomingRef.current || isCallingRef.current){
+        socket.emit("line-busy", { to: caller });
+        return;
       }
       // await turn();
       if(audioRef.current) {
