@@ -379,14 +379,14 @@ export function CallingFnProvider({ children }) {
   useEffect(() => {
     if (!socket) return;
     socket.on("message", ({ message, from, to, createdAt, senderName, profileImage }) => {
-      notificationRef.current.pause();
-      notificationRef.current.currentTime = 0;
-      notificationRef.current.play();
       let id;
       if (pathname.includes("onlineclass")) {
         id = pathname.slice(pathname.lastIndexOf("/") + 1);
       } else id = "";
-      if (from !== id)
+      if (from !== id) {
+        notificationRef.current.pause();
+        notificationRef.current.currentTime = 0;
+        notificationRef.current.play();
         toast(
           (t) => (
             <div className="relative w-90 rounded-2xl bg-white p-4 shadow-xl border border-gray-200">
@@ -451,7 +451,9 @@ export function CallingFnProvider({ children }) {
             },
           },
         );
+      }
       if (from === id) {
+        // navigator.vibrate(1000);
         querClient.setQueriesData({ queryKey: ["messages"] }, (old) => {
           return [
             ...old,
