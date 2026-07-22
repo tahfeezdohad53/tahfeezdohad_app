@@ -53,7 +53,7 @@ function useAudioRecorder() {
        const source = ctx.createMediaStreamSource(stream.current);
 
        const gainNode = ctx.createGain();
-       gainNode.gain.value = 1.5; // Increase volume by 50%
+       gainNode.gain.value = 2; // Increase volume by 50%
 
        const destination = ctx.createMediaStreamDestination();
 
