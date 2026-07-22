@@ -379,17 +379,14 @@ export function CallingFnProvider({ children }) {
   useEffect(() => {
     if (!socket) return;
     socket.on("message", ({ message, from, to, createdAt, senderName, profileImage }) => {
-      let id;
-      if (pathname.includes("onlineclass")) {
-        id = pathname.slice(pathname.lastIndexOf("/") + 1);
-      } else id = "";
+      let id = pathname.includes("onlineclass") ? pathname.slice(pathname.lastIndexOf("/") + 1) : '';
       if (from !== id) {
         notificationRef.current.pause();
         notificationRef.current.currentTime = 0;
         notificationRef.current.play();
         toast(
           (t) => (
-            <div className="relative w-90 rounded-2xl bg-white p-4 shadow-xl border border-gray-200">
+            <div className="relative w-fit  lg:w-90 rounded-2xl bg-white p-4 shadow-xl border border-gray-200">
               {/* Dismiss */}
               <button
                 onClick={() => toast.dismiss(t.id)}
@@ -431,10 +428,10 @@ export function CallingFnProvider({ children }) {
                   ref={toastInputRef}
                   type="text"
                   placeholder="Reply..."
-                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  className="w-[85%] rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                 />
 
-                <button className="rounded-lg bg-(image:--gradient-primary) px-4 py-2 text-sm font-medium text-white transition hover:scale-105 active:scale-95">
+                <button className="w-[15%] rounded-lg bg-(image:--gradient-primary) px-4 py-2 text-sm font-medium text-white transition hover:scale-105 active:scale-95">
                   Send
                 </button>
               </form>
