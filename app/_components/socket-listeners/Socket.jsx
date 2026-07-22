@@ -277,7 +277,7 @@ export function CallingFnProvider({ children }) {
       },
       audio: {
         sampleRate: 48000,
-        channelCount: 2,
+        channelCount: 1,
         echoCancellation: true,
         noiseSuppression: true,
         autoGainControl: true,
@@ -509,7 +509,7 @@ export function CallingFnProvider({ children }) {
         },
         audio: {
           sampleRate: 48000,
-          channelCount: 2,
+          channelCount: 1,
           echoCancellation: true,
           noiseSuppression: true,
           autoGainControl: true,
