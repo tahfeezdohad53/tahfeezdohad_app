@@ -354,6 +354,7 @@ export function CallingFnProvider({ children }) {
     if (toastInputRef.current.value.length < 1) return;
 
     try {
+      toast.dismiss(toastId);
       socket.emit("message", {
         senderName: user?.name,
         message: toastInputRef.current.value,
@@ -367,7 +368,6 @@ export function CallingFnProvider({ children }) {
         { message: toastInputRef.current.value, to: sendTo },
         { withCredentials: true },
       );
-      toast.dismiss(toastId);
     } catch (err) {
       console.log(err);
     }
@@ -388,7 +388,7 @@ export function CallingFnProvider({ children }) {
         // navigator.vibrate(1000);
         toast(
           (t) => (
-            <div className="relative w-[90%]  lg:w-90 rounded-2xl bg-white p-4 shadow-(--shadow-2xl) border border-gray-200">
+            <div className="relative w-[95%]  lg:w-90 rounded-2xl bg-white p-4 shadow-(--shadow-2xl) border border-gray-200">
               {/* Dismiss */}
               <button
                 onClick={() => toast.dismiss(t.id)}
