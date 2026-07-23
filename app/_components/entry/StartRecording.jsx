@@ -80,13 +80,13 @@ function StartRecording({startRecording,studentName}) {
 
           <div className="w-full">
             <button
-              onClick={() => startRecording(audioConfig.ns,audioConfig.ec,audioConfig.agc,audioConfig.loudness)}
+              onClick={() => startRecording(audioConfig.loudness)}
               className="flex items-center gap-2 justify-center bg-(--primary) text-white shadow-lg py-4 rounded-md w-full"
             >
               <PiRecordFill />
               Start Recording
             </button>
-            <div className="flex items-center gap-1 text-xs mt-3">
+            {/* <div className="flex items-center gap-1 text-xs mt-3">
               <input checked={audioConfig.ns} onChange={(e) => setAudioConfig(old => {
                 return {...old,ns:e.target.checked}
               })} id="ns" type="checkbox" />
@@ -108,7 +108,7 @@ function StartRecording({startRecording,studentName}) {
                   (adjusts mic loudness based on reciter&apos;s loudness)
                 </span>
               </label>
-            </div>
+            </div> */}
             <div className="flex items-center gap-1 text-xs mt-1">
               <input value={1} checked={audioConfig.loudness === 1} onChange={(e) => setAudioConfig(old => {
                 return {...old,loudness:1}

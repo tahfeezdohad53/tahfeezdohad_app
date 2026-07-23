@@ -29,7 +29,7 @@ function useAudioRecorder() {
     let minutes = Math.floor((totalSeconds % 3600) / 60);
     let seconds = totalSeconds % 60;
     
-     async function startRecording(ns,ec,agc,loudness) {
+     async function startRecording(loudness) {
        setIsRecording(true);
        audioChunks.current = [];
        let wakeLock;
@@ -40,9 +40,9 @@ function useAudioRecorder() {
        }
        stream.current = await navigator.mediaDevices.getUserMedia({
          audio: {
-           noiseSuppression: ns,
-           echoCancellation: ec,
-           autoGainControl: agc,
+           noiseSuppression: false,
+           echoCancellation: false,
+           autoGainControl: false,
            channelCount: 1,
            sampleRate: 48000,
          },
