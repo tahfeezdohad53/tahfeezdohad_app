@@ -1,6 +1,7 @@
 'use client';
 import useAudioRecorder from "@/app/_hooks/useAudioRecorder";
 import Link from "next/link";
+import { useState } from "react";
 import { BsBrowserChrome } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa";
 import { FaMicrophoneLines } from "react-icons/fa6";
@@ -10,6 +11,7 @@ import { MdOutlineSocialDistance } from "react-icons/md";
 import { PiRecordFill } from "react-icons/pi";
 
 function StartRecording({startRecording,studentName}) {
+  const [audioConfig,setAudioConfig] = useState({ns:false,ec:false,agc:false,loudness:1});
     // const {actions:{startRecording}} = useAudioRecorder();
     return (
       <div>
@@ -29,7 +31,10 @@ function StartRecording({startRecording,studentName}) {
               </header>
               <h1 className="font-bold my-2 text-center text-(--text-secondary)">
                 {" "}
-                {studentName.split(" ").slice(1, studentName.split(" ").length).join(' ')}
+                {studentName
+                  .split(" ")
+                  .slice(1, studentName.split(" ").length)
+                  .join(" ")}
               </h1>
             </div>
             <div className="border border-(--border) shadow-2xl rounded-full p-4 bg-(--layer) w-fit mx-auto">
@@ -75,12 +80,68 @@ function StartRecording({startRecording,studentName}) {
 
           <div className="w-full">
             <button
-              onClick={startRecording}
+              onClick={() => startRecording(audioConfig.ns,audioConfig.ec,audioConfig.agc,audioConfig.loudness)}
               className="flex items-center gap-2 justify-center bg-(--primary) text-white shadow-lg py-4 rounded-md w-full"
             >
               <PiRecordFill />
               Start Recording
             </button>
+            <div className="flex items-center gap-1 text-xs mt-3">
+              <input checked={audioConfig.ns} onChange={(e) => setAudioConfig(old => {
+                return {...old,ns:e.target.checked}
+              })} id="ns" type="checkbox" />
+              <label htmlFor="ns">Background noise suppression</label>
+            </div>
+            <div className="flex items-center gap-1 text-xs mt-1">
+              <input checked={audioConfig.ec} onChange={(e) => setAudioConfig(old => {
+                return {...old,ec:e.target.checked}
+              })} id="ec" type="checkbox" />
+              <label htmlFor="ec">Echo cancellation</label>
+            </div>
+            <div className="flex items-center gap-1 text-xs mt-1">
+              <input checked={audioConfig.agc} onChange={(e) => setAudioConfig(old => {
+                return {...old,agc:e.target.checked}
+              })} id="agc" type="checkbox" />
+              <label htmlFor="agc">
+                AGC{" "}
+                <span className="text-gray-600 text-[0.65rem]">
+                  (adjusts mic loudness based on reciter&apos;s loudness)
+                </span>
+              </label>
+            </div>
+            <div className="flex items-center gap-1 text-xs mt-1">
+              <input value={1} checked={audioConfig.loudness === 1} onChange={(e) => setAudioConfig(old => {
+                return {...old,loudness:1}
+              })} id="loudness" name="loudness" type="radio" />
+              <label htmlFor="loudness">
+                Loudness
+                <span className="text-gray-600 text-[0.65rem]">
+                  (loudness is default at normal 100% )
+                </span>
+              </label>
+            </div>
+            <div className="flex items-center gap-1 text-xs mt-1">
+              <input  checked={audioConfig.loudness === 1.5} onChange={(e) => setAudioConfig(old => {
+                return {...old,loudness:1.5}
+              })} id="loudness-50" name="loudness" type="radio" />
+              <label htmlFor="loudness-50">
+                Loudness
+                <span className="text-gray-600 text-[0.65rem]">
+                  (loudness increase by 50% )
+                </span>
+              </label>
+            </div>
+            <div className="flex items-center gap-1 text-xs mt-1">
+              <input  checked={audioConfig.loudness === 2} onChange={(e) => setAudioConfig(old => {
+                return {...old,loudness:2}
+              })} id="loudness-100" name="loudness" type="radio" />
+              <label htmlFor="loudness-100">
+                Loudness
+                <span className="text-gray-600 text-[0.65rem]">
+                  (loudness is increased by 100% , 2x)
+                </span>
+              </label>
+            </div>
           </div>
         </div>
       </div>
