@@ -109,7 +109,7 @@ function StartRecording({startRecording,studentName}) {
                 </span>
               </label>
             </div> */}
-            <div className="flex items-center gap-1 text-xs mt-1">
+            <div className="flex items-center gap-1 text-xs mt-3">
               <input value={1} checked={audioConfig.loudness === 1} onChange={(e) => setAudioConfig(old => {
                 return {...old,loudness:1}
               })} id="loudness" name="loudness" type="radio" />
