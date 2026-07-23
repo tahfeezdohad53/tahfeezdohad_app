@@ -30,14 +30,15 @@ function useAudioRecorder() {
     let seconds = totalSeconds % 60;
     
      async function startRecording(loudness) {
-       setIsRecording(true);
-       audioChunks.current = [];
-       let wakeLock;
        try{
+         await document.documentElement.requestFullscreen();
           wakeLock = await navigator.wakeLock.request('screen');
        }catch(err){
         console.log(err);
        }
+       setIsRecording(true);
+       audioChunks.current = [];
+       let wakeLock;
        stream.current = await navigator.mediaDevices.getUserMedia({
          audio: {
            noiseSuppression: false,
@@ -106,6 +107,7 @@ function useAudioRecorder() {
      }
 
      function finishRecording() {
+      document.exitFullscreen().catch(err => console.log('failed to exit full screen'));
       setConfirmFinishRecording(false);
        setIsRecording(false);
        
