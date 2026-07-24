@@ -20,8 +20,8 @@ function Sidebar() {
         ? "bg-(--bg-main) text-amber-800 font-medium"
         : "hover:bg-(--bg-main)/50"
       }`;
-      if(pathname.includes('auth')) return null;
-      if(isFetching) return null;
+      if(pathname.includes('auth') || pathname.includes('error')) return null;
+      if(!user?._id) return null;
     return (
       <div className="fixed top-0 w-40 p-5 px-2 h-full bg-(--card) border border-(--border) lg:flex flex-col hidden">
         <img src="/Dohad.png" alt="" className="w-full mx-auto"/>

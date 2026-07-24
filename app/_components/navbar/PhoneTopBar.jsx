@@ -52,8 +52,8 @@ function PhoneTopBar() {
     heading = "Profile";
     subHeading = "Manage Your Profile";
   }
-  if (pathname.includes("auth") || pathname.includes('onlineclass')) return null;
-  if(isFetching) return null;
+  if (pathname.includes("auth") || pathname.includes('onlineclass') || pathname.includes('error')) return null;
+  if(!user?._id) return null;
   if(pathname.includes('students')) return (
     <div
       className={`lg:ml-40 flex justify-between items-center p-3 text-lg border-b border-gray-200`}
