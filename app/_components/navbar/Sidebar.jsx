@@ -11,7 +11,7 @@ import { useUser } from "../providers/UserProvider";
 import { PiDoorOpenLight } from "react-icons/pi";
 
 function Sidebar() {
-  const {user} = useUser();
+  const {user,isFetching} = useUser();
   const role = user?.role;
     const pathname = usePathname();
     const linkStyle = (href) =>
@@ -21,6 +21,7 @@ function Sidebar() {
         : "hover:bg-(--bg-main)/50"
       }`;
       if(pathname.includes('auth')) return null;
+      if(isFetching) return null;
     return (
       <div className="fixed top-0 w-40 p-5 px-2 h-full bg-(--card) border border-(--border) lg:flex flex-col hidden">
         <img src="/Dohad.png" alt="" className="w-full mx-auto"/>

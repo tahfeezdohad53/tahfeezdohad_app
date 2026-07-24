@@ -227,6 +227,7 @@ function StudentsContainer() {
     label: el.name,
     value: el._id,
   }));
+  if(isFetching)return <div className="fixed top-1/2 left-1/2 -translate-1/2">authenticating...</div>
   return (
     <div className="">
       <div className="mb-10 bg-(image:--gradient-primary) mt-2 rounded-xl p-5 flex items-center gap-5 w-full ">

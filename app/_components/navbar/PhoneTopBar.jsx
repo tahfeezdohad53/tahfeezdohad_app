@@ -19,7 +19,7 @@ const font2 = Playfair_Display({
   weight: ["500", "600", "700"],
 });
 function PhoneTopBar() {
-  const {user} = useUser();
+  const {user,isFetching} = useUser();
   const pathname = usePathname();
   let heading;
   let subHeading;
@@ -53,6 +53,7 @@ function PhoneTopBar() {
     subHeading = "Manage Your Profile";
   }
   if (pathname.includes("auth") || pathname.includes('onlineclass')) return null;
+  if(isFetching) return null;
   if(pathname.includes('students')) return (
     <div
       className={`lg:ml-40 flex justify-between items-center p-3 text-lg border-b border-gray-200`}
