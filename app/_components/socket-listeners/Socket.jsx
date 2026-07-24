@@ -477,7 +477,7 @@ export function CallingFnProvider({ children }) {
   }, [isInCall]);
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket) return; 
     socket.on("incoming-call", async ({ caller, offer }) => {
       if (
         isInCallRef.current ||
