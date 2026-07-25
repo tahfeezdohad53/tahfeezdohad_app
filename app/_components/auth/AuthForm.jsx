@@ -44,32 +44,32 @@ function AuthForm() {
             <button
             type="button"
               onClick={() => setRole("student")}
-              className={`py-5 hover:cursor-pointer flex items-center gap-1 pl-3 pr-4 border-r  border border-(--border) ${role === "student" && "bg-(image:--gradient-light) shadow-(--shadow-lg)"}`}
+              className={`py-5 hover:cursor-pointer flex items-center gap-1 pl-2 lg:pl-3 pr-4 border-r  border border-(--border) ${role === "student" && "bg-(image:--gradient-light) shadow-(--shadow-lg)"}`}
             >
               <div className="p-2 rounded-full bg-(--primary)/10">
                 <FaUser />
               </div>
-              <h1 className="text-xs text-(--text)">Student</h1>
+              <h1 className="lg:text-xs text-[0.65rem] text-(--text)">Student</h1>
             </button>
             <button
             type="button"
               onClick={() => setRole("teacher")}
-              className={`py-5 hover:cursor-pointer flex items-center gap-1 pl-3 pr-4 border-r border-(--border) ${role === "teacher" && "bg-(image:--gradient-light) shadow-(--shadow-lg)"}`}
+              className={`py-5 hover:cursor-pointer flex items-center gap-1 pl-2 lg:pl-3 pr-4 border-r border-(--border) ${role === "teacher" && "bg-(image:--gradient-light) shadow-(--shadow-lg)"}`}
             >
               <div className="p-2 rounded-full bg-(--primary)/10">
                 <GiGraduateCap />
               </div>
-              <h1 className="text-xs text-(--text)">Teacher</h1>
+              <h1 className="lg:text-xs text-[0.65rem] text-(--text)">Teacher</h1>
             </button>
             <button
             type="button"
               onClick={() => setRole("admin")}
-              className={`py-5 hover:cursor-pointer flex items-center gap-1  pl-3 pr-4 ${role === "admin" && "bg-(image:--gradient-light) shadow-(--shadow-lg)"}`}
+              className={`py-5 hover:cursor-pointer flex items-center gap-1  pl-2 lg:pl-3 pr-4 ${role === "admin" && "bg-(image:--gradient-light) shadow-(--shadow-lg)"}`}
             >
               <div className="p-2 rounded-full bg-(--primary)/10">
                 <GoShieldCheck />
               </div>
-              <h1 className="text-xs text-(--text)">Admin</h1>
+              <h1 className="lg:text-xs text-[0.65rem] text-(--text)">Admin</h1>
             </button>
           </div>
         </div>
@@ -106,7 +106,7 @@ function AuthForm() {
             </div>
           </div>
 
-          <button disabled={isSubmitting} className="relative w-full rounded-md shadow-(--shadow-md) disabled:bg-(image:--gradient-soft) bg-(image:--gradient-primary) py-3 text-white">
+          <button disabled={isSubmitting} className="hover:cursor-pointer hover:-translate-y-1 relative w-full rounded-md shadow-(--shadow-md) disabled:bg-(image:--gradient-soft) bg-(image:--gradient-primary) py-3 text-white">
             <p className={`${isSubmitting && 'opacity-0'}`}>Login</p>
             <p className={`absolute top-1/2 left-1/2 -translate-1/2 ${!isSubmitting && 'opacity-0'}`}>Logging...</p>
           </button>
