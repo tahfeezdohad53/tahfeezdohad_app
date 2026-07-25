@@ -41,7 +41,7 @@ function useAudioRecorder() {
        let wakeLock;
        stream.current = await navigator.mediaDevices.getUserMedia({
          audio: {
-           noiseSuppression: true,
+           noiseSuppression: false,
            echoCancellation: true,
            autoGainControl: false,
            channelCount: 1,
