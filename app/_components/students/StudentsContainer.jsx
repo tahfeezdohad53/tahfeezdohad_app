@@ -116,7 +116,7 @@ function StudentsContainer() {
       setIsSubmitting(false);
     }
   }
-  const { data: students } = useQuery({
+  const { data: students, isLoading } = useQuery({
     queryKey: ["myStudents", user?.role, searchParams.get("batch")],
     queryFn: handleGetMyStudents,
     refetchOnWindowFocus: false,
@@ -487,11 +487,7 @@ function StudentsContainer() {
             setSelectedStudents={setSelectedStudents}
           />
         ))}
-        {/* {students?.length < 1 && (
-          <h1 className="absolute top-1/2 left-1/2 -translate-1/2 font-bold text-xl tracking-wider text-center w-3/4">
-            you don&apos;t have any students tagged yet!
-          </h1>
-        )} */}
+        {students?.length < 1 && <NoStudentsAssigned />}
         {modal.show && (modal.type === "diary" || modal.type === "proxy") && (
           <Modal
             onClose={() => setModal({ show: false, type: "" })}
@@ -661,6 +657,7 @@ function StudentsContainer() {
           )}
         </ContextMenu>
       </div>
+      {(students?.length < 1 && user?.role === 'teacher' && !isLoading) && <NoStudentsAssigned />}
     </div>
   );
 }
@@ -668,6 +665,7 @@ function StudentsContainer() {
 export default StudentsContainer;
 
 import { HiOutlineUserAdd } from "react-icons/hi";
+import { NoStudentsAssigned } from "../gurfah/StudentContainer";
 
 export function RecordWithNumberCard({ page = "entry", userType = "teacher" }) {
   const [showSelector, setShowSelector] = useState(false);

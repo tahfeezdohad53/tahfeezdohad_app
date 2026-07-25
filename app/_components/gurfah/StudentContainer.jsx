@@ -293,9 +293,9 @@ function NoTeacherAssigned() {
   );
 }
 
-function NoStudentsAssigned(){
+export function NoStudentsAssigned(){
   return (
-    <div className="flex flex-col items-center justify-center px-6 py-12">
+    <div className="flex flex-col items-center justify-center px-6 py-6">
       {/* Icon */}
       <div className="relative mb-8">
         {/* Outer Circle */}
@@ -330,7 +330,7 @@ function NoStudentsAssigned(){
         students tagged yet!
       </h2>
 
-      <p className="mt-4 max-w-sm text-center text-base leading-7 text-neutral-500">
+      <p className="mt-4 text-xs max-w-sm text-center leading-7 text-neutral-500">
         Once students are tagged by your admin,
         <br />
         you'll see them here.
