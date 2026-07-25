@@ -80,7 +80,7 @@ function StartRecording({startRecording,studentName}) {
 
           <div className="w-full">
             <button
-              onClick={() => startRecording(audioConfig.loudness)}
+              onClick={() => startRecording()}
               className="flex items-center gap-2 justify-center bg-(--primary) text-white shadow-lg py-4 rounded-md w-full"
             >
               <PiRecordFill />

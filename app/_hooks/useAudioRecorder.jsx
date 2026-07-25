@@ -29,7 +29,7 @@ function useAudioRecorder() {
     let minutes = Math.floor((totalSeconds % 3600) / 60);
     let seconds = totalSeconds % 60;
     
-     async function startRecording(loudness) {
+     async function startRecording() {
        try{
          await document.documentElement.requestFullscreen();
           wakeLock = await navigator.wakeLock.request('screen');
@@ -54,7 +54,7 @@ function useAudioRecorder() {
        const source = ctx.createMediaStreamSource(stream.current);
 
        const gainNode = ctx.createGain();
-       gainNode.gain.value = loudness; // Increase volume by 50%
+       gainNode.gain.value = 1.5; // Increase volume by 50%
 
        const destination = ctx.createMediaStreamDestination();
 
