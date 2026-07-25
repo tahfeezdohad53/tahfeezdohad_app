@@ -283,7 +283,7 @@ function StudentsContainer() {
           <p className="text-white/80 text-xs">record and manage students</p>
         </div>
       </div>
-      <StudentsFilter handleFilterStudents={handleFilterStudents} />
+      {students?.length > 0 && <StudentsFilter handleFilterStudents={handleFilterStudents} />}
       <RecordWithNumberCard />
       {!isSelecting && students?.length > 0 && (
         <button
