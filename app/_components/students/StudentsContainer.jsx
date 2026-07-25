@@ -487,7 +487,6 @@ function StudentsContainer() {
             setSelectedStudents={setSelectedStudents}
           />
         ))}
-        {students?.length < 1 && <NoStudentsAssigned />}
         {modal.show && (modal.type === "diary" || modal.type === "proxy") && (
           <Modal
             onClose={() => setModal({ show: false, type: "" })}
