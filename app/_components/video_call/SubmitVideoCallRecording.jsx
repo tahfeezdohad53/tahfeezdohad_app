@@ -31,7 +31,7 @@ function SubmitVideoCallRecording({
      setOnlineClassBlobUrl("");
     const toastId = "uploading";
     toast.success("your recording will be submitted, do not close or refresh browser before success notification arrives", {
-      icon: <AiOutlineExclamationCircle className="text-yellow-500 text-4xl"/>, duration:5000});
+      icon: <AiOutlineExclamationCircle className="text-yellow-500 text-4xl"/>, duration:6000,style:{fontSize:'12px'}});
     try {
       // console.log(data.signedUrl)
       const { data } = await axios.get(
