@@ -92,16 +92,18 @@ function StudentCard({
             <div className="truncate">
               <p className="text-(--text-muted) text-[0.70rem]">Teacher</p>
               <p className="text-(--text) truncate">
-                {teacherName || "no teacher assigned"}
+                {teacherName?.split(' ').slice(1).join(' ') || "no teacher assigned"}
               </p>
             </div>
           </div>
           <div className=" border-t border-(--border) py-2 mt-2 flex items-center gap-3">
-            <FaRegUser className="text-xl text-(--primary)" />
-            <div className="w-full">
+            <div>
+              <FaRegUser className="text-xl text-(--primary)" />
+            </div>
+            <div className="w-full truncate">
               <p className="text-(--text-muted) text-[0.70rem]">Proxy</p>
               <p className="text-(--text) truncate">
-                {proxyTeacherName || "no current proxy"}
+                {proxyTeacherName?.split(' ').slice(1).join(' ') || "no current proxy"}
               </p>
             </div>
           </div>

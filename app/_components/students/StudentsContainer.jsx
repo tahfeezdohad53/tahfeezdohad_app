@@ -4,7 +4,16 @@ import StudentCard from "./StudentCard";
 import axios from "axios";
 import ContextMenu from "../ContextMenu";
 import { Item, Separator, useContextMenu } from "react-contexify";
-import { FaBook, FaBookOpen, FaEdit, FaGraduationCap, FaPlus, FaRegLightbulb, FaUserCircle, FaUserShield } from "react-icons/fa";
+import {
+  FaBook,
+  FaBookOpen,
+  FaEdit,
+  FaGraduationCap,
+  FaPlus,
+  FaRegLightbulb,
+  FaUserCircle,
+  FaUserShield,
+} from "react-icons/fa";
 import { MdCheckBoxOutlineBlank, MdDelete } from "react-icons/md";
 import CustomSelect from "../Select";
 import Modal from "../Modal";
@@ -29,13 +38,9 @@ import {
   FaShieldAlt,
 } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
-const recentStudents = [
-  "Ahmed Khan",
-  "Muhammad Ali",
-  "Zainab Fatima",
-];
+const recentStudents = ["Ahmed Khan", "Muhammad Ali", "Zainab Fatima"];
 function StudentsContainer() {
-  const { user,isFetching } = useUser();
+  const { user, isFetching } = useUser();
   const { teachers } = useAppProvider();
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
@@ -43,9 +48,9 @@ function StudentsContainer() {
     id: "student",
   });
   const router = useRouter();
-  
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [modal, setModal] = useState({ show: false, type: "" });
-  const [showCustomeContextMenu,setShowCustomContextMenu] = useState(false);
+  const [showCustomeContextMenu, setShowCustomContextMenu] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState({
     name: "",
     id: "",
@@ -70,6 +75,7 @@ function StudentsContainer() {
   }
 
   async function handleChangeDiary(teacherId) {
+    setIsSubmitting(true);
     try {
       const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_URL}/student/changeDiary?studentId=${selectedStudent.id}&teacherId=${teacherId}`,
@@ -77,7 +83,7 @@ function StudentsContainer() {
         { withCredentials: true },
       );
       if (res.data.ok) {
-                queryClient.invalidateQueries({ queryKey: ["myStudents"] });
+        queryClient.invalidateQueries({ queryKey: ["myStudents"] });
 
         setModal({ show: false, type: "" });
         return toast.success("student diary updated");
@@ -85,9 +91,12 @@ function StudentsContainer() {
     } catch (err) {
       console.log(err);
       toast.error("failed to change student diary");
+    } finally {
+      setIsSubmitting(false);
     }
   }
   async function handleAssignProxy(teacherId) {
+    setIsSubmitting(true);
     try {
       const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_URL}/student/assignProxy?studentId=${selectedStudent.id}&teacherId=${teacherId}`,
@@ -95,7 +104,7 @@ function StudentsContainer() {
         { withCredentials: true },
       );
       if (res.data.ok) {
-        queryClient.invalidateQueries({queryKey:  ["myStudents"]});
+        queryClient.invalidateQueries({ queryKey: ["myStudents"] });
         setModal({ show: false, type: "" });
         return toast.success("proxy assigned");
       }
@@ -103,19 +112,21 @@ function StudentsContainer() {
       console.log(err);
       if (!err.response.data.ok) return toast.error(err.response.data.message);
       toast.error("failed to assign proxy");
+    } finally {
+      setIsSubmitting(false);
     }
   }
   const { data: students } = useQuery({
-    queryKey: ["myStudents",user?.role,searchParams.get('batch')],
+    queryKey: ["myStudents", user?.role, searchParams.get("batch")],
     queryFn: handleGetMyStudents,
     refetchOnWindowFocus: false,
-    enabled:(user?.role === 'teacher' || user?.role === 'admin')
+    enabled: user?.role === "teacher" || user?.role === "admin",
   });
 
   async function handleGetMyStudents() {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_URL}/student/getStudents?batch=${searchParams.get('batch')}`,
+        `${process.env.NEXT_PUBLIC_URL}/student/getStudents?batch=${searchParams.get("batch")}`,
         {
           withCredentials: true,
         },
@@ -141,25 +152,32 @@ function StudentsContainer() {
   function handleFilterStudents(value) {
     if (value.length < 3) return setFilteredStudents(students);
     setFilteredStudents(students);
-    setFilteredStudents(el => {
+    setFilteredStudents((el) => {
       const isNumber = Number(value);
-      if(isNumber){
+      if (isNumber) {
         return el.filter((el) => {
           return el.name.includes(value);
         });
-      }else{
-        return el.filter(el => {
+      } else {
+        return el.filter((el) => {
           const nameArr = el.name.split(" ");
           const firstName = nameArr[1];
           const lastName = nameArr[nameArr.length - 1];
-          const queryArr = value.toLowerCase().split(' ');
-          if(queryArr.length > 1){
-            return ((firstName.includes(queryArr[0]) && lastName.includes(queryArr[1])) || (firstName.includes(queryArr[1] && lastName.includes(queryArr[0]))));
+          const queryArr = value.toLowerCase().split(" ");
+          if (queryArr.length > 1) {
+            return (
+              (firstName.includes(queryArr[0]) &&
+                lastName.includes(queryArr[1])) ||
+              firstName.includes(queryArr[1] && lastName.includes(queryArr[0]))
+            );
           }
-          return firstName.includes(value.toLowerCase()) || lastName.includes(value.toLowerCase());
-        })
+          return (
+            firstName.includes(value.toLowerCase()) ||
+            lastName.includes(value.toLowerCase())
+          );
+        });
       }
-      
+
       // return el.filter(el => {
       //   const nameArr = el.name.split(" ");
       //   const firstName = nameArr[0];
@@ -170,49 +188,64 @@ function StudentsContainer() {
       //   }
       //   return firstName.includes(value) || lastName.includes(value);
       // })
-    })
+    });
     // setFilteredStudents((student) =>
     //   student.filter((el) => el.name.toLowerCase().includes(value.toLowerCase())),
     // );
   }
-  async function handleChangeMultipleDiaries(teacherId){
-    try{
-      if(selectedStudents?.length < 1) return toast.error('please select students first');
-      await axios.patch(`${process.env.NEXT_PUBLIC_URL}/student/changeMultipleDiaries`,{teacherId,studentsId:selectedStudents},{withCredentials:true})
+  async function handleChangeMultipleDiaries(teacherId) {
+    setIsSubmitting(true);
+    try {
+      if (selectedStudents?.length < 1)
+        return toast.error("please select students first");
+      await axios.patch(
+        `${process.env.NEXT_PUBLIC_URL}/student/changeMultipleDiaries`,
+        { teacherId, studentsId: selectedStudents },
+        { withCredentials: true },
+      );
       toast.success(`diary updated of ${selectedStudents.length} students`);
       setSelectedStudents([]);
-      queryClient.invalidateQueries({queryKey:['myStudents']});
-       setModal({ show: false, type: "" });
-       setIsSelecting(false);
-       setShowCustomContextMenu(false);
-    }catch(err){
+      queryClient.invalidateQueries({ queryKey: ["myStudents"] });
+      setModal({ show: false, type: "" });
+      setIsSelecting(false);
+      setShowCustomContextMenu(false);
+    } catch (err) {
       console.log(err);
+    } finally {
+      setIsSubmitting(false);
     }
   }
-  async function handleAssignMultipleProxies(teacherId){
-    try{
-      if(selectedStudents?.length < 1) return toast.error('please select students first');
-      await axios.patch(`${process.env.NEXT_PUBLIC_URL}/student/assignMultipleProxies`,{teacherId,studentsId:selectedStudents},{withCredentials:true})
-      toast.success(`diary updated of ${selectedStudents.length} students`);
+  async function handleAssignMultipleProxies(teacherId) {
+    setIsSubmitting(true);
+    try {
+      if (selectedStudents?.length < 1)
+        return toast.error("please select students first");
+      await axios.patch(
+        `${process.env.NEXT_PUBLIC_URL}/student/assignMultipleProxies`,
+        { teacherId, studentsId: selectedStudents },
+        { withCredentials: true },
+      );
+      toast.success(`${selectedStudents.length} students proxy assigned`);
       setSelectedStudents([]);
-      queryClient.invalidateQueries({queryKey:['myStudents']});
-       setModal({ show: false, type: "" });
-       setIsSelecting(false);
-       setShowCustomContextMenu(false);
-    }catch(err){
+      queryClient.invalidateQueries({ queryKey: ["myStudents"] });
+      setModal({ show: false, type: "" });
+      setIsSelecting(false);
+      setShowCustomContextMenu(false);
+    } catch (err) {
       console.log(err);
+    } finally {
+      setIsSubmitting(false);
     }
   }
   const session = useSession();
   useEffect(() => {
-    if(session.status === "loading") return;
-    if(isFetching) return;
-    if(user?.role === 'student') router.replace('/gurfah');
-    if(!user?._id) {
+    if (session.status === "loading") return;
+    if (isFetching) return;
+    if (user?.role === "student") router.replace("/gurfah");
+    if (!user?._id) {
       router.replace("/auth");
     }
-    
-  },[user?.role,session?.status,isFetching])
+  }, [user?.role, session?.status, isFetching]);
 
   // if (!user?.role) {
   //   return(
@@ -222,12 +255,17 @@ function StudentsContainer() {
   //     </div>
   //   )
   // };
-  if(!user?._id || user?.role === 'student') return null;
+  if (!user?._id || user?.role === "student") return null;
   const customizedTeachers = teachers?.map((el) => ({
     label: el.name,
     value: el._id,
   }));
-  if(isFetching)return <div className="fixed top-1/2 left-1/2 -translate-1/2">authenticating...</div>
+  if (!user?._id)
+    return (
+      <div className="fixed top-1/2 left-1/2 -translate-1/2">
+        authenticating...
+      </div>
+    );
   return (
     <div className="">
       <div className="mb-10 bg-(image:--gradient-primary) mt-2 rounded-xl p-5 flex items-center gap-5 w-full ">
@@ -285,13 +323,13 @@ function StudentsContainer() {
                 options={[
                   {
                     text: "change diary",
-                    icon: <FaBook className="text-(--primary)"/>,
+                    icon: <FaBook className="text-(--primary)" />,
                     handler: () =>
                       setModal({ type: "multiple-diary", show: true }),
                   },
                   {
                     text: "assign proxy",
-                    icon: <FaBook className="text-(--primary)"/>,
+                    icon: <FaBook className="text-(--primary)" />,
                     handler: () =>
                       setModal({ type: "multiple-proxy", show: true }),
                   },
@@ -312,7 +350,7 @@ function StudentsContainer() {
                     </div>
 
                     {/* Heading */}
-                    <h2 className="mt-5 lg:text-2xl font-bold text-[var(--text-primary)] text-center">
+                    <h2 className="mt-5 lg:text-xl font-bold text-[var(--text-primary)] text-center">
                       Select teacher to change diaries
                     </h2>
 
@@ -345,6 +383,7 @@ function StudentsContainer() {
                     </label>
 
                     <CustomSelect
+                      isSubmitting={isSubmitting}
                       options={customizedTeachers}
                       isButton
                       handler={handleChangeMultipleDiaries}
@@ -377,7 +416,7 @@ function StudentsContainer() {
                     </div>
 
                     {/* Heading */}
-                    <h2 className="mt-5 lg:text-2xl font-bold text-[var(--text-primary)] text-center">
+                    <h2 className="mt-5 lg:text-xl font-bold text-[var(--text-primary)] text-center">
                       Select teacher to assign proxies
                     </h2>
 
@@ -403,12 +442,13 @@ function StudentsContainer() {
                     </div>
                   </div>
 
-                  <div>
+                  <div className="h-full">
                     <label className="block mb-2 text-sm font-semibold text-gray-700">
                       Select proxy teacher
                     </label>
 
                     <CustomSelect
+                      isSubmitting={isSubmitting}
                       options={customizedTeachers}
                       isButton
                       handler={handleAssignMultipleProxies}
@@ -455,7 +495,7 @@ function StudentsContainer() {
         {modal.show && (modal.type === "diary" || modal.type === "proxy") && (
           <Modal
             onClose={() => setModal({ show: false, type: "" })}
-            className="w-[90%] h-fit rounded-3xl"
+            className="w-[90%] h-fit rounded-2xl"
             headingStyles="text-xl font-bold text-center"
             // heading={
             //   modal.type === "diary"
@@ -463,7 +503,7 @@ function StudentsContainer() {
             //     : "Select teacher to assign proxy"
             // }
           >
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="flex flex-col items-center">
                 {/* Icon Circle */}
                 <div className="p-4 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center shadow-sm border border-amber-100">
@@ -487,6 +527,25 @@ function StudentsContainer() {
                   <div className="w-2 h-2 rounded-full bg-amber-600" />
                   <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
                 </div>
+              </div>
+
+              <div className="mt-6">
+                <label className="block mb-2 text-sm font-semibold text-gray-700">
+                  {modal.type === "diary"
+                    ? "Select new teacher"
+                    : "Select proxy teacher"}
+                </label>
+
+                <CustomSelect
+                  isSubmitting={isSubmitting}
+                  options={customizedTeachers}
+                  isButton
+                  handler={
+                    modal.type === "diary"
+                      ? handleChangeDiary
+                      : handleAssignProxy
+                  }
+                />
               </div>
               {/* Student & Teacher Card */}
               <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
@@ -553,7 +612,7 @@ function StudentsContainer() {
               </div>
 
               {/* Select */}
-              <div>
+              {/* <div>
                 <label className="block mb-2 text-sm font-semibold text-gray-700">
                   {modal.type === "diary"
                     ? "Select new teacher"
@@ -561,6 +620,7 @@ function StudentsContainer() {
                 </label>
 
                 <CustomSelect
+                  isSubmitting={isSubmitting}
                   options={customizedTeachers}
                   isButton
                   handler={
@@ -569,14 +629,14 @@ function StudentsContainer() {
                       : handleAssignProxy
                   }
                 />
-              </div>
+              </div> */}
 
               {/* Footer Note */}
               <div className="flex items-center gap-2 text-xs justify-center text-gray-500">
                 <FaShieldAlt className="text-green-600" />
                 <span>
                   {modal.type === "diary"
-                    ? "This will update the diary teacher."
+                    ? "This will update the teacher's diary."
                     : "This will assign a proxy teacher."}
                 </span>
               </div>
@@ -584,11 +644,10 @@ function StudentsContainer() {
           </Modal>
         )}
         <ContextMenu>
-          
-            <Item onClick={() => setModal({ show: true, type: "diary" })}>
-              <FaEdit className="mr-2" /> change diary
-            </Item>
-          
+          <Item onClick={() => setModal({ show: true, type: "diary" })}>
+            <FaEdit className="mr-2" /> change diary
+          </Item>
+
           <Separator />
 
           <Item onClick={() => setModal({ show: true, type: "proxy" })}>
@@ -610,49 +669,49 @@ export default StudentsContainer;
 
 import { HiOutlineUserAdd } from "react-icons/hi";
 
-export function RecordWithNumberCard({page='entry',userType="teacher"}) {
-  const [showSelector,setShowSelector] = useState(false);
-  const {students,teachers} = useAppProvider();
+export function RecordWithNumberCard({ page = "entry", userType = "teacher" }) {
+  const [showSelector, setShowSelector] = useState(false);
+  const { students, teachers } = useAppProvider();
   const router = useRouter();
-  let recentStudents; 
-  try{
-    recentStudents = JSON.parse(localStorage.getItem('recentStudents'))||[];
-  }catch{
-    localStorage.removeItem('recentStudents');
+  let recentStudents;
+  try {
+    recentStudents = JSON.parse(localStorage.getItem("recentStudents")) || [];
+  } catch {
+    localStorage.removeItem("recentStudents");
     recentStudents = [];
   }
   // alert(typeof recentStudents);
   let formatedStudents;
   let formattedTeachers;
-  if(userType === 'teacher') {
+  if (userType === "teacher") {
     formatedStudents = students?.map((el) => {
       return { label: el.name, value: el._id };
     });
   }
-  if(userType === 'student') {
+  if (userType === "student") {
     formattedTeachers = teachers?.map((el) => {
       return { label: el.name, value: el._id };
     });
   }
-  function handleSelect({value:id,label:studentName}){
-    if(recentStudents?.length === 3){
+  function handleSelect({ value: id, label: studentName }) {
+    if (recentStudents?.length === 3) {
       recentStudents.pop();
-      recentStudents.unshift({name:studentName,id});
-      localStorage.setItem('recentStudents',JSON.stringify(recentStudents));
+      recentStudents.unshift({ name: studentName, id });
+      localStorage.setItem("recentStudents", JSON.stringify(recentStudents));
     }
-    if(recentStudents?.length > 0 && recentStudents?.length < 3){
-      
-      recentStudents.unshift({name:studentName,id});
-      localStorage.setItem('recentStudents',JSON.stringify(recentStudents));
+    if (recentStudents?.length > 0 && recentStudents?.length < 3) {
+      recentStudents.unshift({ name: studentName, id });
+      localStorage.setItem("recentStudents", JSON.stringify(recentStudents));
     }
-    if(recentStudents?.length === 0){
+    if (recentStudents?.length === 0) {
       const newArr = [];
-      newArr.unshift({name:studentName,id});
+      newArr.unshift({ name: studentName, id });
       // alert(JSON.stringify(newArr))
-      localStorage.setItem('recentStudents',JSON.stringify(newArr));
+      localStorage.setItem("recentStudents", JSON.stringify(newArr));
     }
-    if(page === 'entry')router.replace(`/entry/${id}?studentName=${studentName}`);
-    if(page === 'gurfah')router.replace(`/onlineclass/${id}`);
+    if (page === "entry")
+      router.replace(`/entry/${id}?studentName=${studentName}`);
+    if (page === "gurfah") router.replace(`/onlineclass/${id}`);
   }
   return (
     <div className="mb-5 mt-2 flex items-center justify-between rounded-3xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
@@ -665,15 +724,19 @@ export function RecordWithNumberCard({page='entry',userType="teacher"}) {
 
         <div>
           <h3 className="text-sm font-bold text-amber-950">
-            {userType === 'teacher' ? 'Student' : 'Teacher'} not tagged?
+            {userType === "teacher" ? "Student" : "Teacher"} not tagged?
           </h3>
 
-          {userType === 'teacher' && <p className="mt-1 font-semibold text-xs leading-5 text-amber-800/80">
-            Select student from here.
-          </p>}
-          {userType === 'student' && <p className="mt-1 text-xs leading-5 text-amber-800/80">
-             select teacher from here.
-          </p>}
+          {userType === "teacher" && (
+            <p className="mt-1 font-semibold text-xs leading-5 text-amber-800/80">
+              Select student from here.
+            </p>
+          )}
+          {userType === "student" && (
+            <p className="mt-1 text-xs leading-5 text-amber-800/80">
+              select teacher from here.
+            </p>
+          )}
         </div>
       </div>
 
@@ -682,7 +745,6 @@ export function RecordWithNumberCard({page='entry',userType="teacher"}) {
         className="flex items-center hover:cursor-pointer duration-300 ease-in-out transition-all gap-2 rounded-xl bg-amber-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-amber-800 active:scale-95"
       >
         <HiOutlineUserAdd size={18} />
-        
       </button>
 
       {showSelector && (
@@ -699,58 +761,67 @@ export function RecordWithNumberCard({page='entry',userType="teacher"}) {
 
               <div>
                 <h2 className="lg:text-2xl text-lg font-bold text-amber-950">
-                  Select {userType === 'teacher' ? 'Student' : 'Teacher'}
+                  Select {userType === "teacher" ? "Student" : "Teacher"}
                 </h2>
 
                 <p className="mt-1 text-gray-500 text-xs lg:text-sm">
-                  Choose a {userType === 'teacher' ? 'student' : 'teacher'} from the list
+                  Choose a {userType === "teacher" ? "student" : "teacher"} from
+                  the list
                 </p>
               </div>
             </div>
 
             {/* Select */}
             <CustomSelect
-              options={userType === 'teacher' ? formatedStudents : formattedTeachers}
+              options={
+                userType === "teacher" ? formatedStudents : formattedTeachers
+              }
               handler={handleSelect}
               handleOnChange
             />
 
             {/* Recent */}
-            {userType === 'teacher' && <div>
-              <div className="mb-4 flex items-center gap-3">
-                <span className="font-semibold text-amber-950">Recent</span>
+            {userType === "teacher" && (
+              <div>
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="font-semibold text-amber-950">Recent</span>
 
-                <div className="h-px flex-1 bg-gray-200" />
-              </div>
+                  <div className="h-px flex-1 bg-gray-200" />
+                </div>
 
-              <div className="space-y-3">
-                {recentStudents?.map((student) => (
-                  <div key={student?.id}>
-                    <Link
-                      href={page === 'entry' ? `/entry/${student?.id}?studentName=${student?.name}` : `/onlineclass/${student?.id}`}
-                      className="flex w-full items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-4 shadow-sm transition hover:border-amber-200 hover:shadow-md"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="flex p-2 items-center justify-cente rounded-full bg-amber-50">
-                          <FaUserCircle className="text-2xl text-amber-300" />
+                <div className="space-y-3">
+                  {recentStudents?.map((student) => (
+                    <div key={student?.id}>
+                      <Link
+                        href={
+                          page === "entry"
+                            ? `/entry/${student?.id}?studentName=${student?.name}`
+                            : `/onlineclass/${student?.id}`
+                        }
+                        className="flex w-full items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-4 shadow-sm transition hover:border-amber-200 hover:shadow-md"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="flex p-2 items-center justify-cente rounded-full bg-amber-50">
+                            <FaUserCircle className="text-2xl text-amber-300" />
+                          </div>
+
+                          <span className="text-xs text-left text-gray-800">
+                            {student?.name.split(" ").slice(1).join(" ")}
+                          </span>
                         </div>
 
-                        <span className="text-xs text-left text-gray-800">
-                          {student?.name.split(" ").slice(1).join(" ")}
-                        </span>
-                      </div>
-
-                      <HiOutlineChevronRight className="text-xl text-amber-700" />
-                    </Link>
-                  </div>
-                ))}
-                {!recentStudents?.length && (
-                  <p className="text-center my-10">
-                    No recent students selected!
-                  </p>
-                )}
+                        <HiOutlineChevronRight className="text-xl text-amber-700" />
+                      </Link>
+                    </div>
+                  ))}
+                  {!recentStudents?.length && (
+                    <p className="text-center my-10">
+                      No recent students selected!
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>}
+            )}
 
             {/* Footer */}
             <div className="flex items-start gap-4 rounded-2xl border border-amber-100 bg-amber-50 p-4">
@@ -760,7 +831,8 @@ export function RecordWithNumberCard({page='entry',userType="teacher"}) {
 
               <div>
                 <p className="font-semibold text-amber-900 text-sm">
-                  Can't find the {userType === 'teacher' ?  'student' : 'teacher'}?
+                  Can't find the{" "}
+                  {userType === "teacher" ? "student" : "teacher"}?
                 </p>
 
                 <p className="mt-1 text-sm text-gray-500 ">
