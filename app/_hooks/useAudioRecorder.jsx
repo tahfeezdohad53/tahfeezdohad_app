@@ -125,7 +125,7 @@ function useAudioRecorder() {
      }
 
      
-     async function submitRecording(studentId) {
+     async function submitRecording(studentId,name) {
       setIsSubmitting(true);  
       const toastId = 'uploading'
       try{
@@ -144,7 +144,7 @@ function useAudioRecorder() {
         setClientAudioUrl('');
         router.replace('/students');
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_URL}/recording/signedToken`,{withCredentials:true}
+          `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${name}`,{withCredentials:true}
         );
         await axios.put(data.signedUrl, blob, {
           headers: {

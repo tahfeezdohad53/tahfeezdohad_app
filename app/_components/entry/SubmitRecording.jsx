@@ -91,7 +91,7 @@ function SubmitRecording({
         </button>
         <button
           disabled={isSubmitting}
-          onClick={() => submitRecording(studentId)}
+          onClick={() => submitRecording(studentId,formatName(studentName))}
           className="relative flex items-center gap-2 h-fit justify-center hover:cursor-pointer hover:-translate-y-1 ease-in-out duration-300 transition-all bg-(image:--gradient-primary) text-white shadow-(--shadow-xl) py-4 rounded-md w-full"
         >
           <p

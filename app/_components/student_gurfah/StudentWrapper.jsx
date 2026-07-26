@@ -342,6 +342,7 @@ function StudentWrapper() {
   if (onlineClassBlob && user?.role !== "student")
     return (
       <SubmitVideoCallRecording
+      studentName = {data?.user?.name}
         videoCallSeconds={videoCallSeconds}
         onlineClassBlobUrl={onlineClassBlobUrl}
         setvideoCallSeconds={setVideoCallSeconds}

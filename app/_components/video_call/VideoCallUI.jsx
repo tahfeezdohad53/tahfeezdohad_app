@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useVideoCallContext } from "../providers/VideoCallProvider";
 import { useCallingFn } from "../socket-listeners/Socket";
 import { useSession } from "next-auth/react";
+import Select from 'react-select';
 
 import {
   FiMic,
@@ -25,6 +26,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { HiXMark } from "react-icons/hi2";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { formatName } from "@/helpers";
 function VideoCallUI() {
   const {user} = useUser();
   const videoRef = useRef(null);
@@ -237,7 +239,8 @@ export default VideoCallUI;
 
 function SelectStudent({onclose}){
   const {students} = useAppProvider();
-  const [id,setId] = useState(null);
+  const [student,setStudent] = useState({id:'',name:''});
+  const formattedName = formatName(student.name);
   const [error,setError] = useState(false);
   const {isLap,setIsLap,videoCallSeconds,setVideoCallSeconds,onlineClassBlob,recorderRef,setOnlineClassBlob,setOnlineClassBlobUrl} = useVideoCallContext();
   const formatedStudents = students?.map((el) => {
@@ -248,14 +251,14 @@ function SelectStudent({onclose}){
   
   useEffect(() => {
     async function submitVideoCallRecording() {
-      if(!id) return setError(true);
+      if(!student.id) return setError(true);
       const url = URL.createObjectURL(onlineClassBlob);
       const audio = new Audio(url);
       let dur;
       await new Promise((resolve,reject) => {
         audio.onloadedmetadata = () => {
           dur = audio.duration / 60;
-          console.log(audio.duration);
+          // console.log(audio.duration);
           resolve();
         }
         audio.onerror = () => {
@@ -277,7 +280,7 @@ function SelectStudent({onclose}){
       try {
         // console.log(data.signedUrl)
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_URL}/recording/signedToken`,
+          `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${formattedName}`,
           { withCredentials: true },
         );
 
@@ -287,7 +290,7 @@ function SelectStudent({onclose}){
           },
         });
         await axios.post(
-          `${process.env.NEXT_PUBLIC_URL}/recording/create/${id}`,
+          `${process.env.NEXT_PUBLIC_URL}/recording/create/${student.id}`,
           {
             isOnline: true,
             url: data.url,
@@ -307,7 +310,7 @@ function SelectStudent({onclose}){
       }
     }
     if(onlineClassBlob) submitVideoCallRecording();
-  },[onlineClassBlob,id])
+  },[onlineClassBlob,student.id])
   
   
   return (
@@ -334,60 +337,20 @@ function SelectStudent({onclose}){
 
       {/* Select */}
       <div>
-        <CustomSelect
-          options={formatedStudents}
-          handler={({ value }) => setId(value)}
-          handleOnChange
-        />
-        {(error && !id) && <p className="text-xs text-red-500 mt-1 font-bold">please select a student</p>}
+        <Select options={formatedStudents} onChange={(e) => {
+          setStudent({ id: e.value, name: e.label });
+          setError(false);
+        }}/>
+        {(error && !student.id) && <p className="text-xs text-red-500 mt-1 font-bold">please select a student</p>}
       </div>
       <button
         onClick={() => {
-          if(id) recorderRef?.current?.stop?.();
+          if(student.id) recorderRef?.current?.stop?.();
         }}
         className="bg-(image:--gradient-primary) text-white p-2 rounded-md"
       >
         Submit Recording
       </button>
-      {/* Recent */}
-      {/* <div>
-              <div className="mb-4 flex items-center gap-3">
-                <span className="font-semibold text-amber-950">Recent</span>
-
-                <div className="h-px flex-1 bg-gray-200" />
-              </div>
-
-              <div className="space-y-3">
-                {recentStudents?.map((student) => (
-                  <div key={student?.id}>
-                    <Link
-                      href={`/entry/${student?.id}?studentName=${student?.name}`}
-                      key={student}
-                      className="flex w-full items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-4 shadow-sm transition hover:border-amber-200 hover:shadow-md"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="flex p-2 items-center justify-cente rounded-full bg-amber-50">
-                          <FaUserCircle className="text-2xl text-amber-300" />
-                        </div>
-
-                        <span className="text-xs text-left text-gray-800">
-                          {student?.name.split(" ").slice(1).join(" ")}
-                        </span>
-                      </div>
-
-                      <HiOutlineChevronRight className="text-xl text-amber-700" />
-                    </Link>
-                  </div>
-                ))}
-                {!recentStudents?.length && (
-                  <p className="text-center my-10">
-                    No recent students selected!
-                  </p>
-                )}
-              </div>
-            </div> */}
-
-      {/* Footer */}
       <div className="flex items-start gap-4 rounded-2xl border border-amber-100 bg-amber-50 p-4">
         <div className="flex p-3 items-center justify-center rounded-full bg-amber-100">
           <FaRegLightbulb className="text-xl text-amber-700" />

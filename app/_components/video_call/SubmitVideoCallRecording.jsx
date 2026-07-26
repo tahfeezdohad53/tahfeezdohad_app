@@ -10,8 +10,10 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { ImSpinner2 } from "react-icons/im";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { formatName } from "@/helpers";
 
 function SubmitVideoCallRecording({
+  studentName,
   onlineClassBlob,
   onlineClassBlobUrl,
   onlineClassBlobUrlSize,
@@ -25,6 +27,7 @@ function SubmitVideoCallRecording({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function submitVideoCallRecording() {
+    const formattedStudentName = formatName(studentName);
     setIsSubmitting(true);
      setOnlineClassBlob(null);
      setVideoCallSeconds(0);
@@ -35,7 +38,7 @@ function SubmitVideoCallRecording({
     try {
       // console.log(data.signedUrl)
       const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_URL}/recording/signedToken`,
+        `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${formattedStudentName}`,
         { withCredentials: true },
       );
 
@@ -79,7 +82,7 @@ function SubmitVideoCallRecording({
 
         <div className="flex flex-col items-center">
           <h1 className="text-xl font-bold">Submit Class of</h1>
-          <p className="font-bold text-amber-800">Student Name</p>
+          <p className="font-bold text-amber-800">{formatName(studentName)}</p>
         </div>
 
         <p className="w-3/4 text-center text-xs text-stone-800">

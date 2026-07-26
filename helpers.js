@@ -1,4 +1,5 @@
 export function formatName(name) {
+  if(!name) return '';
   const firstChar = name
     .split(" ")[1]
     .slice(0, 1)
