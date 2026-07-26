@@ -9,6 +9,8 @@ import { useUser } from "../providers/UserProvider";
 import { IoCalendarOutline } from "react-icons/io5";
 import { CiEdit } from "react-icons/ci";
 import Image from "next/image";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { RiUserAddLine } from "react-icons/ri";
 
 const font = Cinzel({
   subsets: ["latin"],
@@ -42,6 +44,10 @@ function PhoneTopBar() {
   if (pathname.includes("leave")) {
     heading = "Leaves";
     subHeading = "Manage your leave applications here";
+  }
+  if (pathname.includes("create_account")) {
+    heading = "Accounts";
+    subHeading = "Create user accounts from here";
   }
   if (pathname.includes("maqarat")) {
     heading = "Maqarat Sessions";
@@ -94,6 +100,9 @@ function PhoneTopBar() {
           )}
           {pathname.includes("leave") && (
             <IoCalendarOutline className="text-xl text-(--primary)" />
+          )}
+          {pathname.includes("create_account") && (
+            <RiUserAddLine  className="text-xl text-(--primary)" />
           )}
           {pathname.includes("profile") && (
             <CiEdit className="text-xl text-(--primary)" />

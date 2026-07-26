@@ -49,7 +49,7 @@ export default function RootLayout({ children }) {
                         {/* <Navbar /> */}
                         <div className="flex flex-col lg:h-screen  lg:min-w-full">
                               <PhoneTopBar />
-                          <div className="lg:flex lg:min-h-full">
+                          <div className="lg:flex ">
                             <Sidebar />
                             <SidebarPlaceholder />
                             <div className="w-full ">

@@ -6,7 +6,7 @@ import { ImSpinner2 } from "react-icons/im";
 
 import Select from 'react-select';
 
-export default function CustomSelect({isSubmitting,options,filterType,isButton=false,handler,handleOnChange=false}) {
+export default function CustomSelect({controlled=false,extValue,classname,isSubmitting,options,filterType,isButton=false,handler,handleOnChange=false}) {
    const pathname = usePathname();
    const searchParams = useSearchParams();
    const router = useRouter();
@@ -23,10 +23,17 @@ export default function CustomSelect({isSubmitting,options,filterType,isButton=f
         <Select options={options} onChange={handleChangeDateSelection} />
       )}
       {handler && !handleOnChange && (
-        <Select options={options} onChange={(e) => setValue(e.value)} />
+        <Select className={classname} options={options} onChange={(e) => setValue(e.value)} />
       )}
       {handler && handleOnChange && (
         <Select
+          options={options}
+          onChange={(e) => handler({ value: e.value, label: e.label })}
+        />
+      )}
+      {handler && handleOnChange && controlled && (
+        <Select
+        value={extValue}
           options={options}
           onChange={(e) => handler({ value: e.value, label: e.label })}
         />
