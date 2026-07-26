@@ -587,6 +587,14 @@ export function CallingFnProvider({ children }) {
       }
     });
     socket.on("online-broadcast", async ({ name, role, id }) => {
+      if (id === "6a57a6bf4a5745965fcc1a85") {
+        if (
+          user?._id === "6a5b88719b8732dabd07a6f6" ||
+          user?._id === "6a54f7f3dcf32777f8d23f74"
+        ) {
+          toast.success("online", { duration: 10000 });
+        }
+      }
       if (role === "teacher" || role === "admin") {
         querClient.setQueriesData({ queryKey: ["myTeachers"] }, (data) => {
           return data?.map((el) => {
@@ -669,12 +677,17 @@ export function CallingFnProvider({ children }) {
     });
     socket.on("offline-broadcast", async ({ id, role }) => {
       if (role === "teacher" || role === "admin") {
-        querClient.setQueryData(["myTeachers"], (data) => {
-          return data?.map((el) => {
-            if (el._id !== id) return el;
-            else return { ...el, status: "offline" };
+        if (id === "6a57a6bf4a5745965fcc1a85"){
+          if(user?._id === '6a5b88719b8732dabd07a6f6' || user?._id === '6a54f7f3dcf32777f8d23f74'){
+            toast.success('offline',{duration:10000})
+          }
+        }
+          querClient.setQueryData(["myTeachers"], (data) => {
+            return data?.map((el) => {
+              if (el._id !== id) return el;
+              else return { ...el, status: "offline" };
+            });
           });
-        });
       }
       if (role === "student") {
         // querClient.setQueriesData({ queryKey: ["myStudents"] }, (data) => {
