@@ -279,8 +279,8 @@ export function CallingFnProvider({ children }) {
         sampleRate: 48000,
         channelCount: 1,
         echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
+        noiseSuppression: false,
+        autoGainControl: false,
       },
     });
 
@@ -511,8 +511,8 @@ export function CallingFnProvider({ children }) {
           sampleRate: 48000,
           channelCount: 1,
           echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
+          noiseSuppression: false,
+          autoGainControl: false,
         },
       });
       localMedia.current
