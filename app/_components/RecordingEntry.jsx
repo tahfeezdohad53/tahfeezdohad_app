@@ -45,7 +45,7 @@ function RecordingEntry({el,i,isDummy=false}) {
                 .join(" ")}
             {el.studentName.split(" ").length < 3 && el.studentName}
           </p>
-          <p className=" col-span-2 lg:col-span-4 text-[0.60rem] lg:text-sm text-left truncate">
+          <p className=" col-span-2 lg:col-span-4 text-[0.60rem] lg:text-sm text-left">
             {el.teacherName.split(" ").length > 2 &&
               el.teacherName
                 .split(" ")

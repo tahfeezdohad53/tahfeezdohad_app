@@ -41,7 +41,7 @@ const font = Playfair_Display({
   weight: ["500", "600", "700"],
 });
 function StudentWrapper() {
-  const { user,isFetching } = useUser();
+  const { user, isFetching } = useUser();
   const { socket } = useSocketContext();
   const { containerRef } = useAppProvider();
   const pathname = usePathname();
@@ -63,7 +63,7 @@ function StudentWrapper() {
     states: { isSubmitting },
   } = useAudioRecorder();
 
-  const { data, isFetching:isGurfahDataFetching } = useQuery({
+  const { data, isFetching: isGurfahDataFetching } = useQuery({
     queryKey: ["gurfahData"],
     queryFn: handleGetQuery,
     refetchOnWindowFocus: false,
@@ -83,7 +83,7 @@ function StudentWrapper() {
     }
   }
 
-  const { data: messages,isFetching:isMessageFetching } = useQuery({
+  const { data: messages, isFetching: isMessageFetching } = useQuery({
     queryKey: ["messages"],
     queryFn: getMessages,
     // initialData: [],
@@ -92,151 +92,24 @@ function StudentWrapper() {
   const inputRef = useRef(null);
   const toastInputRef = useRef(null);
   const [message, setMessage] = useState("");
+
   useEffect(() => {
-    // console.log(containerRef.current)
-    if (containerRef.current)
+    if (containerRef.current){
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
-  }, [containerRef.current,messages]);
+    }
+    
+  }, [isMessageFetching,containerRef, messages,isGurfahDataFetching]);
 
-  // useEffect(() => {
-  //   // console.log(containerRef.current)
-  //   if (containerRef.current)
-  //       setTimeout(() => {
-  //         containerRef.current.scrollTop = containerRef.current.scrollHeight;
-  //       }, 1000);
-  // }, [containerRef.current]);
+  const router = useRouter();
+  const session = useSession();
+  useEffect(() => {
+    if (session.status === "loading") return;
+    if (isFetching) return;
+    if (!user?._id) {
+      router.replace("/auth");
+    }
+  }, [user?.role, session?.status, isFetching]);
 
-      const router = useRouter();
-          const session = useSession();
-          useEffect(() => {
-              if(session.status === "loading") return;
-              if(isFetching) return;
-              if(!user?._id) {
-                router.replace("/auth");
-              }
-              
-            },[user?.role,session?.status,isFetching])
-
-  //           async function sendMessageFromToast(e,toastId) {
-  //             e.preventDefault();
-  //             if(toastInputRef.current.value.length < 1) return;
-  //             queryClient.setQueriesData({ queryKey: ["messages"] }, (old) => {
-  //               return [
-  //                 ...old,
-  //                 {
-  //                   sender: user?._id,
-  //                   receiver: id,
-  //                   message: toastInputRef.current.value,
-  //                   createdAt: new Date(),
-  //                   _id: Date.now(),
-  //                 },
-  //               ];
-  //             });
-
-  //             try {
-  //               socket.emit("message", {
-  //                 senderName: user?.name,
-  //                 message: toastInputRef.current.value,
-  //                 to: id,
-  //                 from: user?._id,
-  //                 createdAt: new Date(),
-  //               });
-  //               const { data } = await axios.post(
-  //                 `${process.env.NEXT_PUBLIC_URL}/message/send`,
-  //                 { message: toastInputRef.current.value, to: id },
-  //                 { withCredentials: true },
-  //               );
-  //               toast.dismiss(toastId)
-  //             } catch (err) {
-  //               console.log(err);
-  //             }
-  //           }
-
-  // useEffect(() => {
-  //   if (!socket) return;
-  //   socket.on("message", ({ message, from, to, createdAt, senderName }) => {
-  //      if(from === id)toast(
-  //        (t) => (
-  //          <div className="relative w-90 rounded-2xl bg-white p-4 shadow-xl border border-gray-200">
-  //            {/* Dismiss */}
-  //            <button
-  //              onClick={() => toast.dismiss(t.id)}
-  //              className="absolute right-3 top-3 rounded-full p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
-  //            >
-  //              ✕
-  //            </button>
-
-  //            {/* Header */}
-  //            <div className="flex items-start gap-3">
-  //              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-  //                <MdMessage size={22} />
-  //              </div>
-
-  //              <div className="min-w-0 flex-1 pr-6">
-  //                <p className="text-sm font-semibold text-gray-900">
-  //                  {senderName.split(' ').slice(1).join(' ')}
-  //                </p>
-
-  //                <p className="mt-1 line-clamp-2 text-xs text-gray-500">
-  //                  {message}
-  //                </p>
-  //              </div>
-  //            </div>
-
-  //            {/* Reply */}
-  //            <form onSubmit={(e) => sendMessageFromToast(e,t.id)} className="mt-4 flex gap-2">
-  //              <input
-  //              ref={toastInputRef}
-  //                type="text"
-  //                placeholder="Reply..."
-  //                className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-  //              />
-
-  //              <button className="rounded-lg bg-(image:--gradient-primary) px-4 py-2 text-sm font-medium text-white transition hover:scale-105 active:scale-95">
-  //                Send
-  //              </button>
-  //            </form>
-  //          </div>
-  //        ),
-  //        {
-  //          duration: Infinity,
-  //          position: "top-center",
-  //          style: {
-  //            padding: 0,
-  //            background: "transparent",
-  //            boxShadow: "none",
-  //            maxWidth: "none",
-  //          },
-  //        },
-  //      );
-  //     if (from === id) {
-  //       queryClient.setQueriesData({ queryKey: ["messages"] }, (old) => {
-  //         return [
-  //           ...old,
-  //           {
-  //             sender: from,
-  //             receiver: to,
-  //             message,
-  //             createdAt,
-  //             _id: Date.now(),
-  //           },
-  //         ];
-  //       });
-  //     }
-  //   });
-
-  //   return () => socket.off("message");
-  // }, [socket]);
-
-  // useEffect(() => {
-  //   if(!containerRef.current) return;
-  //   containerRef.current.scrollTop = containerRef.current.scrollHeight;
-  // },[messages.length,containerRef.current])
-
-  // useEffect(() => {
-  //   if(!containerRef.current) return;
-  //   containerRef.current.scrollTop = containerRef.current.scrollHeight;
-  // },[containerRef])
   async function sendMessage(e) {
     e.preventDefault();
     if (message.length < 1) return;
@@ -247,7 +120,7 @@ function StudentWrapper() {
           sender: user?._id,
           receiver: id,
           message,
-          profileImage:user.profileImage,
+          profileImage: user.profileImage,
           createdAt: new Date(),
           _id: Date.now(),
         },
@@ -257,7 +130,7 @@ function StudentWrapper() {
     inputRef.current.focus();
     try {
       socket.emit("message", {
-        senderName:user?.name,
+        senderName: user?.name,
         message,
         to: id,
         from: user?._id,
@@ -272,7 +145,7 @@ function StudentWrapper() {
       console.log(err);
     }
   }
-  
+
   async function getMessages(e) {
     try {
       const { data } = await axios.get(
@@ -294,7 +167,7 @@ function StudentWrapper() {
     );
   if (!onlineClassBlob)
     return (
-      <div className=" w-full lg:w-[90%] flex flex-col gap-5 items-center  fixed top-0 left-0 lg:left-[10.5%] h-[82.5%]">
+      <div className=" w-full lg:w-[90%] flex flex-col gap-3 items-center  fixed top-0 left-0 lg:left-[10.5%] h-[82.5%]">
         <div className="min-h-17 w-full bg-(--card) flex items-center">
           <div className="flex items-center gap-1 text-sm text-(--text)">
             <button className="duration-300 ease-in-out hover:cursor-pointer transition-all bg-(--card) rounded-lg p-2">
@@ -317,7 +190,10 @@ function StudentWrapper() {
 
           <div className="ml-3 font-semibold mr-2">
             <h1 className="text-xs">
-              {data?.user?.name.split(" ").slice(1, data?.user?.name.split(" ").length).join(" ")}
+              {data?.user?.name
+                .split(" ")
+                .slice(1, data?.user?.name.split(" ").length)
+                .join(" ")}
             </h1>
             <p
               className={`text-xs font-thin ${data?.user?.status === "offline" ? "text-red-600" : "text-green-600"}`}
@@ -338,7 +214,7 @@ function StudentWrapper() {
 
         <div
           ref={containerRef}
-          className="overflow-auto w-full flex flex-col gap-2 min-h-full px-5 pb-10"
+          className="overflow-auto w-full flex flex-col gap-2 min-h-[78vh] px-5 pb-5"
         >
           {messages?.map((el, i, arr) => {
             const date = new Date(el.createdAt);

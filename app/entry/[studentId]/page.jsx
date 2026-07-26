@@ -6,7 +6,7 @@ async function Page({params,searchParams}) {
   const queryParams = await searchParams;
     return (
       // <ProtectRoutes>
-        <div className="h-full w-full p-4 pt-2  ">
+        <div className="h-[92vh] flex w-full p-4 pt-2">
           <RecordingWrapper
             studentName={queryParams.studentName}
             studentId={searchParam.studentId}

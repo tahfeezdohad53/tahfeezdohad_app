@@ -61,7 +61,7 @@ export default function CreateAccountForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full max-w-5xl rounded-3xl bg-(--card) p-5 shadow-(--shadow-lg) md:p-8"
+      className="w-full my-auto max-w-5xl rounded-3xl bg-(--card) p-5 shadow-(--shadow-lg) md:p-8"
     >
       {/* Header */}
       <div className="mb-8 flex items-center gap-4">
