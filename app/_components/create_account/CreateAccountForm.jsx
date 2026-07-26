@@ -203,6 +203,7 @@ export default function CreateAccountForm() {
                   <option value="baneen">Baneen</option>
                   <option value="banaat">Banaat</option>
                   <option value="kibaar">Kibaar</option>
+                  <option value="taheri_hall">Taheri hall</option>
                 </select>
 
                 <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-amber-700">

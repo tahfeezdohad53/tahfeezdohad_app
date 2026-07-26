@@ -22,6 +22,7 @@ import { RxCross2 } from "react-icons/rx";
 import { FiUsers } from "react-icons/fi";
 import { HiArrowRight } from "react-icons/hi";
 import Image from "next/image";
+import { formatName } from "@/helpers";
 
 function LeaveCardsContainer({ setShow, show }) {
   const { user } = useUser();
@@ -547,6 +548,7 @@ function PhoneLeaveCard({
   profileImage,
 }) {
   const src = role !== 'admin' && profileImage
+  const formattedName = formatName(name);
   return (
     <div
       onClick={() =>
@@ -574,7 +576,7 @@ function PhoneLeaveCard({
         {profileImage && <Image fill src={profileImage} alt="profile photo" />}
       </div>
       <div className="text-sm space-y-1">
-        <p className="text-sm font-bold">{role !== "admin" ? `${type} leave` : name}</p>
+        <p className="text-sm font-bold">{role !== "admin" ? `${type} leave` : formattedName}</p>
         <p className="text-amber-700 flex items-center gap-1 font-semibold">
           {" "}
           <span className="p-1 rounded-md bg-(--bg-tertiary)/50">

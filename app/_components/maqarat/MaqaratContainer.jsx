@@ -17,6 +17,7 @@ import { IoChevronDown } from "react-icons/io5";
 import { HiOutlinePlus } from "react-icons/hi";
 import MaqaratFilter from "./MaqaratFilter";
 import { CiViewList } from "react-icons/ci";
+import { formatName } from "@/helpers";
 const inter = Inter({
   weight: ["600", "700", "800"],
   subsets: ["latin"],
@@ -119,6 +120,7 @@ const month = [
   "Dec",
 ];
 function MaqaratSessionCard({ juz, batch, teacher, date, students }) {
+  const teacherName = formatName(teacher)
   const today = new Date();
   const sessionDate = new Date(date);
 
@@ -194,7 +196,7 @@ function MaqaratSessionCard({ juz, batch, teacher, date, students }) {
             <p>
               Teacher:{" "}
               <span className={`${inter.className} font-extrabold`}>
-                {teacher.split(" ").slice(1).join(" ")}
+                {teacherName}
               </span>
             </p>
           </div>
@@ -226,7 +228,14 @@ function MaqaratSessionCard({ juz, batch, teacher, date, students }) {
               key={student?.name}
               className="px-3 py-1 rounded-full bg-gray-100 text-xs"
             >
-              {student?.name.split(" ").slice(1).join(" ").split(' ').filter((el,i) => i !== 1 && i !== 3 && i !== 2).join(' ')}
+              {formatName(student.name)
+                .split(" ")
+                .filter((el, i,arr) => {
+                  if(arr.length === 5)return i !== 1 && i !== 3 && i !== 2;
+                  if(arr.length === 6)return i !== 1 && i !== 2 && i !== 3 && i !== 4;
+                  if(arr.length === 7)return i !== 0 && i !== 2 && i !== 3 && i !== 4;
+                })
+                .join(" ")}
             </div>
           ))}
         </div>

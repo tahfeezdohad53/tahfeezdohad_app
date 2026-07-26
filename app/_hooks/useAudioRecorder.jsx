@@ -30,25 +30,30 @@ function useAudioRecorder() {
     let seconds = totalSeconds % 60;
     
      async function startRecording() {
-       try{
-         await document.documentElement.requestFullscreen();
-          wakeLock = await navigator.wakeLock.request('screen');
-       }catch(err){
-        console.log(err);
-       }
-       setIsRecording(true);
-       audioChunks.current = [];
        let wakeLock;
-       stream.current = await navigator.mediaDevices.getUserMedia({
-         audio: {
-           noiseSuppression: false,
-           echoCancellation: true,
-           autoGainControl: false,
-           channelCount: 1,
-           sampleRate: 48000,
-         },
-         video: false,
-       });
+       audioChunks.current = [];
+       
+       try{
+          stream.current = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              noiseSuppression: false,
+              echoCancellation: true,
+              autoGainControl: false,
+              channelCount: 1,
+              sampleRate: 48000,
+            },
+            video: false,
+          });
+          setIsRecording(true);
+      }catch(err){
+        return toast.error('microphone permission denied');
+      }
+      try {
+        await document.documentElement.requestFullscreen();
+        wakeLock = await navigator.wakeLock.request("screen");
+      } catch (err) {
+        console.log(err);
+      }
        const ctx = new AudioContext();
 
        const source = ctx.createMediaStreamSource(stream.current);

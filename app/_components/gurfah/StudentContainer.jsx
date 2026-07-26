@@ -19,6 +19,7 @@ import { LuHeadphones } from "react-icons/lu";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { RecordWithNumberCard } from "../students/StudentsContainer";
 import { useAppProvider } from "../providers/AppProvider";
+import { formatName } from "@/helpers";
 
 function StudentContainer() {
   const { user, isFetching } = useUser();
@@ -201,12 +202,7 @@ function StudentContainer() {
 export default StudentContainer;
 
 function StudentCard({ name, id, status, profileImage }) {
-  let formattedName;
-  const nameArr = name.split(" ");
-
-  const firstName = nameArr[1];
-  const lastName = nameArr[nameArr.length - 1];
-  formattedName = firstName.concat(` ${lastName}`);
+  const formattedName = formatName(name);
   return (
     <Link
       href={`/onlineclass/${id}`}
@@ -230,7 +226,7 @@ function StudentCard({ name, id, status, profileImage }) {
           </div>
         </div>
         <div className="font-semibold text-xs text-(--text) tracking-wider">
-          {name.split(" ").slice(1, name.split(" ").length).join(" ")}{" "}
+          {formattedName}
           <p
             className={`text-[0.60rem] ${status === "offline" ? "text-red-500/70" : "text-green-500/70"}`}
           >

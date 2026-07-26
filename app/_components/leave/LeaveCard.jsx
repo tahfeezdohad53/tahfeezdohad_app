@@ -13,6 +13,7 @@ import { useUser } from "../providers/UserProvider";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { formatName } from "@/helpers";
 
 
 
@@ -20,6 +21,7 @@ function LeaveCard({id,status,name,createdAt,batch,days,type,reason,from,to}) {
   const {user} = useUser();
   const queryClient = useQueryClient();
   const [showMenu,setShowMenu] = useState(false);
+  const formattedName = formatName(name);
   const statusStyles = {
     upcoming: "text-blue-600 bg-blue-100",
     pending: "text-amber-600 bg-amber-100",
@@ -69,7 +71,7 @@ function LeaveCard({id,status,name,createdAt,batch,days,type,reason,from,to}) {
 
           <div className="text-xs text-gray-900 flex flex-col gap-2 ">
             <h1 className="text-lg text-center border-b pb-2 border-(--border) font-semibold text-black  wrap-break-word max-w-full">
-              {name}
+              {formattedName}
             </h1>
             <h1 className="flex items-center gap-1">
               <span className="p-1 rounded-md bg-(--bg-tertiary)/50">

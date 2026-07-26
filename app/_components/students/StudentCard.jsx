@@ -1,4 +1,5 @@
 'use client';
+import { formatName } from "@/helpers";
 import Image from "next/image";
 import Link from "next/link";
 import { BiDotsVertical } from "react-icons/bi";
@@ -29,12 +30,7 @@ function StudentCard({
     }
   }
 
-  let formattedName;
-  const nameArr = name.split(' ');
-  
-    const firstName = nameArr[1];
-    const lastName = nameArr[nameArr.length - 1];
-    formattedName = firstName.concat(` ${lastName}`);
+  const formattedName = formatName(name);
   
   return (
     <div className="py relative rounded-md w-full lg:w-[15%]  border-amber-900 bg-(--card) shadow-(--shadow-xl) ">
@@ -78,10 +74,7 @@ function StudentCard({
         <div className="font-semibold wrap-break-word text-stone-800 tracking-wider text-xs text-center">
           <p className="font-bold">ITS - {name.split(" ")[0]}</p>
           <p className="wrap-break-word font-normal text-[0.65rem] mt-1">
-            {name
-              .split(" ")
-              .splice(1, name.split(" ").length - 1)
-              .join(" ")}
+            {formattedName}
           </p>
         </div>
         <div className="w-full border-t border-(--border) py-2 text-[0.55rem]">

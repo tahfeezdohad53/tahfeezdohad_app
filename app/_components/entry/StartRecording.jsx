@@ -1,5 +1,6 @@
 'use client';
 import useAudioRecorder from "@/app/_hooks/useAudioRecorder";
+import { formatName } from "@/helpers";
 import Link from "next/link";
 import { useState } from "react";
 import { BsBrowserChrome } from "react-icons/bs";
@@ -12,6 +13,7 @@ import { PiRecordFill } from "react-icons/pi";
 
 function StartRecording({startRecording,studentName}) {
   const [audioConfig,setAudioConfig] = useState({ns:false,ec:false,agc:false,loudness:1});
+  const formattedName = formatName(studentName);
     // const {actions:{startRecording}} = useAudioRecorder();
     return (
       <div>
@@ -23,18 +25,14 @@ function StartRecording({startRecording,studentName}) {
           </button>
           Back
         </div>
-        <div className=" flex flex-col items-center gap-6  py-3 px-5  h-ful rounded-2xl shadow-(--shadow-xl)">
+        <div className=" flex flex-col items-center gap-6 lg:w-1/2 lg:mx-auto py-3 px-5  h-ful rounded-2xl shadow-(--shadow-xl)">
           <div className="bg-(--card w-full py-4 rounded-lg hadow-(--shadow-lg)">
             <div className="flex flex-col items-center ">
               <header className="font-bold text-lg text-(--text)">
                 Start Recording Class of
               </header>
               <h1 className="font-bold my-2 text-center text-(--text-secondary)">
-                {" "}
-                {studentName
-                  .split(" ")
-                  .slice(1, studentName.split(" ").length)
-                  .join(" ")}
+                {formattedName}
               </h1>
             </div>
             <div className="border border-(--border) shadow-2xl rounded-full p-4 bg-(--layer) w-fit mx-auto">
@@ -56,7 +54,7 @@ function StartRecording({startRecording,studentName}) {
                   <BsBrowserChrome className="text-xl" />
                 </span>
                 <p className="text-xs font-semibold">
-                  do not keep browser in background for more than 30 seconds
+                  do not keep browser in background for more than 30 seconds.
                 </p>
               </div>
               <div className="flex items-center gap-3 border-b border-(--border) pb-3 ">
@@ -64,7 +62,7 @@ function StartRecording({startRecording,studentName}) {
                   <MdOutlineSocialDistance className="text-lg" />
                 </span>
                 <p className="text-xs font-semibold">
-                  keep phone close to the reciter
+                  keep phone close to the reciter.
                 </p>
               </div>
               <div className="flex items-center gap-3 border-b border-(--border) pb-3 ">
@@ -72,7 +70,7 @@ function StartRecording({startRecording,studentName}) {
                   <FaHeart className="text-lg" />
                 </span>
                 <p className="text-xs font-semibold">
-                  Listen with your heart not just with your ears
+                  Listen with your heart not just with ears.
                 </p>
               </div>
             </div>

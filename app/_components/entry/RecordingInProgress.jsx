@@ -4,10 +4,12 @@ import { FaMicrophoneLines } from "react-icons/fa6";
 import { PiRecordFill } from "react-icons/pi";
 import { TbPlayerRecordFilled } from "react-icons/tb";
 import ConfirmationMenu from "../ConfirmSubmit";
+import { formatName } from "@/helpers";
 
 function RecordingInProgress({ studentName, hours, minutes, seconds, isPause, handlePause, handleResume, finishRecording, confirmFinishRecording, setConfirmFinishRecording }) {
+  const formattedName = formatName(studentName);
   return (
-    <div className="g-(--card) flex flex-col items-center gap-6 order py-3 px-5 border-(--border) h-full rounded-2xl hadow-(--shadow-2xl)">
+    <div className="bg-(--card) flex flex-col items-center gap-6 lg:w-1/2 lg:mx-auto order py-8 px-5 border-(--border) h-full rounded-2xl shadow-(--shadow-2xl)">
       <div className="flex flex-col items-center gap-5 text-sm">
         {!isPause && (
           <div className="flex items-center border border-blue-500 rounded-full px-2 text-blue-500 font-bold">
@@ -26,7 +28,7 @@ function RecordingInProgress({ studentName, hours, minutes, seconds, isPause, ha
             Recording Class of
           </header>
           <h1 className="font-bold text-center text-(--text-secondary) text-lg">
-            {studentName.split(' ').slice(1,studentName.split(' ').length).join(' ')}
+            {formattedName}
           </h1>
         </div>
       </div>
@@ -64,7 +66,7 @@ function RecordingInProgress({ studentName, hours, minutes, seconds, isPause, ha
         </div>
       </div>
 
-      <div className="w-full flex flex-col gap-3">
+      <div className="w-full grid grid-cols-2 gap-3">
         <button
           onClick={() => {
             handlePause();
@@ -73,7 +75,7 @@ function RecordingInProgress({ studentName, hours, minutes, seconds, isPause, ha
           className="flex items-center justify-center gap-2 w-full rounded-xl bg-(--danger) py-4 text-white shadow-lg"
         >
           <PiRecordFill />
-          Stop Recording
+          Stop 
         </button>
 
         {isPause ? (
@@ -82,7 +84,7 @@ function RecordingInProgress({ studentName, hours, minutes, seconds, isPause, ha
             className="flex items-center justify-center gap-2 w-full rounded-xl bg-blue-500 py-4 text-white shadow-lg"
           >
             <FaPlay />
-            Resume Recording
+            Resume 
           </button>
         ) : (
           <button
@@ -90,7 +92,7 @@ function RecordingInProgress({ studentName, hours, minutes, seconds, isPause, ha
             className="flex items-center justify-center gap-2 w-full rounded-xl bg-blue-500 py-4 text-white shadow-lg"
           >
             <FaPause />
-            Pause Recording
+            Pause 
           </button>
         )}
       </div>
