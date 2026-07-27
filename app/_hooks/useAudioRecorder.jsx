@@ -92,7 +92,7 @@ function useAudioRecorder() {
        });
        recorder.current.ondataavailable = (e) => {
          // console.log('data avialable')
-         if(e.data.size > 0) audioChunks.current.push(e.data);
+         audioChunks.current.push(e.data);
        };
        recorder.current.onstop = (e) => {
         console.log(recorder.current)
@@ -105,7 +105,7 @@ function useAudioRecorder() {
          wakeLock?.release();
        };
 
-       recorder.current.start(1000);
+       recorder.current.start();
      }
 
      function handlePause() {
