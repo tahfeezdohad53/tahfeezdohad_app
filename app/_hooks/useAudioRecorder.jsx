@@ -145,12 +145,12 @@ function useAudioRecorder() {
       const toastId = 'uploading'
       try{
         // console.log(data.signedUrl)
-        toast.success(
-          "your recording will be submitted, do not close or refresh browser before success notification arrives",
-          {
-            icon: <AiOutlineExclamationCircle className="text-yellow-500 text-4xl" />, duration:6000,style:{fontSize:'12px'}
-          },
-        );
+        // toast.success(
+        //   "your recording will be submitted, do not close or refresh browser before success notification arrives",
+        //   {
+        //     icon: <AiOutlineExclamationCircle className="text-yellow-500 text-4xl" />, duration:6000,style:{fontSize:'12px'}
+        //   },
+        // );
         let blob = audio;
         setAudio(null)
         setIsRecording(false);
@@ -165,16 +165,16 @@ function useAudioRecorder() {
           headers: {
             "Content-Type": "audio/webm",
           },
-          // onUploadProgress: (progress) => {
-          //   const percent = Math.round(
-          //     (progress.loaded * 100) / progress.total,
-          //   );
+          onUploadProgress: (progress) => {
+            const percent = Math.round(
+              (progress.loaded * 100) / progress.total,
+            );
 
-          //   toast.loading(`Uploading... ${percent}%`, {
-          //     id: toastId,
-          //   });
+            toast.loading(`Uploading... ${percent}%`, {
+              id: toastId,
+            });
 
-          // },
+          },
         });
         await axios.post(
           `${process.env.NEXT_PUBLIC_URL}/recording/create/${studentId}`,
@@ -184,9 +184,9 @@ function useAudioRecorder() {
             duration: totalSeconds / 60,
           },{withCredentials:true}
         );
-        toast.success("Upload complete!", {
-          id: toastId,
-        });
+        // toast.success("Upload complete!", {
+        //   id: toastId,
+        // });
         // setOnlineClassBlob(null);
         // setVideoCallSeconds(0);
         // setOnlineClassBlobUrl("");
