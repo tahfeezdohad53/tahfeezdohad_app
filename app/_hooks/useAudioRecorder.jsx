@@ -112,7 +112,7 @@ function useAudioRecorder() {
      }
 
      function finishRecording() {
-      document.exitFullscreen().catch(err => console.log('failed to exit full screen'));
+      // document.exitFullscreen().catch(err => console.log('failed to exit full screen'));
       setConfirmFinishRecording(false);
        setIsRecording(false);
        
