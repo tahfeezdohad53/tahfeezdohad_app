@@ -85,7 +85,6 @@ function useAudioRecorder() {
        } else if (MediaRecorder.isTypeSupported("audio/mp4")) {
          mimeType = "audio/mp4";
        }
-
       //  console.log("recording");
        recorder.current = new MediaRecorder(processedStream, {
          mimeType: mimeType,
@@ -93,7 +92,7 @@ function useAudioRecorder() {
        });
        recorder.current.ondataavailable = (e) => {
          // console.log('data avialable')
-         audioChunks.current.push(e.data);
+         if(e.data.size > 0) audioChunks.current.push(e.data);
        };
        recorder.current.onstop = (e) => {
         console.log(recorder.current)
@@ -106,7 +105,7 @@ function useAudioRecorder() {
          wakeLock?.release();
        };
 
-       recorder.current.start();
+       recorder.current.start(1000);
      }
 
      function handlePause() {
