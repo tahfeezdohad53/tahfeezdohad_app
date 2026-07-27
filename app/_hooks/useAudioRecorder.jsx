@@ -70,9 +70,25 @@ function useAudioRecorder() {
          setTotalSeconds((seconds) => seconds + 1);
        }, 1000);
 
+       const isIOS =
+         /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+       let mimeType = "";
+
+       if (isIOS && MediaRecorder.isTypeSupported("audio/mp4")) {
+         mimeType = "audio/mp4";
+       } else if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+         mimeType = "audio/webm;codecs=opus";
+       } else if (MediaRecorder.isTypeSupported("audio/webm")) {
+         mimeType = "audio/webm";
+       } else if (MediaRecorder.isTypeSupported("audio/mp4")) {
+         mimeType = "audio/mp4";
+       }
+
       //  console.log("recording");
        recorder.current = new MediaRecorder(processedStream, {
-         mimeType: "audio/webm;codecs=opus",
+         mimeType: mimeType,
          audioBitsPerSecond: 256000,
        });
        recorder.current.ondataavailable = (e) => {
@@ -80,7 +96,7 @@ function useAudioRecorder() {
          audioChunks.current.push(e.data);
        };
        recorder.current.onstop = (e) => {
-         const blob = new Blob(audioChunks.current, { type: "audio/webm" });
+         const blob = new Blob(audioChunks.current, { type: recorder.current.mimeType });
         //  console.log(blob.size / 1024 / 1024);
          setAudioSize(Number((blob.size / 1024 / 1024).toFixed(1)));
          const url = URL.createObjectURL(blob);
