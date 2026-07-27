@@ -32,12 +32,12 @@ function SubmitRecording({
         <FaCircleCheck className="text-5xl text-emerald-400 drop-shadow-2xl rounded-full" />
         <div className="flex flex-col items-center">
           <h1 className="font-bold text-xl">Submit Class of</h1>
-          <p className="font-bold text-center text-amber-800">
+          <p className="font-bold text-center text-amber-800 px-5">
             {" "}
             {formattedName}
           </p>
         </div>
-        <p className="text-xs text-stone-800 w-3/4 text-center">
+        <p className="text-[0.65rem] text-stone-800 w-3/4 text-center">
           Your recording is done. you can review and submit now.
         </p>
       </div>

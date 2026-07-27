@@ -214,7 +214,7 @@ function StudentWrapper() {
 
         <div
           ref={containerRef}
-          className="overflow-auto w-full flex flex-col gap-2 min-h-[78vh] px-5 pb-5"
+          className="overflow-auto w-full flex flex-col gap-2 min-h-[78vh] px-5 pb-10"
         >
           {messages?.map((el, i, arr) => {
             const date = new Date(el.createdAt);
