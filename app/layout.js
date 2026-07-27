@@ -16,6 +16,7 @@ import PhoneTopBar from "./_components/navbar/PhoneTopBar";
 import PlaceHolderDiv from "./_components/PlaceHolderDiv";
 import Sidebar from "./_components/navbar/Sidebar";
 import SidebarPlaceholder from "./_components/navbar/SidebarPlaceholder";
+import Greeting from "./_components/Greeting";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -41,20 +42,19 @@ export default function RootLayout({ children }) {
                   <VideoCallProvider>
                     <CallingFnProvider>
                       {/* <Socket /> */}
-                      <Toaster containerStyle={{zIndex:9999999}}/>
+                      <Toaster containerStyle={{ zIndex: 9999999 }} />
                       <VideoCallWrapper />
                       <div id="root"></div>
                       <div id="video"></div>
+                      <Greeting />
                       <Suspense>
                         {/* <Navbar /> */}
                         <div className="flex flex-col lg:h-screen  lg:min-w-full">
-                              <PhoneTopBar />
+                          <PhoneTopBar />
                           <div className="lg:flex ">
                             <Sidebar />
                             <SidebarPlaceholder />
-                            <div className="w-full ">
-                              {children}
-                            </div>
+                            <div className="w-full ">{children}</div>
                           </div>
                           <PlaceHolderDiv />
                         </div>
