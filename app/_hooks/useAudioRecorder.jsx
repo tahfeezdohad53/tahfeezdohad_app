@@ -32,7 +32,7 @@ function useAudioRecorder() {
      async function startRecording() {
        let wakeLock;
        audioChunks.current = [];
-       
+       if (recorder.current) recorder.current = null;
        try{
           stream.current = await navigator.mediaDevices.getUserMedia({
             audio: {
@@ -96,6 +96,7 @@ function useAudioRecorder() {
          audioChunks.current.push(e.data);
        };
        recorder.current.onstop = (e) => {
+        console.log(recorder.current)
          const blob = new Blob(audioChunks.current, { type: recorder.current.mimeType });
         //  console.log(blob.size / 1024 / 1024);
          setAudioSize(Number((blob.size / 1024 / 1024).toFixed(1)));
@@ -134,7 +135,6 @@ function useAudioRecorder() {
        
        if (interval.current) clearInterval(interval.current);
        if (recorder.current) recorder.current.stop();
-       if (recorder.current) recorder.current = null;
        if (stream.current)
          stream.current.getTracks().forEach((track) => track.stop());
        setIsRecorded(true);
