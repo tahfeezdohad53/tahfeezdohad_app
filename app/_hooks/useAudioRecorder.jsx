@@ -49,7 +49,10 @@ function useAudioRecorder() {
         return toast.error('microphone permission denied');
       }
       try {
-        await document.documentElement.requestFullscreen();
+        const isIOS =
+          /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+        if(!isIOS) await document.documentElement.requestFullscreen();
         wakeLock = await navigator.wakeLock.request("screen");
       } catch (err) {
         console.log(err);
@@ -136,7 +139,15 @@ function useAudioRecorder() {
        if (stream.current)
         stream.current.getTracks().forEach((track) => track.stop());
       setIsRecorded(true);
-      document.exitFullscreen().catch(err => console.log('failed to exit full screen'));
+      const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+      if (!isIOS && document.fullscreenElement) {
+        document
+          .exitFullscreen()
+          .catch((err) => console.log("Failed to exit fullscreen:", err));
+      }
      }
 
      
