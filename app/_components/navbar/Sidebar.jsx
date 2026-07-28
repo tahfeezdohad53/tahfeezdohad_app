@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { BsCalendar2X } from "react-icons/bs";
 import { CiMicrophoneOn, CiUser } from "react-icons/ci"
 import { FaBookOpen, FaMoneyBillWave } from "react-icons/fa";
-import { IoBookOutline, IoPersonAdd, IoPersonAddOutline, IoReturnUpBackOutline } from "react-icons/io5";
+import { IoBookOutline, IoPerson, IoPersonAdd, IoPersonAddOutline, IoPersonOutline, IoReturnUpBackOutline } from "react-icons/io5";
 import { MdMeetingRoom } from "react-icons/md";
 import LogoutButton from "../auth/LogoutButton";
 import { useUser } from "../providers/UserProvider";
@@ -59,6 +59,10 @@ function Sidebar() {
             {user?.role === 'admin' && <Link href="/create_account" className={linkStyle("/create_account")}>
               <IoPersonAddOutline size={18} />
               <span>Add</span>
+            </Link>}
+            {user?.role === 'admin' && <Link href="/accounts" className={linkStyle("/accounts")}>
+              <IoPersonOutline size={18} />
+              <span>Accounts</span>
             </Link>}
           </div>
           <LogoutButton />

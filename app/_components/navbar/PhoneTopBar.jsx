@@ -49,6 +49,10 @@ function PhoneTopBar() {
     heading = "Accounts";
     subHeading = "Create user accounts from here";
   }
+  if (pathname.includes("accounts")) {
+    heading = "Accounts";
+    subHeading = "Manage user accounts from here";
+  }
   if (pathname.includes("maqarat")) {
     heading = "Maqarat Sessions";
     if(user?.role === 'admin')subHeading = "Create & Manage Maqarat Sessions";
@@ -105,6 +109,9 @@ function PhoneTopBar() {
             <RiUserAddLine  className="text-xl text-(--primary)" />
           )}
           {pathname.includes("profile") && (
+            <CiEdit className="text-xl text-(--primary)" />
+          )}
+          {pathname.includes("accounts") && (
             <CiEdit className="text-xl text-(--primary)" />
           )}
         </div>

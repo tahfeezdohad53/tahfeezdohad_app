@@ -128,15 +128,15 @@ function useAudioRecorder() {
      }
 
      function finishRecording() {
-      // document.exitFullscreen().catch(err => console.log('failed to exit full screen'));
-      setConfirmFinishRecording(false);
+       setConfirmFinishRecording(false);
        setIsRecording(false);
        
        if (interval.current) clearInterval(interval.current);
        if (recorder.current) recorder.current.stop();
        if (stream.current)
-         stream.current.getTracks().forEach((track) => track.stop());
-       setIsRecorded(true);
+        stream.current.getTracks().forEach((track) => track.stop());
+      setIsRecorded(true);
+      document.exitFullscreen().catch(err => console.log('failed to exit full screen'));
      }
 
      
