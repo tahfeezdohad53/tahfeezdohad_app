@@ -12,7 +12,7 @@ function Greeting() {
     const {user} = useUser();
     if(!isGreetingDone && user?._id === '6a57a6bf4a5745965fcc1a85' && isGreetingDone !== null)return (
       <div className="flex items-center justify-center fixed top-0 left-1 h-full w-full backdrop-brightness-50 z-999999">
-        <div className="lg:ml-40 w-3/4 lg:w-fit rounded-2xl bg-(--card) p-8 pb-5 shadow-(--shadow-md)">
+        <div className="lg:ml-40 w-[90%] lg:w-fit rounded-2xl bg-(--card) p-8 pb-5 shadow-(--shadow-md)">
           <div className="flex flex-col items-center gap-4">
             <div className="flex min-h-14 min-w-14 items-center justify-center rounded-full bg-amber-100 text-amber-600">
               <HiSparkles size={28} />
@@ -42,7 +42,7 @@ function Greeting() {
     );
     if(!isGreetingDone && user?._id && isGreetingDone !== null)return (
       <div className="flex items-center justify-center fixed top-0 left-1 h-full w-full backdrop-brightness-50 z-999999">
-        <div className="lg:ml-40 w-3/4 lg:w-fit rounded-2xl bg-(--card) p-8 pb-5 shadow-(--shadow-md)">
+        <div className="lg:ml-40 w-[90%] lg:w-fit rounded-2xl bg-(--card) p-8 pb-5 shadow-(--shadow-md)">
           <div className="flex flex-col items-center gap-4">
             <div className="flex min-h-14 min-w-14 items-center justify-center rounded-full bg-amber-100 text-amber-600">
               <HiSparkles size={28} />
