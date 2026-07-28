@@ -18,6 +18,7 @@ import Sidebar from "./_components/navbar/Sidebar";
 import SidebarPlaceholder from "./_components/navbar/SidebarPlaceholder";
 import Greeting from "./_components/Greeting";
 import Notification from "./_components/Notification";
+import Appreciation from "./_components/Appreciation";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -48,7 +49,8 @@ export default function RootLayout({ children }) {
                       <div id="root"></div>
                       <div id="video"></div>
                       <Greeting />
-                      <Notification />
+                      {/* <Notification /> */}
+                      <Appreciation />
                       <Suspense>
                         {/* <Navbar /> */}
                         <div className="flex flex-col lg:h-screen  lg:min-w-full">
