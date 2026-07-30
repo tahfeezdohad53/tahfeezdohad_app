@@ -7,6 +7,8 @@ import { PiStudentFill } from "react-icons/pi";
 import { IoIosCloudUpload, IoMdCloudUpload } from "react-icons/io";
 import { ImSpinner2 } from "react-icons/im";
 import { formatName } from "@/helpers";
+import { TbRewindBackward5, TbRewindForward5 } from "react-icons/tb";
+import { useRef } from "react";
 function SubmitRecording({
   studentId,
   studentName,
@@ -25,6 +27,7 @@ function SubmitRecording({
   setvideoCallSeconds,
   audioChunks,
 }) {
+  const audioRef = useRef(null);
   const formattedName = formatName(studentName);
   return (
     <div className="my-auto flex justify-between flex-col items-center lg:w-1/2 w-full lg:mx-auto bg-(--card) gap-6 order py-8 px-5 border-(--border) border flex-1 rounded-2xl hadow-2xl">
@@ -44,13 +47,27 @@ function SubmitRecording({
 
       <div className="flex flex-col items-center gap-3 bg-(--card) w-full px-5 py-4 rounded-2xl shadow-(--shadow-lg) border border-(--border)/50">
         <p className="text-xs font-bold self-start">Recorded Audio</p>
-        <AudioPlayer
-          autoPlay={false}
-          customAdditionalControls={[]}
+        <audio
+          ref={audioRef}
           src={clientAudioUrl || null}
-          onPlay={() => console.log("Playing")}
-          className=""
-        />
+          controls
+          className="w-full "
+        ></audio>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => (audioRef.current.currentTime -= 5)}
+            className="flex items-center gap-1 bg-gray-500 text-white p-3 rounded-full"
+          >
+            {" "}
+            <TbRewindBackward5 />
+          </button>
+          <button
+            onClick={() => (audioRef.current.currentTime += 5)}
+            className="flex items-center gap-1 bg-gray-500 text-white p-3 rounded-full"
+          >
+            <TbRewindForward5 />
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col  gap-3 bg-(--card) w-full px-5 py-4 rounded-2xl shadow-(--shadow-md) border border-(--border)/50">
@@ -64,7 +81,9 @@ function SubmitRecording({
               <IoIosCloudUpload />
               <p>Size</p>
             </div>
-            <p className="text-xs">{Number((audioSize / 1024 / 1024).toFixed(1))} mb</p>
+            <p className="text-xs">
+              {Number((audioSize / 1024 / 1024).toFixed(1))} mb
+            </p>
           </div>
         </div>
       </div>
@@ -73,8 +92,10 @@ function SubmitRecording({
         <button
           disabled={isSubmitting}
           onClick={() => {
-            const discard = confirm('are you sure you want to discard recording');
-            if(!discard) return;
+            const discard = confirm(
+              "are you sure you want to discard recording",
+            );
+            if (!discard) return;
             setAudio?.(null);
             setClientAudioUrl?.("");
             setIsRecorded?.(false);
@@ -91,7 +112,7 @@ function SubmitRecording({
         </button>
         <button
           disabled={isSubmitting}
-          onClick={() => submitRecording(studentId,formatName(studentName))}
+          onClick={() => submitRecording(studentId, formatName(studentName))}
           className="relative flex items-center gap-2 h-fit justify-center hover:cursor-pointer hover:-translate-y-1 ease-in-out duration-300 transition-all bg-(image:--gradient-primary) text-white shadow-(--shadow-xl) py-4 rounded-md w-full"
         >
           <p
