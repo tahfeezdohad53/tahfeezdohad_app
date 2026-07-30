@@ -27,7 +27,7 @@ function SubmitRecording({
 }) {
   const formattedName = formatName(studentName);
   return (
-    <div className="my-auto flex justify-between flex-col items-center lg:w-1/2 w-full lg:mx-auto bg-(--card) gap-6 order py-8 px-5 border-(--border) border h-full rounded-2xl hadow-2xl">
+    <div className="my-auto flex justify-between flex-col items-center lg:w-1/2 w-full lg:mx-auto bg-(--card) gap-6 order py-8 px-5 border-(--border) border flex-1 rounded-2xl hadow-2xl">
       <div className="flex flex-col items-center gap-3 bg-(--card) w-full py-4 rounded-2xl shadow-(--shadow-md) border border-(--border)/50">
         <FaCircleCheck className="text-5xl text-emerald-400 drop-shadow-2xl rounded-full" />
         <div className="flex flex-col items-center">
