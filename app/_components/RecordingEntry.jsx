@@ -23,7 +23,7 @@ function RecordingEntry({el,i,isDummy=false}) {
       >
         <div className="w-full grid grid-cols-9 lg:grid-cols-12 px-3 py-3 border-b border-(--border)">
           {/* <p>{(page - 1) * 10 + index + 1}</p> */}
-          <div className="flex gap-2 items-center text-[0.55rem] tracking-wider lg:col-span-2 col-span-3">
+          <div className="flex gap-2 items-center text-[0.55rem] tracking-wider lg:col-span-2 col-span-2">
             <span className="p-2 rounded-md bg-orange-100">
               <CiCalendar className="text-orange-600" />
             </span>
@@ -37,7 +37,7 @@ function RecordingEntry({el,i,isDummy=false}) {
           <p className=" text-[0.60rem] lg:text-sm">
             {Math.round(el?.duration) || ""} min
           </p>
-          <p className=" col-span-2 lg:col-span-4 text-[0.60rem] lg:text-sm text-left hyphens-auto">
+          <p className=" col-span-3 lg:col-span-4 text-[0.60rem] lg:text-sm text-left hyphens-auto">
             {el.studentName.split(" ").length > 2 &&
               el.studentName
                 .split(" ")
@@ -67,15 +67,7 @@ function RecordingEntry({el,i,isDummy=false}) {
             onClick={(e) => e.stopPropagation()}
             className="w-full flex justify-center py-2"
           >
-            <div className="w-full px-3 relative flex items-center gap-2">
-              {/* <AudioPlayer
-                customVolumeControls={[]}
-                autoPlay={false}
-                customAdditionalControls={[]}
-                src={el.audio}
-                // onPlay={() => console.log("Playing")}
-                className="text-sm"
-              /> */}
+            <div className="lg:flex hidden w-full px-3 relative items-center gap-2">
               <audio
               ref={audioRef}
                 src={el.audio}
@@ -88,6 +80,20 @@ function RecordingEntry({el,i,isDummy=false}) {
                 
               </div>
             </div>
+            <div className="flex flex-col items-center lg:hidden w-full px-3 relative gap-2">
+              <audio
+              ref={audioRef}
+                src={el.audio}
+                className="w-full rounded-md "
+                controls
+              ></audio>
+              <div className="flex gap-2">
+                <button onClick={()=> audioRef.current.currentTime -= 5} className="bg-gray-700 text-white p-2 rounded-md hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-(--primary-light)"><TbRewindBackward5 className="text-xl"/></button>
+                <button onClick={() => audioRef.current.currentTime += 5} className="bg-gray-700 text-white p-2 rounded-md hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-(--primary-light)"><TbRewindForward5 className="text-xl"/></button>
+                
+              </div>
+            </div>
+
           </div>
         )}
       </div>

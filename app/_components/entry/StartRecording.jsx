@@ -25,7 +25,7 @@ function StartRecording({startRecording,studentName}) {
           </button>
           Back
         </div>
-        <div className=" flex flex-col items-center gap-6 lg:w-1/2 lg:mx-auto py-3 px-5  h-ful rounded-2xl shadow-(--shadow-xl)">
+        <div className=" flex flex-col items-center gap-6 lg:w-full lg:mx-auto py-3 px-5  h-ful rounded-2xl shadow-(--shadow-xl)">
           <div className="bg-(--card w-full py-4 rounded-lg hadow-(--shadow-lg)">
             <div className="flex flex-col items-center ">
               <header className="font-bold text-lg text-(--text)">

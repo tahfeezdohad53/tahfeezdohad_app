@@ -9,7 +9,7 @@ import { formatName } from "@/helpers";
 function RecordingInProgress({ studentName, hours, minutes, seconds, isPause, handlePause, handleResume, finishRecording, confirmFinishRecording, setConfirmFinishRecording }) {
   const formattedName = formatName(studentName);
   return (
-    <div className="bg-(--card) my-auto flex flex-col items-center gap-6 lg:w-1/2 lg:mx-auto order py-8 px-5 border-(--border) h-fit rounded-2xl shadow-(--shadow-2xl)">
+    <div className="bg-(--card) my-auto flex flex-col items-center justify-between gap-6 lg:w-1/2 lg:mx-auto order py-8 px-5 border-(--border) h-full rounded-2xl shadow-(--shadow-2xl)">
       <div className="flex flex-col items-center gap-5 text-sm">
         {!isPause && (
           <div className="flex items-center border border-blue-500 rounded-full px-2 text-blue-500 font-bold">
