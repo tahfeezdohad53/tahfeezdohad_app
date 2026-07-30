@@ -23,7 +23,7 @@ function RecordingEntry({el,i,isDummy=false}) {
       >
         <div className="w-full grid grid-cols-9 lg:grid-cols-12 px-3 py-3 border-b border-(--border)">
           {/* <p>{(page - 1) * 10 + index + 1}</p> */}
-          <div className="flex gap-2 items-center text-[0.55rem] tracking-wider lg:col-span-2 col-span-2">
+          <div className="flex gap-2 items-center text-[0.55rem] tracking-wider lg:col-span-2 col-span-3">
             <span className="p-2 rounded-md bg-orange-100">
               <CiCalendar className="text-orange-600" />
             </span>
@@ -34,10 +34,10 @@ function RecordingEntry({el,i,isDummy=false}) {
               <span>{format(el.createdAt, "hh:mm aa")}</span>
             </div>
           </div>
-          <p className=" text-[0.60rem] lg:text-sm">
+          <p className=" text-[0.60rem] lg:text-sm flex items-center">
             {Math.round(el?.duration) || ""} min
           </p>
-          <p className=" col-span-3 lg:col-span-4 text-[0.60rem] lg:text-sm text-left hyphens-auto">
+          <p className=" col-span-2 lg:col-span-4 text-[0.60rem] lg:text-sm text-left hyphens-auto">
             {el.studentName.split(" ").length > 2 &&
               el.studentName
                 .split(" ")

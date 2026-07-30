@@ -55,14 +55,14 @@ function RecordingsContainer({params}) {
     if(recordingsData?.recordings?.length > 0)return (
       <div className="bg-(--card) shadow border border-(--border)">
         <div className="py-4 px-3 w-full grid grid-cols-9 lg:grid-cols-12 bg-(--bg-tertiary)/40 font-semibold">
-          <div className="flex items-center gap-1 col-span-2 lg:col-span-2 text-xs text-left">
+          <div className="flex items-center gap-1 col-span-3 lg:col-span-2 text-xs text-left">
             <CiCalendar className="text-sm" />
             Date
           </div>
           <div className="text-left">
             <CiClock2 />
           </div>
-          <div className="flex items-center gap-1 col-span-3 lg:col-span-4 text-[0.50rem] lg:text-xs text-left">
+          <div className="flex items-center gap-1 col-span-2 lg:col-span-4 text-[0.50rem] lg:text-xs text-left">
             <CiUser className="text-sm" /> Student
           </div>
           <div className="flex items-center gap-1 col-span-2 lg:col-span-4 text-[0.50rem] lg:text-xs text-left">

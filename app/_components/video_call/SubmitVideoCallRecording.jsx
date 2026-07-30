@@ -80,7 +80,7 @@ function SubmitVideoCallRecording({
       <div className="flex w-full flex-col items-center gap-3 rounded-2xl border-(--border) bg-(--card) py-4 shadow-(--shadow-md)">
         <FaCircleCheck className="rounded-full text-5xl text-emerald-400 drop-shadow-2xl" />
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center text-center">
           <h1 className="text-xl font-bold">Submit Class of</h1>
           <p className="font-bold text-amber-800">{formatName(studentName)}</p>
         </div>
