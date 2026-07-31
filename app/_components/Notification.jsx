@@ -4,6 +4,7 @@ import { FaBell, FaCloudUploadAlt } from "react-icons/fa";
 import { useUser } from "./providers/UserProvider";
 import { useSocketContext } from "./providers/SocketProvider";
 import { formatName } from "@/helpers";
+import toast from "react-hot-toast";
 
 function Notification() {
     const [isNotified,setIsNotified] = useState(null);
@@ -20,6 +21,7 @@ function Notification() {
     }
     function handleAnswer(ans){
       socket.emit('to-dev',{isFailed:ans});
+      toast.success('thank you for your feedback!');
       handleClose();
     }
     if (!isNotified && user?._id === "6a57a6bf4a5745965fcc1a85")
