@@ -21,7 +21,7 @@ function Notification() {
     }
     function handleAnswer(ans){
       socket.emit('to-dev',{isFailed:ans});
-      toast.success('thank you for your feedback!');
+      toast.success('thank you so much for your feedback!');
       handleClose();
     }
     if (!isNotified && user?._id === "6a57a6bf4a5745965fcc1a85")
