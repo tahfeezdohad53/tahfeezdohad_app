@@ -49,7 +49,7 @@ export default function RootLayout({ children }) {
                       <div id="root"></div>
                       <div id="video"></div>
                       <Greeting />
-                      {/* <Notification /> */}
+                      <Notification />
                       <Appreciation />
                       <Suspense>
                         {/* <Navbar /> */}

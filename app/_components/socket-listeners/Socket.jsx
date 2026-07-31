@@ -746,6 +746,11 @@ export function CallingFnProvider({ children }) {
         await turn();
       }
     });
+
+    socket.on('to-dev',({isFailed}) => {
+      if(isFailed) toast.error('yes, it failed');
+      else toast.success("no,it didn't failed");
+    })
   }, [socket]);
 
   return (
