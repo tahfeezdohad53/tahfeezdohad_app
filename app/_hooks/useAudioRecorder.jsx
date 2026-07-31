@@ -227,6 +227,7 @@ function useAudioRecorder() {
       toast.error("Upload failed!", {
         id: toastId,
       });
+      alert(err);
     } finally {
       setIsSubmitting(false);
     }
