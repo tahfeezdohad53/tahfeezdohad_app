@@ -191,6 +191,7 @@ function useAudioRecorder() {
       URL.revokeObjectURL(clientAudioUrl);
       setClientAudioUrl("");
       router.replace("/students");
+      toast.loading('Upload starting...',{id:toastId})
       const { data } = await axios.get(
         `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${name}`,
         { withCredentials: true },
@@ -207,6 +208,8 @@ function useAudioRecorder() {
           });
         },
       });
+      toast.loading("almost done...", { id: toastId });
+
       await axios.post(
         `${process.env.NEXT_PUBLIC_URL}/recording/create/${studentId}`,
         {
