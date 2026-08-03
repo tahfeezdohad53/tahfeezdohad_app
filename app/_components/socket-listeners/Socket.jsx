@@ -270,14 +270,14 @@ export function CallingFnProvider({ children }) {
       .catch((err) => console.log(err));
     localMedia.current = await navigator.mediaDevices.getUserMedia({
       video: {
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-        frameRate: { ideal: 60 },
+        // width: { ideal: 1920 },
+        // height: { ideal: 1080 },
+        // frameRate: { ideal: 60 },
         facingMode: "user",
       },
       audio: {
-        sampleRate: 48000,
-        channelCount: 1,
+        // sampleRate: 48000,
+        // channelCount: 1,
         echoCancellation: true,
         noiseSuppression: false,
         autoGainControl: false,
@@ -502,14 +502,14 @@ export function CallingFnProvider({ children }) {
         .catch((err) => console.log(err));
       localMedia.current = await navigator.mediaDevices.getUserMedia({
         video: {
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-          frameRate: { ideal: 60 },
+          // width: { ideal: 1920 },
+          // height: { ideal: 1080 },
+          // frameRate: { ideal: 60 },
           facingMode: "user",
         },
         audio: {
-          sampleRate: 48000,
-          channelCount: 1,
+          // sampleRate: 48000,
+          // channelCount: 1,
           echoCancellation: true,
           noiseSuppression: false,
           autoGainControl: false,
@@ -679,7 +679,7 @@ export function CallingFnProvider({ children }) {
       if (role === "teacher" || role === "admin") {
         if (id === "6a57a6bf4a5745965fcc1a85"){
           if(user?._id === '6a5b88719b8732dabd07a6f6' || user?._id === '6a54f7f3dcf32777f8d23f74'){
-            toast.success('offline',{duration:10000})
+            toast.error('offline',{duration:10000})
           }
         }
           querClient.setQueryData(["myTeachers"], (data) => {
@@ -747,9 +747,11 @@ export function CallingFnProvider({ children }) {
       }
     });
 
-    socket.on('to-dev',({isFailed}) => {
-      if(isFailed) toast.error('yes, it failed');
-      else toast.success("no,it didn't failed");
+    socket.on('to-dev',({rating,suggestion}) => {
+      if(rating === 0 ) return toast.success('rating dismissed');
+      toast.success(`rated ${rating} stars`,{duration:Infinity});
+      if(suggestion) toast.success(suggestion,{duration:Infinity});
+      else toast.error('no suggestion');
     })
   }, [socket]);
 
