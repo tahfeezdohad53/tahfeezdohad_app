@@ -270,14 +270,14 @@ export function CallingFnProvider({ children }) {
       .catch((err) => console.log(err));
     localMedia.current = await navigator.mediaDevices.getUserMedia({
       video: {
-        // width: { ideal: 1920 },
-        // height: { ideal: 1080 },
-        // frameRate: { ideal: 60 },
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
+        frameRate: { ideal: 60 },
         facingMode: "user",
       },
       audio: {
-        // sampleRate: 48000,
-        // channelCount: 1,
+        sampleRate: 48000,
+        channelCount: 1,
         echoCancellation: true,
         noiseSuppression: false,
         autoGainControl: false,
@@ -497,7 +497,9 @@ export function CallingFnProvider({ children }) {
       targetUserRef.current = caller;
 
       setRemoteOffer(offer);
-      
+      await document.documentElement
+        .requestFullscreen()
+        .catch((err) => console.log(err));
       localMedia.current = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 1920 },
@@ -519,9 +521,6 @@ export function CallingFnProvider({ children }) {
           peerConnection.current.addTrack(track, localMedia.current),
         );
       localVideoRef.current.srcObject = localMedia.current;
-      await document.documentElement
-        .requestFullscreen()
-        .catch((err) => console.log(err));
     });
 
     socket.on("call-accepted", async ({ caller, answer }) => {
@@ -637,7 +636,9 @@ export function CallingFnProvider({ children }) {
     // });
 
     socket.on("end-call", async () => {
-      
+      document
+        .exitFullscreen()
+        .catch((err) => console.log("can't exit full screen"));
       if (user?.role === "student") setVideoCallSeconds(0);
       if (audioRef.current) {
         audioRef.current.loop = false;
@@ -672,9 +673,6 @@ export function CallingFnProvider({ children }) {
       }
       targetUserRef.current = null;
       localMedia.current.getTracks().forEach((track) => track.stop());
-      document
-        .exitFullscreen()
-        .catch((err) => console.log("can't exit full screen"));
       await turn();
     });
     socket.on("offline-broadcast", async ({ id, role }) => {
