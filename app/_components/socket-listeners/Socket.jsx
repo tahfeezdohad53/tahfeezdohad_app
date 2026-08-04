@@ -497,9 +497,9 @@ export function CallingFnProvider({ children }) {
       targetUserRef.current = caller;
 
       setRemoteOffer(offer);
-      await document.documentElement
-        .requestFullscreen()
-        .catch((err) => console.log(err));
+      // await document.documentElement
+      //   .requestFullscreen()
+      //   .catch((err) => console.log(err));
       localMedia.current = await navigator.mediaDevices.getUserMedia({
         video: {
           // width: { ideal: 1920 },
@@ -636,9 +636,9 @@ export function CallingFnProvider({ children }) {
     // });
 
     socket.on("end-call", async () => {
-      document
-        .exitFullscreen()
-        .catch((err) => console.log("can't exit full screen"));
+      // document
+      //   .exitFullscreen()
+      //   .catch((err) => console.log("can't exit full screen"));
       if (user?.role === "student") setVideoCallSeconds(0);
       if (audioRef.current) {
         audioRef.current.loop = false;
