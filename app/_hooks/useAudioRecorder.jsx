@@ -177,60 +177,84 @@ function useAudioRecorder() {
     setIsSubmitting(true);
     const toastId = "uploading";
     try {
-      // console.log(data.signedUrl)
-      // toast.success(
-      //   "your recording will be submitted, do not close or refresh browser before success notification arrives",
-      //   {
-      //     icon: <AiOutlineExclamationCircle className="text-yellow-500 text-4xl" />, duration:6000,style:{fontSize:'12px'}
-      //   },
-      // );
       let blob = audio;
+
       setAudio(null);
       setIsRecording(false);
       setIsRecorded(false);
       URL.revokeObjectURL(clientAudioUrl);
       setClientAudioUrl("");
       router.replace("/students");
-      toast.loading('Upload starting...',{id:toastId})
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${name}`,
-        { withCredentials: true },
-      );
-      await axios.put(data.signedUrl, blob, {
-        headers: {
-          "Content-Type": "audio/webm",
-        },
-        onUploadProgress: (progress) => {
-          const percent = Math.round((progress.loaded * 100) / progress.total);
 
-          toast.loading(`Uploading... ${percent}%`, {
-            id: toastId,
-          });
-        },
-      });
-      toast.loading("almost done...", { id: toastId });
+      toast.loading("Upload starting...", { id: toastId });
 
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_URL}/recording/create/${studentId}`,
-        {
-          isOnline: false,
-          url: data.url,
-          duration: totalSeconds / 60,
-        },
-        { withCredentials: true },
-      );
+      let data;
+
+      // Step 1: Get signed URL
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${name}`,
+          { withCredentials: true },
+        );
+
+        data = res.data;
+      } catch (err) {
+        console.error("Signed URL Error:", err);
+        toast.error("Failed to get upload URL. please report this exact message to your supervisor or the system administrator.", { id: toastId, duration:8000 });
+        throw err;
+      }
+
+      // Step 2: Upload to R2
+      try {
+        await axios.put(data.signedUrl, blob, {
+          headers: {
+            "Content-Type": "audio/webm",
+          },
+          onUploadProgress: (progress) => {
+            const percent = Math.round(
+              (progress.loaded * 100) / progress.total,
+            );
+
+            toast.loading(`Uploading... ${percent}%`, {
+              id: toastId,
+            });
+          },
+        });
+      } catch (err) {
+        console.error("R2 Upload Error:", err);
+        toast.error("Failed while uploading recording. please report this exact message to your supervisor or the system administrator.", {
+          id: toastId, duration:8000
+        });
+        throw err;
+      }
+
+      toast.loading("Almost done...", { id: toastId });
+
+      // Step 3: Save recording in database
+      try {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_URL}/recording/create/${studentId}`,
+          {
+            isOnline: false,
+            url: data.url,
+            duration: totalSeconds / 60,
+          },
+          { withCredentials: true },
+        );
+      } catch (err) {
+        console.error("Database Save Error:", err);
+        toast.error(
+          "Recording was uploaded, but we couldn't save it. Please report this exact message to your supervisor or the system administrator.",
+          { id: toastId,duration:8000 },
+        );
+        throw err;
+      }
+
       toast.success("Upload complete!", {
         id: toastId,
       });
-      // setOnlineClassBlob(null);
-      // setVideoCallSeconds(0);
-      // setOnlineClassBlobUrl("");
     } catch (err) {
-      console.log(err);
-      toast.error("Upload failed!", {
-        id: toastId,
-      });
-      alert(err);
+      console.error("Submission Error:", err);
     } finally {
       setIsSubmitting(false);
     }
