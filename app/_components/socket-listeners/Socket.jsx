@@ -500,14 +500,14 @@ export function CallingFnProvider({ children }) {
       
       localMedia.current = await navigator.mediaDevices.getUserMedia({
         video: {
-          // width: { ideal: 1920 },
-          // height: { ideal: 1080 },
-          // frameRate: { ideal: 60 },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          frameRate: { ideal: 60 },
           facingMode: "user",
         },
         audio: {
-          // sampleRate: 48000,
-          // channelCount: 1,
+          sampleRate: 48000,
+          channelCount: 1,
           echoCancellation: true,
           noiseSuppression: false,
           autoGainControl: false,
