@@ -419,7 +419,7 @@ function LeaveCardsContainer({ setShow, show }) {
                   <div>
                     <p className="text-xs text-gray-500">From</p>
                     <h3 className="font-semibold text-xs">
-                      {format(showLeaveDetails.details.from, "dd MMM, yyyy")}
+                      {format(showLeaveDetails.details.from.split('T')[0], "dd MMM, yyyy")}
                     </h3>
                   </div>
                 </div>
@@ -432,7 +432,7 @@ function LeaveCardsContainer({ setShow, show }) {
                   <div>
                     <p className="text-xs text-gray-500">To</p>
                     <h3 className="font-semibold text-xs">
-                      {format(showLeaveDetails.details.to, "dd MMM, yyyy")}
+                      {format(showLeaveDetails.details.to.split('T')[0], "dd MMM, yyyy")}
                     </h3>
                   </div>
                 </div>
@@ -582,7 +582,7 @@ function PhoneLeaveCard({
           <span className="p-1 rounded-md bg-(--bg-tertiary)/50">
             <CiCalendar className="text-amber-500" />
           </span>{" "}
-          {format(from, "dd MMM")} - {format(to, "dd MMM yyy")}
+          {format(from.split('T')[0], "dd MMM")} - {format(to.split('T')[0], "dd MMM yyy")}
         </p>
         <p className="text-gray-600 flex items-center gap-1 font-semibold pr-4 text-xs">
           <span className="p-1 rounded-md bg-blue-500/10">

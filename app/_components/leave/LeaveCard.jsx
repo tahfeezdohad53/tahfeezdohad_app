@@ -132,7 +132,7 @@ function LeaveCard({id,status,name,createdAt,batch,days,type,reason,from,to}) {
                 <CiCalendarDate className="text-xs" />{" "}
               </span>
               <span className="">
-                {format(from, "MMM dd, YYY")} - {format(to, "MMM dd, YYY")}
+                {format(from.split('T')[0], "MMM dd, YYY")} - {format(to.split('T')[0], "MMM dd, YYY")}
               </span>
             </h1>
           </div>
