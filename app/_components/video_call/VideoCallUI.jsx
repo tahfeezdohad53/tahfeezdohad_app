@@ -251,44 +251,70 @@ function SelectStudent({onclose}){
   
   useEffect(() => {
     async function submitVideoCallRecording() {
-      if(!student.id) return setError(true);
+      if (!student.id) return setError(true);
+
       const url = URL.createObjectURL(onlineClassBlob);
       const audio = new Audio(url);
       let dur;
-      await new Promise((resolve,reject) => {
+
+      await new Promise((resolve, reject) => {
         audio.onloadedmetadata = () => {
           dur = audio.duration / 60;
-          // console.log(audio.duration);
           resolve();
-        }
+        };
         audio.onerror = () => {
-          dur = 1
+          dur = 1;
           reject();
-        }
-      })
+        };
+      });
+
       onclose();
       setOnlineClassBlob(null);
       setVideoCallSeconds(0);
       setOnlineClassBlobUrl("");
+
       const toastId = "uploading";
+
       toast.success(
         "your recording will be submitted, do not close or refresh browser before success notification arrives",
         {
-          icon: <AiOutlineExclamationCircle className="text-yellow-500 text-4xl" />, duration:6000,style:{fontSize:'12px'}
+          icon: (
+            <AiOutlineExclamationCircle className="text-yellow-500 text-4xl" />
+          ),
+          duration: 6000,
+          style: { fontSize: "12px" },
         },
       );
+
+      let data;
+
       try {
-        // console.log(data.signedUrl)
-        const { data } = await axios.get(
+        const response = await axios.get(
           `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${formattedName}`,
           { withCredentials: true },
         );
+        data = response.data;
+      } catch (err) {
+        console.log(err);
+        toast.error("signed token failed!", { id: toastId });
+        setIsLap((val) => !val);
+        return;
+      }
 
+      try {
         await axios.put(data.signedUrl, onlineClassBlob, {
           headers: {
             "Content-Type": "audio/webm",
           },
         });
+      } catch (err) {
+        console.log(err);
+        toast.error("Upload failed!", { id: toastId });
+        setIsLap((val) => !val);
+        return;
+      }
+
+      try {
         await axios.post(
           `${process.env.NEXT_PUBLIC_URL}/recording/create/${student.id}`,
           {
@@ -298,16 +324,16 @@ function SelectStudent({onclose}){
           },
           { withCredentials: true },
         );
-        URL.revokeObjectURL(url);
-        toast.success("recording submitted!");
       } catch (err) {
         console.log(err);
-        toast.error("Upload failed!", {
-          id: toastId,
-        });
-      } finally {
+        toast.error("entry failed!", { id: toastId });
         setIsLap((val) => !val);
+        return;
       }
+
+      URL.revokeObjectURL(url);
+      toast.success("recording submitted!");
+      setIsLap((val) => !val);
     }
     if(onlineClassBlob) submitVideoCallRecording();
   },[onlineClassBlob,student.id])
