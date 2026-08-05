@@ -323,9 +323,11 @@ export function CallingFnProvider({ children }) {
     })
     localVideoRef.current.srcObject = m;
       localMedia.current.getTracks().forEach((track) => track.stop());
-
+      localMedia.current = m;
         const sender = peerConnection.current?.getSenders().find(s => s.track?.kind === 'audio');
         sender.replaceTrack(m.getAudioTracks()[0]);
+        const videoSender = peerConnection.current?.getSenders().find(s => s.track?.kind === 'video');
+        videoSender.replaceTrack(m.getVideoTracks()[0]);
       }
     }
     navigator.mediaDevices.addEventListener('devicechange',handleChange);
