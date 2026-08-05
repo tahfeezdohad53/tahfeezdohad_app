@@ -279,8 +279,8 @@ export function CallingFnProvider({ children }) {
         sampleRate: 48000,
         channelCount: 1,
         echoCancellation: true,
-        noiseSuppression: false,
-        autoGainControl: false,
+        noiseSuppression: true,
+        autoGainControl: true,
       },
     });
 
@@ -302,6 +302,36 @@ export function CallingFnProvider({ children }) {
     );
     socket.emit("incoming-call", { to: receiverId, from: callerId, offer });
   }
+
+  useEffect(() => {
+    async function handleChange(){
+      if(isCallingRef.current || isIncomingRef.current || isInCallRef.current){
+        const m = await navigator.mediaDevices.getUserMedia({
+      video: {
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
+        frameRate: { ideal: 60 },
+        facingMode: "user",
+      },
+      audio: {
+        sampleRate: 48000,
+        channelCount: 1,
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      },
+    })
+    localVideoRef.current.srcObject = m;
+      localMedia.current.getTracks().forEach((track) => track.stop());
+
+        const sender = peerConnection.current?.getSenders().find(s => s.track?.kind === 'audio');
+        sender.replaceTrack(m.getAudioTracks()[0]);
+      }
+    }
+    navigator.mediaDevices.addEventListener('devicechange',handleChange);
+
+    return () => navigator.mediaDevices.removeEventListener('devicechange',handleChange);
+  },[])
 
   useEffect(() => {
     if (isCalling) {
@@ -511,8 +541,8 @@ export function CallingFnProvider({ children }) {
           sampleRate: 48000,
           channelCount: 1,
           echoCancellation: true,
-          noiseSuppression: false,
-          autoGainControl: false,
+          noiseSuppression: true,
+          autoGainControl: true,
         },
       });
       localMedia.current
