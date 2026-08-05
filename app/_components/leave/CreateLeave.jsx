@@ -15,7 +15,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import { differenceInDays } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 function CreateLeave() {
     const [showForm,setShowForm] = useState(false);
     return (
@@ -38,9 +38,10 @@ function LeaveForm({onClose}){
   const [isSubmitting,setIsSubmitting] = useState(false);
   const [showDateSelect,setShowDateSelect] = useState(false);
   async function handleCreateLeave(e){
+    const diffInDays = differenceInDays(date[0].endDate, date[0].startDate) + 1;
     setIsSubmitting(true);
     try{
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_URL}/leave/create`,{...e,from:date[0].startDate,to:date[0].endDate},{withCredentials:true})
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_URL}/leave/create`,{...e,days:diffInDays,from:format(date[0].startDate,"yyyy-MM-dd"),to:format(date[0].endDate,"yyyy-MM-dd")},{withCredentials:true})
       if(res.data.ok){
         queryClient.invalidateQueries(['leaves']);
         onClose();
