@@ -38,6 +38,9 @@ function LeaveForm({onClose}){
   const [isSubmitting,setIsSubmitting] = useState(false);
   const [showDateSelect,setShowDateSelect] = useState(false);
   async function handleCreateLeave(e){
+    const isUnderTwoDays = differenceInDays(date[0].startDate,new Date());
+    if(isUnderTwoDays >= 2) return toast.error('You can only apply for leave 2 days before your start date.',{duration:5000});
+    
     const diffInDays = differenceInDays(date[0].endDate, date[0].startDate) + 1;
     setIsSubmitting(true);
     try{
