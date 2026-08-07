@@ -275,16 +275,7 @@ function SelectStudent({onclose}){
 
       const toastId = "uploading";
 
-      toast.success(
-        "your recording will be submitted, do not close or refresh browser before success notification arrives",
-        {
-          icon: (
-            <AiOutlineExclamationCircle className="text-yellow-500 text-4xl" />
-          ),
-          duration: 6000,
-          style: { fontSize: "12px" },
-        },
-      );
+      toast.loading('Upload starting...',{id:toastId});
 
       let data;
 
@@ -306,6 +297,15 @@ function SelectStudent({onclose}){
           headers: {
             "Content-Type": "audio/webm",
           },
+          onUploadProgress: (progress) => {
+            const percent = Math.round(
+              (progress.loaded * 100) / progress.total,
+            );
+
+            toast.loading(`Uploading... ${percent}%`, {
+              id: toastId,
+            });
+          },
         });
       } catch (err) {
         console.log(err);
@@ -315,6 +315,7 @@ function SelectStudent({onclose}){
       }
 
       try {
+        toast.loading('almost done...',{id:toastId});
         await axios.post(
           `${process.env.NEXT_PUBLIC_URL}/recording/create/${student.id}`,
           {
@@ -332,7 +333,7 @@ function SelectStudent({onclose}){
       }
 
       URL.revokeObjectURL(url);
-      toast.success("recording submitted!");
+      toast.success("recording submitted!",{id:toastId});
       setIsLap((val) => !val);
     }
     if(onlineClassBlob) submitVideoCallRecording();
