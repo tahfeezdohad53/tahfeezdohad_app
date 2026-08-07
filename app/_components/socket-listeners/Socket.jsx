@@ -12,6 +12,7 @@ import { useAppProvider } from "../providers/AppProvider";
 import { MdMessage } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import Image from "next/image";
+import { isIOS } from "@/helpers";
 const Context = createContext(null);
 
 export function CallingFnProvider({ children }) {
@@ -110,7 +111,7 @@ export function CallingFnProvider({ children }) {
     };
   }
   async function endCall() {
-    document.exitFullscreen().catch((err) => "can't exit fullscreen");
+    if(!isIOS())document.exitFullscreen().catch((err) => "can't exit fullscreen");
     if (audioRef.current) {
       audioRef.current.loop = false;
       audioRef.current.pause();
@@ -265,10 +266,11 @@ export function CallingFnProvider({ children }) {
     // await turn();
     setCallingTo(receiverId);
     targetUserRef.current = receiverId;
-    await document.documentElement
+    if(!isIOS()) await document.documentElement
       .requestFullscreen()
       .catch((err) => console.log(err));
-    localMedia.current = await navigator.mediaDevices.getUserMedia({
+    try{
+      localMedia.current = await navigator.mediaDevices.getUserMedia({
       video: {
         width: { ideal: 1920 },
         height: { ideal: 1080 },
@@ -283,6 +285,11 @@ export function CallingFnProvider({ children }) {
         autoGainControl: true,
       },
     });
+    }catch(err){
+      toast.error('permission denied, please enable access to camera and mic.');
+      endCall();
+      return;
+    }
 
     localMedia.current
       .getTracks()
@@ -529,10 +536,11 @@ export function CallingFnProvider({ children }) {
       targetUserRef.current = caller;
 
       setRemoteOffer(offer);
-      await document.documentElement
+      if(!isIOS())await document.documentElement
         .requestFullscreen()
         .catch((err) => console.log(err));
-      localMedia.current = await navigator.mediaDevices.getUserMedia({
+     try{
+       localMedia.current = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 1920 },
           height: { ideal: 1080 },
@@ -547,6 +555,11 @@ export function CallingFnProvider({ children }) {
           autoGainControl: true,
         },
       });
+     }catch(err){
+      toast.error('permission denied, please enable access to camera and mic.')
+      endCall();
+      return;
+     }
       localMedia.current
         .getTracks()
         .forEach((track) =>
@@ -668,7 +681,7 @@ export function CallingFnProvider({ children }) {
     // });
 
     socket.on("end-call", async () => {
-      document
+      if(!isIOS())document
         .exitFullscreen()
         .catch((err) => console.log("can't exit full screen"));
       if (user?.role === "student") setVideoCallSeconds(0);
