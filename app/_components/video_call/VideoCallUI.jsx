@@ -114,8 +114,8 @@ function VideoCallUI() {
           facingMode: "user",
         },
         audio: {
-          // sampleRate: 48000,
-          // channelCount: 1,
+          sampleRate: 48000,
+          channelCount: 1,
           echoCancellation: false,
           noiseSuppression: false,
           autoGainControl: false,
@@ -248,7 +248,7 @@ function VideoCallUI() {
             <div className="fixed top-3 left-3 z-99 bg-black rounded-md">
               <HiOutlineDotsVertical
                 onClick={() => setShowFix(!showFix)}
-                className="text-white"
+                className="text-white text-2xl"
               />
               {showFix && (
                 <button

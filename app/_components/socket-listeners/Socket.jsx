@@ -278,8 +278,8 @@ export function CallingFnProvider({ children }) {
         facingMode: "user",
       },
       audio: {
-        // sampleRate: 48000,
-        // channelCount: 1,
+        sampleRate: 48000,
+        channelCount: 1,
         echoCancellation: false,
         noiseSuppression: false,
         autoGainControl: false,
@@ -321,8 +321,8 @@ export function CallingFnProvider({ children }) {
         facingMode: "user",
       },
       audio: {
-        // sampleRate: 48000,
-        // channelCount: 1,
+        sampleRate: 48000,
+        channelCount: 1,
         echoCancellation: false,
         noiseSuppression: false,
         autoGainControl: false,
@@ -548,8 +548,8 @@ export function CallingFnProvider({ children }) {
           facingMode: "user",
         },
         audio: {
-          // sampleRate: 48000,
-          // channelCount: 1,
+          sampleRate: 48000,
+          channelCount: 1,
           echoCancellation: false,
           noiseSuppression: false,
           autoGainControl: false,
