@@ -135,6 +135,8 @@ function VideoCallUI() {
       localMedia.current = m;
       setIsMute(false);
       setIsVideoOff(false);
+      setShowFix(false);
+      toast.success('fixed video call');
     } catch (err) {
       toast.error("failed to fix");
     }
@@ -243,7 +245,7 @@ function VideoCallUI() {
         {(isCalling || isIncoming) && isInCall && (
           <>
             {showModal && <SelectStudent onclose={() => setShowModal(false)} />}
-            <div className="fixed top-3 left-3 z-99">
+            <div className="fixed top-3 left-3 z-99 bg-black rounded-md">
               <HiOutlineDotsVertical
                 onClick={() => setShowFix(!showFix)}
                 className=""
