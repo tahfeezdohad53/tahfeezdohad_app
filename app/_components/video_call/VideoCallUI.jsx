@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useVideoCallContext } from "../providers/VideoCallProvider";
 import { useCallingFn } from "../socket-listeners/Socket";
 import { useSession } from "next-auth/react";
-import Select from 'react-select';
+import Select from "react-select";
 
 import {
   FiMic,
@@ -27,8 +27,9 @@ import axios from "axios";
 import { HiXMark } from "react-icons/hi2";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { formatName } from "@/helpers";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 function VideoCallUI() {
-  const {user} = useUser();
+  const { user } = useUser();
   const videoRef = useRef(null);
   const {
     localVideoRef,
@@ -42,14 +43,16 @@ function VideoCallUI() {
     remoteVideoRef,
     setVideoCallSeconds,
     videoCallSeconds,
+    peerConnection,
   } = useVideoCallContext();
-  const {dummyAnsCall,acceptCall,endCall} = useCallingFn();
-  const [isMute,setIsMute] = useState(false);
-  const [isVideoOff,setIsVideoOff] = useState(false)
+  const { dummyAnsCall, acceptCall, endCall } = useCallingFn();
+  const [isMute, setIsMute] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
   const dragRef = useRef(null);
-  const [showModal,setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showFix, setShowFix] = useState(false);
   useEffect(() => {
-    if(!isInCall) return;
+    if (!isInCall) return;
     const interval = setInterval(() => {
       setVideoCallSeconds((prev) => prev + 1);
     }, 1000);
@@ -65,12 +68,11 @@ function VideoCallUI() {
     return `${hours}:${mins}:${secs}`;
   };
   useEffect(() => {
-   
     let stream;
 
     async function getMedia() {
-       if (isCalling) return;
-       
+      if (isCalling) return;
+
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           video: {
@@ -102,13 +104,49 @@ function VideoCallUI() {
     };
   }, [isCalling]);
 
+  async function handleFix() {
+    try {
+      const m = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          frameRate: { ideal: 60 },
+          facingMode: "user",
+        },
+        audio: {
+          sampleRate: 48000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+      const pc = new RTCPeerConnection();
+      localVideoRef.current.srcObject = m;
+      const sender = peerConnection.current
+        ?.getSenders()
+        .find((s) => s.track?.kind === "audio");
+      await sender.replaceTrack(m.getAudioTracks()[0]);
+      const videoSender = peerConnection.current
+        ?.getSenders()
+        .find((s) => s.track?.kind === "video");
+      await videoSender.replaceTrack(m.getVideoTracks()[0]);
+      localMedia.current.getTracks().forEach((track) => track.stop());
+      localMedia.current = m;
+      setIsMute(false);
+      setIsVideoOff(false);
+    } catch (err) {
+      toast.error("failed to fix");
+    }
+  }
+
   // if(isAdminJoined)return <div className="fixed h-[90%] w-full inset-0 z-10000 lg:flex">
   //   <video ref={adminMediaOfferRefOne} src="" className="bg-black w-full h-1/2 lg:h-full object-contain" ></video>
   //   <video ref={adminMediaOfferReftwo} src="" className="bg-gray-500 w-full h-1/2 lg:h-full object-contain" ></video>
   // </div>;
   return (
     <>
-      {(showCallControls) && (
+      {showCallControls && (
         <div className="h-[10%] w-full fixed z-9999 bottom-0 left-0 bg-black backdrop-blur-md border-t border-white/10 flex items-center justify-between px-6">
           {/* Timer */}
           <div
@@ -165,12 +203,14 @@ function VideoCallUI() {
                 <IoIosCall />
               </button>
             )}
-            {user?.role !== 'student' && isInCall && <button
-              onClick={() => setShowModal(!showModal)}
-              className="text-white flex bg-gray-800 px-4 items-center gap-2 text-xs p-2 hover:bg-gray-700 rounded-md duration-300 ease-in-out transition-all hover:cursor-pointer absolute right-5"
-            >
-              Lap <BsFillRecordCircleFill className="" />
-            </button>}
+            {user?.role !== "student" && isInCall && (
+              <button
+                onClick={() => setShowModal(!showModal)}
+                className="text-white flex bg-gray-800 px-4 items-center gap-2 text-xs p-2 hover:bg-gray-700 rounded-md duration-300 ease-in-out transition-all hover:cursor-pointer absolute right-5"
+              >
+                Lap <BsFillRecordCircleFill className="" />
+              </button>
+            )}
           </div>
 
           {/* Empty div for perfect center alignment */}
@@ -202,10 +242,22 @@ function VideoCallUI() {
         )}
         {(isCalling || isIncoming) && isInCall && (
           <>
-          
-            {showModal && <SelectStudent onclose={()=>setShowModal(false)}/>}
-
-            <div onClick={()=>setShowModal(false)} className="h-full w-full">
+            {showModal && <SelectStudent onclose={() => setShowModal(false)} />}
+            <div className="fixed top-3 left-3 z-99">
+              <HiOutlineDotsVertical
+                onClick={() => setShowFix(!showFix)}
+                className=""
+              />
+              {showFix && (
+                <button
+                  className="absolute top-[150%] left-1 bg-(--primary) text-white px-6 py-1 rounded-md"
+                  onClick={handleFix}
+                >
+                  Fix
+                </button>
+              )}
+            </div>
+            <div onClick={() => setShowModal(false)} className="h-full w-full">
               <div className="absolute h-full w-full">
                 <video
                   playsInline
@@ -236,19 +288,27 @@ function VideoCallUI() {
 
 export default VideoCallUI;
 
-
-function SelectStudent({onclose}){
-  const {students} = useAppProvider();
-  const [student,setStudent] = useState({id:'',name:''});
+function SelectStudent({ onclose }) {
+  const { students } = useAppProvider();
+  const [student, setStudent] = useState({ id: "", name: "" });
   const formattedName = formatName(student.name);
-  const [error,setError] = useState(false);
-  const {isLap,setIsLap,videoCallSeconds,setVideoCallSeconds,onlineClassBlob,recorderRef,setOnlineClassBlob,setOnlineClassBlobUrl} = useVideoCallContext();
+  const [error, setError] = useState(false);
+  const {
+    isLap,
+    setIsLap,
+    videoCallSeconds,
+    setVideoCallSeconds,
+    onlineClassBlob,
+    recorderRef,
+    setOnlineClassBlob,
+    setOnlineClassBlobUrl,
+  } = useVideoCallContext();
   const formatedStudents = students?.map((el) => {
     // const name = el.name.split(' ').filter((el,i) => i !== 1 ? true : false).join(' ');
     // const name = el.name.split(' ').filter(el => el.toLowerCase() !== 'bhai').join(' ');
     return { label: el.name, value: el._id };
   });
-  
+
   useEffect(() => {
     async function submitVideoCallRecording() {
       if (!student.id) return setError(true);
@@ -275,7 +335,7 @@ function SelectStudent({onclose}){
 
       const toastId = "uploading";
 
-      toast.loading('Upload starting...',{id:toastId});
+      toast.loading("Upload starting...", { id: toastId });
 
       let data;
 
@@ -315,7 +375,7 @@ function SelectStudent({onclose}){
       }
 
       try {
-        toast.loading('almost done...',{id:toastId});
+        toast.loading("almost done...", { id: toastId });
         await axios.post(
           `${process.env.NEXT_PUBLIC_URL}/recording/create/${student.id}`,
           {
@@ -333,13 +393,12 @@ function SelectStudent({onclose}){
       }
 
       URL.revokeObjectURL(url);
-      toast.success("recording submitted!",{id:toastId});
+      toast.success("recording submitted!", { id: toastId });
       setIsLap((val) => !val);
     }
-    if(onlineClassBlob) submitVideoCallRecording();
-  },[onlineClassBlob,student.id])
-  
-  
+    if (onlineClassBlob) submitVideoCallRecording();
+  }, [onlineClassBlob, student.id]);
+
   return (
     <div className="fixed rounded-md lg:w-1/2 z-999999999999999 backdrop-opacity-0 top-1/2 left-1/2 -translate-1/2 bg-(--card) p-10 w-[90%] flex flex-col gap-6">
       {/* Header */}
@@ -364,15 +423,22 @@ function SelectStudent({onclose}){
 
       {/* Select */}
       <div>
-        <Select options={formatedStudents} onChange={(e) => {
-          setStudent({ id: e.value, name: e.label });
-          setError(false);
-        }}/>
-        {(error && !student.id) && <p className="text-xs text-red-500 mt-1 font-bold">please select a student</p>}
+        <Select
+          options={formatedStudents}
+          onChange={(e) => {
+            setStudent({ id: e.value, name: e.label });
+            setError(false);
+          }}
+        />
+        {error && !student.id && (
+          <p className="text-xs text-red-500 mt-1 font-bold">
+            please select a student
+          </p>
+        )}
       </div>
       <button
         onClick={() => {
-          if(student.id) recorderRef?.current?.stop?.();
+          if (student.id) recorderRef?.current?.stop?.();
         }}
         className="bg-(image:--gradient-primary) text-white p-2 rounded-md"
       >
