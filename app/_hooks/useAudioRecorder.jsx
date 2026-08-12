@@ -17,6 +17,7 @@ function useAudioRecorder() {
   const [isRedirect, setIsRedirect] = useState(false);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [audioSize, setAudioSize] = useState(0);
+  const audioType = useRef('');
   const {
     onlineClassBlob,
     setOnlineClassBlobUrl,
@@ -94,6 +95,7 @@ function useAudioRecorder() {
     } else if (MediaRecorder.isTypeSupported("audio/mp4")) {
       mimeType = "audio/mp4";
     }
+    audioType.current = mimeType;
     //  console.log("recording");
     recorder.current = new MediaRecorder(processedStream, {
       mimeType: mimeType,
@@ -173,7 +175,7 @@ function useAudioRecorder() {
       if(audioSize < 1024) return toast.error(
         "Something went wrong while recording this class. Please do not submit this recording. Refresh your browser before recording the next class.",
       {duration:5000});
-
+        const localAudioType = audioType.current;
     setIsSubmitting(true);
     const toastId = "uploading";
     try {
@@ -208,7 +210,7 @@ function useAudioRecorder() {
       try {
         await axios.put(data.signedUrl, blob, {
           headers: {
-            "Content-Type": "audio/webm",
+            "Content-Type": localAudioType,
           },
           onUploadProgress: (progress) => {
             const percent = Math.round(
@@ -221,11 +223,28 @@ function useAudioRecorder() {
           },
         });
       } catch (err) {
-        console.error("R2 Upload Error:", err);
-        toast.error("Failed while uploading recording. please report this exact message to your supervisor or the system administrator.", {
-          id: toastId, duration:8000
+        toast.loading(`failed...`, {
+          id: toastId,
         });
-        throw err;
+        try{
+          await axios.put(data.signedUrl, blob, {
+            headers: {
+              "Content-Type": localAudioType,
+            },
+            onUploadProgress: (progress) => {
+              const percent = Math.round(
+                (progress.loaded * 100) / progress.total,
+              );
+
+              toast.loading(`retrying... ${percent}%`, {
+                id: toastId,
+              });
+            },
+          });
+        }catch(err){
+          toast.error('failed while upload recording',{duration:8000});
+          throw err;
+        }
       }
 
       toast.loading("Almost done...", { id: toastId });
