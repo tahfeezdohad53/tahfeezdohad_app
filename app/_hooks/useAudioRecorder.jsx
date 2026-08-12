@@ -241,8 +241,17 @@ function useAudioRecorder() {
               });
             },
           });
-        }catch(err){
+        }catch(error){
           toast.error('failed while upload recording',{duration:8000});
+           alert(
+             `UPLOAD FAILED\n\n` +
+               `Message: ${error.message}\n` +
+               `Code: ${error.code}\n` +
+               `Status: ${error.response?.status}\n` +
+               `Status Text: ${error.response?.statusText}\n` +
+               `Response: ${JSON.stringify(error.response?.data)}\n` + 
+                'please take a screenshot and send to your supervisor',
+           );
           throw err;
         }
       }

@@ -116,9 +116,9 @@ function VideoCallUI() {
         audio: {
           sampleRate: 48000,
           channelCount: 1,
-          echoCancellation: false,
-          noiseSuppression: false,
-          autoGainControl: false,
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
         },
       });
       const pc = new RTCPeerConnection();
@@ -137,7 +137,7 @@ function VideoCallUI() {
       setIsVideoOff(false);
       setShowFix(false);
       toast.success('fixed video call');
-    } catch (err) {
+    } catch (error) {
       toast.error("failed to fix");
     }
   }
@@ -369,9 +369,18 @@ function SelectStudent({ onclose }) {
             });
           },
         });
-      } catch (err) {
+      } catch (error) {
         console.log(err);
         toast.error("Upload failed!", { id: toastId });
+        alert(
+          `UPLOAD FAILED\n\n` +
+            `Message: ${error.message}\n` +
+            `Code: ${error.code}\n` +
+            `Status: ${error.response?.status}\n` +
+            `Status Text: ${error.response?.statusText}\n` +
+            `Response: ${JSON.stringify(error.response?.data)}\n` +
+            "please take a screenshot and send to your supervisor",
+        );
         setIsLap((val) => !val);
         return;
       }
