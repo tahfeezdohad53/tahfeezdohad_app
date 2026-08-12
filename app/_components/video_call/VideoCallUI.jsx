@@ -114,11 +114,11 @@ function VideoCallUI() {
           facingMode: "user",
         },
         audio: {
-          sampleRate: 48000,
-          channelCount: 1,
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
+          // sampleRate: 48000,
+          // channelCount: 1,
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
         },
       });
       const pc = new RTCPeerConnection();
@@ -248,7 +248,7 @@ function VideoCallUI() {
             <div className="fixed top-3 left-3 z-99 bg-black rounded-md">
               <HiOutlineDotsVertical
                 onClick={() => setShowFix(!showFix)}
-                className=""
+                className="text-white"
               />
               {showFix && (
                 <button

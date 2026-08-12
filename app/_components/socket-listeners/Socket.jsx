@@ -278,11 +278,11 @@ export function CallingFnProvider({ children }) {
         facingMode: "user",
       },
       audio: {
-        sampleRate: 48000,
-        channelCount: 1,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
+        // sampleRate: 48000,
+        // channelCount: 1,
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
       },
     });
     }catch(err){
@@ -321,11 +321,11 @@ export function CallingFnProvider({ children }) {
         facingMode: "user",
       },
       audio: {
-        sampleRate: 48000,
-        channelCount: 1,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
+        // sampleRate: 48000,
+        // channelCount: 1,
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false,
       },
     })
     localVideoRef.current.srcObject = m;
@@ -548,11 +548,11 @@ export function CallingFnProvider({ children }) {
           facingMode: "user",
         },
         audio: {
-          sampleRate: 48000,
-          channelCount: 1,
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
+          // sampleRate: 48000,
+          // channelCount: 1,
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
         },
       });
      }catch(err){
