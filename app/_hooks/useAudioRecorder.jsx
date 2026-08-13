@@ -234,38 +234,29 @@ function useAudioRecorder() {
             });
           },
         });
-      } catch (err) {
-        toast.loading(`failed...`, {
+      } catch (error) {
+        toast.loading(`wait...`, {
           id: toastId,
         });
-        try{
-          await axios.put(data.signedUrl, blob, {
-            headers: {
-              "Content-Type": localAudioType,
-            },
-            onUploadProgress: (progress) => {
-              const percent = Math.round(
-                (progress.loaded * 100) / progress.total,
-              );
 
-              toast.loading(`retrying... ${percent}%`, {
-                id: toastId,
-              });
-            },
-          });
-        }catch(error){
-          toast.error('failed while upload recording',{duration:8000});
-           alert(
-             `UPLOAD FAILED\n\n` +
-               `Message: ${error.message}\n` +
-               `Code: ${error.code}\n` +
-               `Status: ${error.response?.status}\n` +
-               `Status Text: ${error.response?.statusText}\n` +
-               `Response: ${JSON.stringify(error.response?.data)}\n` + 
-                'please take a screenshot and send to your supervisor',
-           );
-          throw err;
+        if (error.code === "ERR_NETWORK") {
+          if(!data?.url) throw new Error('url is missing');
+          const { data: status } = await axios.get(
+            `${process.env.NEXT_PUBLIC_URL}/recording/isUploaded`,{params:{url:data?.url},withCredentials:true},
+          );
+
+          if (status.uploaded) {
+            // 🎉 Upload actually succeeded
+            console.log("Upload succeeded despite ERR_NETWORK");
+          } else {
+            // Object isn't there → safe to retry
+            throw error;
+            // console.log("Upload genuinely failed");
+          }
+        }else{
+          throw error
         }
+       
       }
 
       toast.loading("Almost done...", { id: toastId });
