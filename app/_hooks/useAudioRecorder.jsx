@@ -18,6 +18,7 @@ function useAudioRecorder() {
   const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [audioSize, setAudioSize] = useState(0);
   const audioType = useRef('');
+  const wakeLockRef = useRef(null);
   const {
     onlineClassBlob,
     setOnlineClassBlobUrl,
@@ -26,6 +27,13 @@ function useAudioRecorder() {
     setVideoCallSeconds,
   } = useVideoCallContext();
   const router = useRouter();
+
+  async function handleScreenLock(){
+    if(document.visibilityState === 'visible'){
+      wakeLockRef.current = await navigator.wakeLock.request('screen');
+      console.log('assigned wake lock');
+    }
+  }
 
   let audioChunks = useRef([]);
   const recorder = useRef(null);
@@ -37,6 +45,7 @@ function useAudioRecorder() {
   let seconds = totalSeconds % 60;
 
   async function startRecording() {
+    document.addEventListener("visibilitychange",handleScreenLock);
     let wakeLock;
     audioChunks.current = [];
     if (recorder.current) recorder.current = null;
@@ -60,7 +69,8 @@ function useAudioRecorder() {
         /iPad|iPhone|iPod/.test(navigator.userAgent) ||
         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
       if (!isIOS) await document.documentElement.requestFullscreen();
-      wakeLock = await navigator.wakeLock.request("screen");
+      wakeLockRef.current = await navigator.wakeLock.request("screen");
+      // wakeLock = await navigator.wakeLock.request("screen");
     } catch (err) {
       console.log(err);
     }
@@ -119,7 +129,7 @@ function useAudioRecorder() {
       const url = URL.createObjectURL(blob);
       setClientAudioUrl(url);
       setAudio(blob);
-      wakeLock?.release();
+      // wakeLock?.release();
       source.disconnect();
       gainNode.disconnect();
       try{
@@ -152,6 +162,8 @@ function useAudioRecorder() {
   }
 
   function finishRecording() {
+    document.removeEventListener("visibilitychange", handleScreenLock);
+    if(wakeLockRef.current) wakeLockRef.current?.release();
     setConfirmFinishRecording(false);
     setIsRecording(false);
 
