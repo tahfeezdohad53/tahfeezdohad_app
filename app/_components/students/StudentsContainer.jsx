@@ -292,7 +292,7 @@ function StudentsContainer() {
       <RecordWithNumberCard />
       {!isSelecting && students?.length > 0 && (
         <div className="flex items-center gap-5">
-          <button onClick={async () => {
+         {user?.role === 'admin' && <button onClick={async () => {
             try{
               const {data} = await axios.get(`${process.env.NEXT_PUBLIC_URL}/student/excel`,{withCredentials:true,responseType:'blob'});
               const url = window.URL.createObjectURL(data);
@@ -311,7 +311,7 @@ function StudentsContainer() {
             }
           }} className="ml-auto  mt-5 bg-(image:--gradient-primary) hover:cursor-pointer duration-300 ease-in-out transition-all hover:scale-105 text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-aut flex items-center gap-2">
             download
-          </button>
+          </button>}
           <button
             onClick={() => setIsSelecting(true)}
             className="mt-5 bg-(image:--gradient-primary) hover:cursor-pointer duration-300 ease-in-out transition-all hover:scale-105 text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-aut flex items-center gap-2"
