@@ -283,15 +283,42 @@ function StudentsContainer() {
           <p className="text-white/80 text-xs">record and manage students</p>
         </div>
       </div>
-      {(students?.length > 0 || user?.role ==="admin") && <StudentsFilter reset={() => setFilteredStudents(students)} handleFilterStudents={handleFilterStudents} />}
+      {(students?.length > 0 || user?.role === "admin") && (
+        <StudentsFilter
+          reset={() => setFilteredStudents(students)}
+          handleFilterStudents={handleFilterStudents}
+        />
+      )}
       <RecordWithNumberCard />
       {!isSelecting && students?.length > 0 && (
-        <button
-          onClick={() => setIsSelecting(true)}
-          className="mt-5 bg-(image:--gradient-primary) hover:cursor-pointer duration-300 ease-in-out transition-all hover:scale-105 text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-auto flex items-center gap-2"
-        >
-          <IoIosCheckboxOutline className="" /> Select
-        </button>
+        <div className="flex items-center gap-5">
+          <button onClick={async () => {
+            try{
+              const {data} = await axios.get(`${process.env.NEXT_PUBLIC_URL}/student/excel`,{withCredentials:true,responseType:'blob'});
+              const url = window.URL.createObjectURL(data);
+              const a = document.createElement('a');
+
+              a.href = url;
+              a.download = 'students.xlsx';
+
+              document.body.appendChild(a);
+
+              a.click();
+              document.body.removeChild(a);
+              window.URL.revokeObjectURL(data);
+            }catch(err){
+              console.log(err);
+            }
+          }} className="ml-auto  mt-5 bg-(image:--gradient-primary) hover:cursor-pointer duration-300 ease-in-out transition-all hover:scale-105 text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-aut flex items-center gap-2">
+            download
+          </button>
+          <button
+            onClick={() => setIsSelecting(true)}
+            className="mt-5 bg-(image:--gradient-primary) hover:cursor-pointer duration-300 ease-in-out transition-all hover:scale-105 text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-aut flex items-center gap-2"
+          >
+            <IoIosCheckboxOutline className="" /> Select
+          </button>
+        </div>
       )}
       {isSelecting && (
         <div className="relative w-full flex items-center justify-between mt-5 bg-(--card) shadow-(--shadow-md) rounded-md py-2 px-4">
@@ -656,7 +683,9 @@ function StudentsContainer() {
           )}
         </ContextMenu>
       </div>
-      {(students?.length < 1 && user?.role === 'teacher' && !isLoading) && <NoStudentsAssigned />}
+      {students?.length < 1 && user?.role === "teacher" && !isLoading && (
+        <NoStudentsAssigned />
+      )}
     </div>
   );
 }
