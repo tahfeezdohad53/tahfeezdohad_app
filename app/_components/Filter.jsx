@@ -7,10 +7,15 @@ import { PiStudentBold } from "react-icons/pi";
 import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { SlCalender } from "react-icons/sl";
 import CustomDateRangePicker from "./CustomDateRangePicker";
-import { CiCalendarDate, CiFilter } from "react-icons/ci";
+import { CiCalendarDate, CiExport, CiFilter } from "react-icons/ci";
 import { useUser } from "./providers/UserProvider";
 import CustomContextMenu from "./CustomContextMenu";
 import { useAppProvider } from "./providers/AppProvider";
+import toast from "react-hot-toast";
+import { useRouter, useSearchParams } from "next/navigation";
+import axios from "axios";
+import { TfiExport } from "react-icons/tfi";
+import { GoBlocked } from "react-icons/go";
 
 // const teachers = [
 //   {
@@ -68,6 +73,8 @@ function Filter({role}) {
   const [isShowModal, setIsShowModal] = useState(false);
   const [filterType, setFilterType] = useState("");
   const {user} = useUser();
+  const params = useSearchParams();
+  const router = useRouter();
  
   const customizedTeachers = teachers?.map((el,i) => {
     if(i === 0) return {label:'all',value:''}
@@ -78,10 +85,39 @@ function Filter({role}) {
     else return { label: el.name, value: el.name };
   })
   if(user?.role === 'student' || user?.role === 'teacher') return null;
+
+  async function handleDownloadExcel(){
+    try{
+      const res = await axios.get(
+             `${process.env.NEXT_PUBLIC_URL}/recording/excel?page=${params.page || 1}&student=${params.get("student") || ""}&teacher=${params.get("teacher") || ""}&startDate=${params.get("startDate") || ""}&endDate=${params.get("endDate") || ""}`,
+             {
+               withCredentials:true,
+               responseType:'blob'
+             },
+           );
+           const url = window.URL.createObjectURL(res.data);
+
+           const a = document.createElement('a');
+           a.href = url;
+           a.download = 'recordings.xlsx';
+
+           document.body.appendChild(a);
+           a.click();
+
+           document.body.removeChild(a);
+           window.URL.revokeObjectURL(url);
+    }catch(err){
+      console.log(err);
+      toast.error('failed to download excel');
+    }
+  }
   return (
-    <div className="relative  px-2 w-fit">
+    <div className="relative  px-2 w-fit flex gap-5">
+      <button onClick={handleDownloadExcel} className="flex font-semibold hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-blue-900 text-white text-sm items-center gap-3 px-4 py-2 bg-blue-800 rounded-md shadow-(--shadow-md)">
+        <TfiExport className="text-white font-bold"/> export
+      </button>
       <button
-        className="flex font-semibold hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-(--primary) text-white text-sm items-center gap-3 px-4 py-3 bg-(--primary-light) rounded-md shadow-(--shadow-md)"
+        className="flex font-semibold hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-(--primary) text-white text-sm items-center gap-3 px-4 py-2 bg-(--primary-light) rounded-md shadow-(--shadow-md)"
         onClick={() => setIsShowFilter(!isShowFilter)}
       >
         <CiFilter className="text-xl" /> Filter
@@ -118,6 +154,16 @@ function Filter({role}) {
               text: "Date",
               icon: <CiCalendarDate className="text-amber-800" />,
             },
+            {
+              handler: () => {
+                setFilterType("");
+                setIsShowFilter(false);
+                setIsShowModal(false);
+                router.replace(window.location.pathname + '?page=1');
+              },
+              text: "Reset",
+              icon: <GoBlocked className="text-amber-800" />,
+            },
           ]}
         />
       )}
@@ -138,7 +184,11 @@ function Filter({role}) {
             {filterType !== "date" && (
               <>
                 <CustomSelect
-                  options={filterType === "student" ? customizedStudents : customizedTeachers}
+                  options={
+                    filterType === "student"
+                      ? customizedStudents
+                      : customizedTeachers
+                  }
                   filterType={filterType}
                 />
               </>

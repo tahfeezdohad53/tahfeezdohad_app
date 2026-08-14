@@ -52,6 +52,7 @@ function RecordingsContainer({params}) {
     //     </div>
     //   );
     //  }
+
     if(recordingsData?.recordings?.length > 0)return (
       <div className="bg-(--card) shadow border border-(--border)">
         <div className="py-4 px-3 w-full grid grid-cols-9 lg:grid-cols-12 bg-(--bg-tertiary)/40 font-semibold">

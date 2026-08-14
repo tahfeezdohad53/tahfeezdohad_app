@@ -314,7 +314,7 @@ function StudentsContainer() {
           </button>}
           <button
             onClick={() => setIsSelecting(true)}
-            className="mt-5 bg-(image:--gradient-primary) hover:cursor-pointer duration-300 ease-in-out transition-all hover:scale-105 text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-aut flex items-center gap-2"
+            className={`${user?.role !== 'admin' && 'ml-auto'} mt-5 bg-(image:--gradient-primary) hover:cursor-pointer duration-300 ease-in-out transition-all hover:scale-105 text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-aut flex items-center gap-2`}
           >
             <IoIosCheckboxOutline className="" /> Select
           </button>
@@ -512,6 +512,8 @@ function StudentsContainer() {
             isSelecting={isSelecting}
             selectedStudents={selectedStudents}
             setSelectedStudents={setSelectedStudents}
+            classStatus={el.classStatus}
+            classDuration={el.classDuration}
           />
         ))}
         {modal.show && (modal.type === "diary" || modal.type === "proxy") && (

@@ -7,6 +7,7 @@ import { CiUser } from "react-icons/ci";
 import { FaMicrophone, FaRegUser, FaUser, FaUserCircle } from "react-icons/fa";
 import { LiaGraduationCapSolid } from "react-icons/lia";
 import { LuGraduationCap } from "react-icons/lu";
+import { SiGoogleclassroom } from "react-icons/si";
 
 function StudentCard({
   image,
@@ -18,7 +19,9 @@ function StudentCard({
   proxyTeacherName,
   isSelecting,
   setSelectedStudents,
-  selectedStudents
+  selectedStudents,
+  classStatus,
+  classDuration,
 }) {
   const isProxy = proxyTeacherId === teacherId;
 
@@ -85,7 +88,8 @@ function StudentCard({
             <div className="truncate">
               <p className="text-(--text-muted) text-[0.70rem]">Teacher</p>
               <p className="text-(--text) truncate">
-                {teacherName?.split(' ').slice(1).join(' ') || "no teacher assigned"}
+                {teacherName?.split(" ").slice(1).join(" ") ||
+                  "no teacher assigned"}
               </p>
             </div>
           </div>
@@ -96,8 +100,40 @@ function StudentCard({
             <div className="w-full truncate">
               <p className="text-(--text-muted) text-[0.70rem]">Proxy</p>
               <p className="text-(--text) truncate">
-                {proxyTeacherName?.split(' ').slice(1).join(' ') || "no current proxy"}
+                {proxyTeacherName?.split(" ").slice(1).join(" ") ||
+                  "no current proxy"}
               </p>
+            </div>
+          </div>
+
+          <div className=" border-t border-(--border) py-2 mt-2 flex items-center gap-3">
+            <div>
+              <FaRegUser className="text-xl text-(--primary)" />
+            </div>
+            <div className="w-full truncate">
+              <p className="text-(--text-muted) text-[0.70rem]">
+                Recording duration
+              </p>
+              <p className="text-(--text) truncate">{classDuration} min</p>
+            </div>
+          </div>
+
+          <div className=" border-t border-(--border) py-2 flex items-center gap-3">
+            <div>
+              <SiGoogleclassroom className="text-xl text-(--primary)" />
+            </div>
+            <div className="w-full truncate">
+              <p className="text-(--text-muted) text-[0.70rem]">Class status</p>
+              <h1 className="text-(--text-muted) text-[0.70rem] flex items-center gap-1">
+                <p
+                  className={`p-1 h-0 w-0 rounded-full ${classStatus === "pending" ? "bg-red-500" : "bg-green-500"}`}
+                ></p>{" "}
+                <span
+                  className={`${classStatus === "pending" ? "text-red-500" : "text-green-500"}`}
+                >
+                  {classStatus === "pending" ? "Not recorded" : "Recorded"}
+                </span>
+              </h1>
             </div>
           </div>
         </div>

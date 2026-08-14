@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useVideoCallContext } from "../_components/providers/VideoCallProvider";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { useQueryClient } from "@tanstack/react-query";
 
 function useAudioRecorder() {
   const [isRecording, setIsRecording] = useState(false);
@@ -19,6 +20,7 @@ function useAudioRecorder() {
   const [audioSize, setAudioSize] = useState(0);
   const audioType = useRef('');
   const wakeLockRef = useRef(null);
+  const queryClient = useQueryClient();
   const {
     onlineClassBlob,
     setOnlineClassBlobUrl,
@@ -284,6 +286,8 @@ function useAudioRecorder() {
       toast.success("Upload complete!", {
         id: toastId,
       });
+      queryClient.invalidateQueries({ queryKey: ["myStudents"] });
+      
     } catch (err) {
       console.error("Submission Error:", err);
     } finally {
