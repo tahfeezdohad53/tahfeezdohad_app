@@ -19,6 +19,7 @@ import SidebarPlaceholder from "./_components/navbar/SidebarPlaceholder";
 import Greeting from "./_components/Greeting";
 import Notification from "./_components/Notification";
 import Appreciation from "./_components/Appreciation";
+import SecondaryEmailForm from "./_components/SecondaryEmailForm";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -49,6 +50,7 @@ export default function RootLayout({ children }) {
                       <div id="root"></div>
                       <div id="video"></div>
                       <Greeting />
+                      <SecondaryEmailForm />
                       <Notification />
                       <Appreciation />
                       <Suspense>
