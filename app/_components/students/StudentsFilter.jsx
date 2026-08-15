@@ -12,13 +12,13 @@ function StudentsFilter({ handleFilterStudents,reset,readOnly=false }) {
       const searchParams = useSearchParams();
       const pathname = usePathname();
       const [value,setValue] = useState('');
-      // useEffect(() => {
-      //   if(user?.role !== 'admin') return;
-      //     const params = new URLSearchParams(searchParams);
-      //     if(params.get('batch')) return;
-      //     params.set('batch','yaqoot_mardo');
-      //     router.replace(`${pathname}?${params}`);
-      // },[user?.role])
+      useEffect(() => {
+        if(user?.role !== 'admin' && !pathname.includes('gurfah')) return;
+          const params = new URLSearchParams(searchParams);
+          if(params.get('batch')) return;
+          params.set('batch','yaqoot_mardo');
+          router.replace(`${pathname}?${params}`);
+      },[user?.role])
       function handleChangeSearchParams(type,value){
           const params = new URLSearchParams(searchParams);
           params.set(type, value);

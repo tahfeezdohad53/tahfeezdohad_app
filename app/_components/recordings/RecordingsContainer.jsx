@@ -55,8 +55,8 @@ function RecordingsContainer({params}) {
 
     if(recordingsData?.recordings?.length > 0)return (
       <div className="bg-(--card) shadow border border-(--border)">
-        <div className="py-4 px-3 w-full grid grid-cols-9 lg:grid-cols-12 bg-(--bg-tertiary)/40 font-semibold">
-          <div className="flex items-center gap-1 col-span-3 lg:col-span-2 text-xs text-left">
+        <div className="py-4 px-3 w-full grid grid-cols-7 lg:grid-cols-12 bg-(--bg-tertiary)/40 font-semibold">
+          <div className="flex items-center gap-1 col-span-2 lg:col-span-2 text-xs text-left">
             <CiCalendar className="text-sm" />
             Date
           </div>
@@ -69,6 +69,8 @@ function RecordingsContainer({params}) {
           <div className="flex items-center gap-1 col-span-2 lg:col-span-4 text-[0.50rem] lg:text-xs text-left">
             <PiStudent className="text-sm" /> Muhaffiz
           </div>
+          <div className=" lg:block hidden text-sm">evaluation</div>
+          
           <div className="text-[0.50rem] flex justify-center"></div>
         </div>
         <div className="space-y-">

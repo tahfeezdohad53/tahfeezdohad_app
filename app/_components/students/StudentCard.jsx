@@ -36,7 +36,7 @@ function StudentCard({
   const formattedName = formatName(name);
   
   return (
-    <div className="py relative rounded-md w-full lg:w-[15%]  border-amber-900 bg-(--card) shadow-(--shadow-xl) ">
+    <div className="py relative rounded-md w-full lg:w-[18%]  border-amber-900 bg-(--card) shadow-(--shadow-xl) ">
       {isSelecting && (
         <input
           onChange={handleSelectedStudent}

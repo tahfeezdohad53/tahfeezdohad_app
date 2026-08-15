@@ -35,6 +35,7 @@ import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import { useSession } from "next-auth/react";
 import { MdMessage } from "react-icons/md";
 import toast from "react-hot-toast";
+import { formatName } from "@/helpers";
 
 const font = Playfair_Display({
   subsets: ["latin"],
@@ -190,10 +191,7 @@ function StudentWrapper() {
 
           <div className="ml-3 font-semibold mr-2">
             <h1 className="text-xs">
-              {data?.user?.name
-                .split(" ")
-                .slice(1, data?.user?.name.split(" ").length)
-                .join(" ")}
+              {formatName(data?.user?.name)}
             </h1>
             <p
               className={`text-xs font-thin ${data?.user?.status === "offline" ? "text-red-600" : "text-green-600"}`}

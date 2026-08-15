@@ -309,7 +309,7 @@ function StudentsContainer() {
             reset={() => setFilteredStudents(students)}
             handleFilterStudents={handleFilterStudents}
           />
-      <div className="text-[0.60rem] mb-5 flex gap-3 items-center justify-center">
+      <div className="text-[0.70rem] mb-5 flex gap-3 items-center justify-center">
         <button
           onClick={() => handleChangeSearchParams("classStatus", "all")}
           className={`${searchParams.get("classStatus") === "all" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border-  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all border-(--border) shadow-(--shadow-md)  p-2 rounded-md `}
