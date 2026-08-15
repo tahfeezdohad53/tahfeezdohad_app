@@ -25,7 +25,7 @@ import { IoIosCheckboxOutline } from "react-icons/io";
 import { PiDotsThreeVertical, PiDotsThreeVerticalBold } from "react-icons/pi";
 import { useUser } from "../providers/UserProvider";
 import CustomContextMenu from "../CustomContextMenu";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { HiOutlineSearch, HiOutlineChevronRight } from "react-icons/hi";
@@ -44,6 +44,7 @@ function StudentsContainer() {
   const { teachers } = useAppProvider();
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const { show } = useContextMenu({
     id: "student",
   });
@@ -117,7 +118,7 @@ function StudentsContainer() {
     }
   }
   const { data: students, isLoading } = useQuery({
-    queryKey: ["myStudents", user?.role, searchParams.get("batch")],
+    queryKey: ["myStudents", user?.role, searchParams.get("batch"),searchParams.get('classStatus')],
     queryFn: handleGetMyStudents,
     refetchOnWindowFocus: false,
     enabled: user?.role === "teacher" || user?.role === "admin",
@@ -126,7 +127,7 @@ function StudentsContainer() {
   async function handleGetMyStudents() {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_URL}/student/getStudents?batch=${searchParams.get("batch")}`,
+        `${process.env.NEXT_PUBLIC_URL}/student/getStudents?batch=${searchParams.get("batch")}&classStatus=${searchParams.get('classStatus')}`,
         {
           withCredentials: true,
         },
@@ -247,6 +248,25 @@ function StudentsContainer() {
     }
   }, [user?.role, session?.status, isFetching]);
 
+  useEffect(() => {
+    const urlsearch = new URLSearchParams(searchParams);
+    if(!searchParams.get('classStatus')){
+      urlsearch.set("classStatus", "all");
+      if(user?.role !== 'admin')router.replace(`${pathname}?${urlsearch}`);
+    }
+
+    if (user?.role !== "admin") return;
+    if (searchParams.get("batch")) return;
+    urlsearch.set("batch", "yaqoot_mardo");
+    router.replace(`${pathname}?${urlsearch}`);
+  },[searchParams,user?.role,pathname])
+
+  function handleChangeSearchParams(type, value) {
+    const params = new URLSearchParams(searchParams);
+    params.set(type, value);
+    router.replace(`${pathname}?${params}`);
+  }
+
   // if (!user?.role) {
   //   return(
   //     <div className="absolute top-1/2 left-1/2 -translate-1/2 w-full flex-col gap-3 flex items-center justify-center ">
@@ -283,38 +303,40 @@ function StudentsContainer() {
           <p className="text-white/80 text-xs">record and manage students</p>
         </div>
       </div>
-      {(students?.length > 0 || user?.role === "admin") && (
-        <StudentsFilter
-          reset={() => setFilteredStudents(students)}
-          handleFilterStudents={handleFilterStudents}
-        />
+      {((students?.length === 0 && searchParams.get('classStatus') === 'all') || !user?.role === "teacher") ? '' : (
+        <>
+          <StudentsFilter
+            reset={() => setFilteredStudents(students)}
+            handleFilterStudents={handleFilterStudents}
+          />
+      <div className="text-[0.60rem] mb-5 flex gap-3 items-center justify-center">
+        <button
+          onClick={() => handleChangeSearchParams("classStatus", "all")}
+          className={`${searchParams.get("classStatus") === "all" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border-  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all border-(--border) shadow-(--shadow-md)  p-2 rounded-md `}
+        >
+          All
+        </button>
+        <button
+          onClick={() => handleChangeSearchParams("classStatus", "pending")}
+          className={`${searchParams.get("classStatus") === "pending" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border-  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all border-(--border) shadow-(--shadow-md)  p-2 rounded-md `}
+        >
+          Pending
+        </button>
+        <button
+          onClick={() => handleChangeSearchParams("classStatus", "recorded")}
+          className={`${searchParams.get("classStatus") === "recorded" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border- hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all  shadow-(--shadow-md)  p-2 rounded-md `}
+        >
+          Recorded
+        </button>
+      </div>
+        </>
       )}
       <RecordWithNumberCard />
       {!isSelecting && students?.length > 0 && (
-        <div className="flex items-center gap-5">
-         {user?.role === 'admin' && <button onClick={async () => {
-            try{
-              const {data} = await axios.get(`${process.env.NEXT_PUBLIC_URL}/student/excel`,{withCredentials:true,responseType:'blob'});
-              const url = window.URL.createObjectURL(data);
-              const a = document.createElement('a');
-
-              a.href = url;
-              a.download = 'students.xlsx';
-
-              document.body.appendChild(a);
-
-              a.click();
-              document.body.removeChild(a);
-              window.URL.revokeObjectURL(data);
-            }catch(err){
-              console.log(err);
-            }
-          }} className="ml-auto  mt-5 bg-(image:--gradient-primary) hover:cursor-pointer duration-300 ease-in-out transition-all hover:scale-105 text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-aut flex items-center gap-2">
-            download
-          </button>}
+        <div className="flex items-center gap-5 mt-7">
           <button
             onClick={() => setIsSelecting(true)}
-            className={`${user?.role !== 'admin' && 'ml-auto'} mt-5 bg-(image:--gradient-primary) hover:cursor-pointer duration-300 ease-in-out transition-all hover:scale-105 text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-aut flex items-center gap-2`}
+            className={`${user?.role !== "admin" && "ml-auto"} ml-auto bg-(image:--gradient-primary) hover:cursor-pointer duration-300 ease-in-out transition-all hover:scale-105 text-white/90 text-sm px-6 py-2 rounded-lg shadow-(--shadow-lg) ml-aut flex items-center gap-2`}
           >
             <IoIosCheckboxOutline className="" /> Select
           </button>
@@ -685,9 +707,10 @@ function StudentsContainer() {
           )}
         </ContextMenu>
       </div>
-      {students?.length < 1 && user?.role === "teacher" && !isLoading && (
-        <NoStudentsAssigned />
-      )}
+      {students?.length < 1 &&
+        user?.role === "teacher" &&
+        !isLoading &&
+        searchParams.get("classStatus") === "all" && <NoStudentsAssigned />}
     </div>
   );
 }
@@ -696,6 +719,7 @@ export default StudentsContainer;
 
 import { HiOutlineUserAdd } from "react-icons/hi";
 import { NoStudentsAssigned } from "../gurfah/StudentContainer";
+import { IoFilter } from "react-icons/io5";
 
 export function RecordWithNumberCard({ page = "entry", userType = "teacher" }) {
   const [showSelector, setShowSelector] = useState(false);
