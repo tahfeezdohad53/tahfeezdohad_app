@@ -28,9 +28,9 @@ export default function SecondaryEmailForm() {
             setIsSub(false);
         }
     }
-  if(false && user?._id && !user?.contactEmail && !user?.name.includes('tahfeez'))return (
+  if(user?._id && !user?.contactEmail && !user?.name.includes('tahfeez'))return (
     <div className="fixed h-screen w-full flex items-center justify-center backdrop-brightness-60 z-999">
-      <div className=" w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className=" w-[90%] lg:w-1/4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <h2 className="flex items-center gap-2 border-b pb-3 border-b-gray-200  text-lg font-semibold text-gray-900">
          <AiOutlineMail /> Add contact email
         </h2>
