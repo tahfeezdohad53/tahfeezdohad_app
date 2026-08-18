@@ -256,14 +256,14 @@ function useAudioRecorder() {
             `${process.env.NEXT_PUBLIC_URL}/recording/isUploaded`,{params:{url:data?.url},withCredentials:true},
           );
 
-          if (status.uploaded) {
-            // 🎉 Upload actually succeeded
-            console.log("Upload succeeded despite ERR_NETWORK");
-          } else {
-            // Object isn't there → safe to retry
-            throw error;
-            // console.log("Upload genuinely failed");
-          }
+          // if (status.uploaded) {
+          //   // 🎉 Upload actually succeeded
+          //   console.log("Upload succeeded despite ERR_NETWORK");
+          // } else {
+          //   // Object isn't there → safe to retry
+          //   // throw error;
+          //   // console.log("Upload genuinely failed");
+          // }
         // }else{
         //   throw error
         // }
@@ -299,6 +299,9 @@ function useAudioRecorder() {
       
     } catch (err) {
       console.error("Submission Error:", err);
+      toast.error("Upload Failed!", {
+        id: toastId,
+      });
     } finally {
       setIsSubmitting(false);
     }
