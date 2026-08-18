@@ -205,7 +205,7 @@ function useAudioRecorder() {
       toast.loading("Upload starting...", { id: toastId });
 
       let data;
-      
+
       // Step 1: Get signed URL
       for(const i=0;i<4;i++){
         try {
@@ -217,13 +217,15 @@ function useAudioRecorder() {
           data = res.data;
           break;
         } catch (err) {
-          if(i !== 3) return;
-          console.error("Signed URL Error:", err);
-          toast.error(
-            "Failed to get upload URL. please report this exact message to your supervisor or the system administrator.",
-            { id: toastId, duration: 8000 },
-          );
-          throw err;
+          
+         if(i === 3){
+           console.error("Signed URL Error:", err);
+           toast.error(
+             "Failed to get upload URL. please report this exact message to your supervisor or the system administrator.",
+             { id: toastId, duration: 8000 },
+           );
+           throw err;
+         }
         }
       }
 
