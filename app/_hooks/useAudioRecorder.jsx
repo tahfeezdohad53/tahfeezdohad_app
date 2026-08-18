@@ -241,7 +241,7 @@ function useAudioRecorder() {
           id: toastId,
         });
 
-        if (error.code === "ERR_NETWORK") {
+        // if (error.code === "ERR_NETWORK") {
           if(!data?.url) throw new Error('url is missing');
           const { data: status } = await axios.get(
             `${process.env.NEXT_PUBLIC_URL}/recording/isUploaded`,{params:{url:data?.url},withCredentials:true},
@@ -255,9 +255,9 @@ function useAudioRecorder() {
             throw error;
             // console.log("Upload genuinely failed");
           }
-        }else{
-          throw error
-        }
+        // }else{
+        //   throw error
+        // }
        
       }
 
