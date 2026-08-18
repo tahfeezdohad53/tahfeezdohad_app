@@ -205,19 +205,26 @@ function useAudioRecorder() {
       toast.loading("Upload starting...", { id: toastId });
 
       let data;
-
+      
       // Step 1: Get signed URL
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${name}`,
-          { withCredentials: true },
-        );
+      for(const i=0;i<4;i++){
+        try {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${name}`,
+            { withCredentials: true },
+          );
 
-        data = res.data;
-      } catch (err) {
-        console.error("Signed URL Error:", err);
-        toast.error("Failed to get upload URL. please report this exact message to your supervisor or the system administrator.", { id: toastId, duration:8000 });
-        throw err;
+          data = res.data;
+          break;
+        } catch (err) {
+          if(i !== 3) return;
+          console.error("Signed URL Error:", err);
+          toast.error(
+            "Failed to get upload URL. please report this exact message to your supervisor or the system administrator.",
+            { id: toastId, duration: 8000 },
+          );
+          throw err;
+        }
       }
 
       // Step 2: Upload to R2
