@@ -117,6 +117,14 @@ function VideoCallUI() {
     }
   }, [peerConnection]);
 
+  useEffect(() => {
+    let interval = setInterval(() => {
+      getNetworkQuality();
+    }, 2000);
+
+    return () => clearInterval(interval);
+  },[getNetworkQuality])
+
   const formatTime = (time) => {
     const hours = String(Math.floor(time / 3600)).padStart(2, "0");
     const mins = String(Math.floor((time % 3600) / 60)).padStart(2, "0");
