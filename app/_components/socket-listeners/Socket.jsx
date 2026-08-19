@@ -137,12 +137,23 @@ export function CallingFnProvider({ children }) {
         if(notificationRef.current)notificationRef.current.currentTime = 0;
         if(notificationRef.current)notificationRef.current.play();
         toast.error('call has been disconnected, please end call and try again',{duration:8000});
-        navigator.vibrate([1000,1000,1000,1000]);
+        navigator.vibrate([1000]);
         // await restartIce();
         // toast.dismiss("call");
       }
     };
   }
+
+  useEffect(() => {
+    if(localMedia.current);
+    const localAudio = localMedia.current.getAudioTracks()[0];
+
+    localAudio.onended = () => {
+      toast.error('something went wrong with your mic, please fix the call',{duration:8000});
+      if(notificationRef.current)notificationRef.current.play();
+      navigator.vibrate([1000]);
+    }
+  },[isInCallRef,localMedia])
   async function endCall() {
     if(!isIOS())document.exitFullscreen().catch((err) => "can't exit fullscreen");
     if (audioRef.current) {
