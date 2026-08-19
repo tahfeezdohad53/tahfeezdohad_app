@@ -120,7 +120,7 @@ function VideoCallUI() {
   useEffect(() => {
     let interval = setInterval(() => {
       getNetworkQuality();
-    }, 2000);
+    }, 5000);
 
     return () => clearInterval(interval);
   },[getNetworkQuality])
@@ -283,7 +283,7 @@ function VideoCallUI() {
 
             {/* Network Status */}
             {isInCall && (
-              <div className="mt-1.5 absolute left-6 bottom-2 text-[0.65rem] text-gray-300 flex items-center gap-1.5">
+              <div className="mt-1.5 absolute left-1/2 -translate-x-1/2 bottom-1 text-[0.65rem] text-gray-300 flex items-center gap-1.5">
                 <span
                   className={`w-2 h-2 rounded-full ${
                     networkQuality === "good"
