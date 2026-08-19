@@ -99,6 +99,11 @@ export function CallingFnProvider({ children }) {
     peerConnection.current = new RTCPeerConnection(res.data);
     peerConnection.current.ontrack = (event) => {
       const stream = event.streams[0];
+      const audioTrack = stream.getAudioTracks()[0];
+
+      audioTrack.onended = () => {
+        toast.error("other person's mic has stopped working, fix or restart call",{duration:10000});
+      }
       setRemoteMedia(stream);
       if (remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = stream;
@@ -125,7 +130,7 @@ export function CallingFnProvider({ children }) {
         console.log("connection state: ", peerConnection.current.connectionState);
         console.log("ice connection state: ", peerConnection.current.iceConnectionState);
       }
-      if (!isCalling) return;
+      // if (!isCalling) return;
       if (peerConnection.current.connectionState === "failed") {
         // peerConnection.current.restartIce();
         if(notificationRef.current)notificationRef.current.pause();
