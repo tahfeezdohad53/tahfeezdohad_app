@@ -66,21 +66,21 @@ export function CallingFnProvider({ children }) {
   }, [isInCall, isIncoming, isCalling]);
 
   const restartIce = async () => {
-    const pc = peerConnection.current;
+    // const peerConnection.current = peerConnection.current;
 
-    if (!pc || isRestarting.current) return;
+    if (!peerConnection.current || isRestarting.current) return;
 
     isRestarting.current = true;
 
     try {
-      const offer = await pc.createOffer({
+      const offer = await peerConnection.current.createOffer({
         iceRestart: true,
       });
 
-      await pc.setLocalDescription(offer);
+      await peerConnection.current.setLocalDescription(offer);
 
       socket.emit("offer", {
-        offer: pc.localDescription,
+        offer: peerConnection.current.localDescription,
         to: callingTo,
       });
     } catch (error) {
