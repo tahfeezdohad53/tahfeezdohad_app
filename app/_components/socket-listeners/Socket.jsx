@@ -145,7 +145,7 @@ export function CallingFnProvider({ children }) {
   }
 
   useEffect(() => {
-    if(localMedia.current);
+    if(!localMedia.current) return;
     const localAudio = localMedia.current.getAudioTracks()[0];
 
     localAudio.onended = () => {
