@@ -133,11 +133,13 @@ export function CallingFnProvider({ children }) {
       // if (!isCalling) return;
       if (peerConnection.current.connectionState === "failed") {
         // peerConnection.current.restartIce();
-        if(notificationRef.current)notificationRef.current.pause();
-        if(notificationRef.current)notificationRef.current.currentTime = 0;
-        if(notificationRef.current)notificationRef.current.play();
+        if(notificationRef.current){
+          notificationRef.current.pause();
+          notificationRef.current.currentTime = 0;
+          notificationRef.current.play();
+        }
         toast.error('call has been disconnected, please end call and try again',{duration:8000});
-        navigator.vibrate([1000]);
+        // navigator.vibrate([1000]);
         // await restartIce();
         // toast.dismiss("call");
       }
