@@ -58,12 +58,39 @@ export function CallingFnProvider({ children }) {
   const isCallingRef = useRef(false);
   const toastInputRef = useRef(null);
   const notificationRef = useRef(null);
-
+  const isRestarting = useRef(false);
   useEffect(() => {
     isInCallRef.current = isInCall;
     isCallingRef.current = isCalling;
     isIncomingRef.current = isIncoming;
   }, [isInCall, isIncoming, isCalling]);
+
+  const restartIce = async () => {
+    const pc = peerConnection.current;
+
+    if (!pc || isRestarting.current) return;
+
+    isRestarting.current = true;
+
+    try {
+      const offer = await pc.createOffer({
+        iceRestart: true,
+      });
+
+      await pc.setLocalDescription(offer);
+
+      socket.emit("offer", {
+        offer: pc.localDescription,
+        to: callingTo,
+      });
+    } catch (error) {
+      console.error("ICE restart failed:", error);
+    } finally {
+      setTimeout(() => {
+        isRestarting.current = false;
+      }, 3000);
+    }
+  };
   async function turn() {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_URL}/turn-credentials`,
@@ -101,13 +128,9 @@ export function CallingFnProvider({ children }) {
       if (!isCalling) return;
       if (peerConnection.current.connectionState === "failed") {
         // peerConnection.current.restartIce();
-        const offer = await peerConnection.current.createOffer({
-          iceRestart: true,
-        });
-
-        await peerConnection.current.setLocalDescription(offer);
-
-        socket.emit("ice-restart-offer", { offer, to: callingTo });
+        toast.loading('reconnecting call...',{id:'call'});
+        await restartIce();
+        toast.dismiss("call");
       }
     };
   }
