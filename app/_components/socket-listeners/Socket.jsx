@@ -100,7 +100,7 @@ export function CallingFnProvider({ children }) {
       }
       if (!isCalling) return;
       if (peerConnection.current.connectionState === "failed") {
-        peerConnection.current.restartIce();
+        // peerConnection.current.restartIce();
         const offer = await peerConnection.current.createOffer({
           iceRestart: true,
         });
