@@ -128,9 +128,13 @@ export function CallingFnProvider({ children }) {
       if (!isCalling) return;
       if (peerConnection.current.connectionState === "failed") {
         // peerConnection.current.restartIce();
-        toast.loading('reconnecting call...',{id:'call'});
-        await restartIce();
-        toast.dismiss("call");
+        if(notificationRef.current)notificationRef.current.pause();
+        if(notificationRef.current)notificationRef.current.currentTime = 0;
+        if(notificationRef.current)notificationRef.current.play();
+        toast.error('call has been disconnected, please end call and try again',{duration:8000});
+        navigator.vibrate([1000,1000,1000,1000]);
+        // await restartIce();
+        // toast.dismiss("call");
       }
     };
   }
