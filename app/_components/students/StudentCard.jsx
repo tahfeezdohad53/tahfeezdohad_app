@@ -22,6 +22,7 @@ function StudentCard({
   selectedStudents,
   classStatus,
   classDuration,
+  role
 }) {
   const isProxy = proxyTeacherId === teacherId;
 
@@ -81,32 +82,38 @@ function StudentCard({
           </p>
         </div>
         <div className="w-full border-t border-(--border) py-2 text-[0.55rem]">
-          <div className=" flex items-center gap-3 w-full ">
-            <div>
-              <LuGraduationCap className="text-xl text-(--primary)" />
-            </div>
-            <div className="truncate">
-              <p className="text-(--text-muted) text-[0.70rem]">Teacher</p>
-              <p className="text-(--text) truncate">
-                {teacherName?.split(" ").slice(1).join(" ") ||
-                  "no teacher assigned"}
-              </p>
-            </div>
-          </div>
-          <div className=" border-t border-(--border) py-2 mt-2 flex items-center gap-3">
-            <div>
-              <FaRegUser className="text-xl text-(--primary)" />
-            </div>
-            <div className="w-full truncate">
-              <p className="text-(--text-muted) text-[0.70rem]">Proxy</p>
-              <p className="text-(--text) truncate">
-                {proxyTeacherName?.split(" ").slice(1).join(" ") ||
-                  "no current proxy"}
-              </p>
-            </div>
-          </div>
+          {role === "admin" && (
+            <>
+              <div className=" flex items-center gap-3 w-full ">
+                <div>
+                  <LuGraduationCap className="text-xl text-(--primary)" />
+                </div>
+                <div className="truncate">
+                  <p className="text-(--text-muted) text-[0.70rem]">Teacher</p>
+                  <p className="text-(--text) truncate">
+                    {teacherName?.split(" ").slice(1).join(" ") ||
+                      "no teacher assigned"}
+                  </p>
+                </div>
+              </div>
+              <div className=" border-t border-(--border) py-2 mt-2 flex items-center gap-3">
+                <div>
+                  <FaRegUser className="text-xl text-(--primary)" />
+                </div>
+                <div className="w-full truncate">
+                  <p className="text-(--text-muted) text-[0.70rem]">Proxy</p>
+                  <p className="text-(--text) truncate">
+                    {proxyTeacherName?.split(" ").slice(1).join(" ") ||
+                      "no current proxy"}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
 
-          <div className=" border-t border-(--border) py-2 mt-2 flex items-center gap-3">
+          <div
+            className={` ${role === "admin" && "border-t mt-2"} border-(--border) py-2  flex items-center gap-3`}
+          >
             <div>
               <FaRegUser className="text-xl text-(--primary)" />
             </div>

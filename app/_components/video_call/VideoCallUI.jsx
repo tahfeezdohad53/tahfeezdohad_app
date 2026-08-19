@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useVideoCallContext } from "../providers/VideoCallProvider";
 import { useCallingFn } from "../socket-listeners/Socket";
 import { useSession } from "next-auth/react";
@@ -51,6 +51,7 @@ function VideoCallUI() {
   const dragRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
   const [showFix, setShowFix] = useState(false);
+  const [networkQuality,setNetworkQuality] = useState(false);
   useEffect(() => {
     if (!isInCall) return;
     const interval = setInterval(() => {
@@ -59,6 +60,62 @@ function VideoCallUI() {
 
     return () => clearInterval(interval);
   }, [isInCall]);
+
+  const previousStats = useRef({
+    packetsLost: 0,
+    packetsReceived: 0,
+  });
+
+  const getNetworkQuality = useCallback(async () => {
+    if (!peerConnection.current) return;
+
+    const stats = await peerConnection.current.getStats();
+
+    let rtt = 0;
+    let packetsLost = 0;
+    let packetsReceived = 0;
+
+    stats.forEach((report) => {
+      if (
+        report.type === "candidate-pair" &&
+        report.state === "succeeded" &&
+        report.nominated
+      ) {
+        rtt = (report.currentRoundTripTime || 0) * 1000;
+      }
+
+      if (
+        report.type === "inbound-rtp" &&
+        (report.kind === "audio" || report.kind === "video")
+      ) {
+        packetsLost += report.packetsLost || 0;
+        packetsReceived += report.packetsReceived || 0;
+      }
+    });
+
+    // Calculate only the packets lost since the previous check
+    const lostDelta = packetsLost - previousStats.current.packetsLost;
+
+    const receivedDelta =
+      packetsReceived - previousStats.current.packetsReceived;
+
+    previousStats.current = {
+      packetsLost,
+      packetsReceived,
+    };
+
+    const totalPackets = lostDelta + receivedDelta;
+
+    const loss = totalPackets > 0 ? (lostDelta / totalPackets) * 100 : 0;
+
+    if (rtt > 500 || loss > 5) {
+      setNetworkQuality("critical");
+    } else if (rtt > 250 || loss > 2) {
+      setNetworkQuality("poor");
+    } else {
+      setNetworkQuality("good");
+    }
+  }, [peerConnection]);
 
   const formatTime = (time) => {
     const hours = String(Math.floor(time / 3600)).padStart(2, "0");
@@ -149,77 +206,112 @@ function VideoCallUI() {
   return (
     <>
       {showCallControls && (
-        <div className="h-[10%] w-full fixed z-9999 bottom-0 left-0 bg-black backdrop-blur-md border-t border-white/10 flex items-center justify-between px-6">
-          {/* Timer */}
-          <div
-            className={`${!isInCall && "opacity-0"} text-white text-lg font-semibold tracking-wide`}
-          >
-            {formatTime(videoCallSeconds)}
+        <div className="h-[12%] w-full fixed z-9999 bottom-0 left-0 bg-black backdrop-blur-md border-t border-white/10 flex items-center justify-between px-6">
+          {/* LEFT — Timer */}
+          <div className="flex-1 flex items-center">
+            <div
+              className={`${
+                !isInCall && "opacity-0"
+              } text-white text-lg font-semibold tracking-wide`}
+            >
+              {formatTime(videoCallSeconds)}
+            </div>
           </div>
 
-          {/* Controls */}
-          <div className="flex items-center gap-5">
-            {/* Mute Button */}
-            <button
-              onClick={() => {
-                setIsMute(!isMute);
-                localMedia.current
-                  .getAudioTracks()
-                  .forEach((track) => (track.enabled = !track.enabled));
-              }}
-              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 flex items-center justify-center text-white shadow-lg active:scale-95"
-            >
-              {/* Change icon conditionally */}
-              {!isMute && <FiMic size={20} />}
-              {isMute && <FiMicOff size={20} />}
-            </button>
-
-            {/* Camera Button */}
-            <button
-              onClick={() => {
-                setIsVideoOff(!isVideoOff);
-                const currentState = !isVideoOff;
-                localMedia.current
-                  .getVideoTracks()
-                  .forEach((track) => (track.enabled = !currentState));
-              }}
-              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 flex items-center justify-center text-white shadow-lg active:scale-95"
-            >
-              {/* Change icon conditionally */}
-              {!isVideoOff && <FiVideo size={20} />}
-              {isVideoOff && <FiVideoOff size={20} />}
-            </button>
-
-            {/* End Call Button */}
-            <button
-              onClick={endCall}
-              className="w-10 h-10 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-200 flex items-center justify-center text-white shadow-xl active:scale-95"
-            >
-              <MdCallEnd />
-            </button>
-            {!isCalling && !isInCall && (
+          {/* CENTER — Controls + Network */}
+          <div className="flex flex-col items-center justify-center">
+            {/* Controls */}
+            <div className="flex items-center gap-5">
+              {/* Mute */}
               <button
-                onClick={() => acceptCall(user._id, callerId)}
-                className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-all duration-200 flex items-center justify-center text-white shadow-xl active:scale-95"
+                onClick={() => {
+                  setIsMute(!isMute);
+
+                  localMedia.current
+                    .getAudioTracks()
+                    .forEach((track) => (track.enabled = !track.enabled));
+                }}
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 flex items-center justify-center text-white shadow-lg active:scale-95"
               >
-                <IoIosCall />
+                {!isMute && <FiMic size={20} />}
+                {isMute && <FiMicOff size={20} />}
               </button>
+
+              {/* Camera */}
+              <button
+                onClick={() => {
+                  setIsVideoOff(!isVideoOff);
+
+                  const currentState = !isVideoOff;
+
+                  localMedia.current
+                    .getVideoTracks()
+                    .forEach((track) => (track.enabled = !currentState));
+                }}
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200 flex items-center justify-center text-white shadow-lg active:scale-95"
+              >
+                {!isVideoOff && <FiVideo size={20} />}
+                {isVideoOff && <FiVideoOff size={20} />}
+              </button>
+
+              {/* End Call */}
+              <button
+                onClick={endCall}
+                className="w-10 h-10 rounded-full bg-red-500 hover:bg-red-600 transition-all duration-200 flex items-center justify-center text-white shadow-xl active:scale-95"
+              >
+                <MdCallEnd />
+              </button>
+
+              {/* Accept Call */}
+              {!isCalling && !isInCall && (
+                <button
+                  onClick={() => acceptCall(user._id, callerId)}
+                  className="w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 transition-all duration-200 flex items-center justify-center text-white shadow-xl active:scale-95"
+                >
+                  <IoIosCall />
+                </button>
+              )}
+            </div>
+
+            {/* Network Status */}
+            {isInCall && (
+              <div className="mt-1.5 absolute left-6 bottom-2 text-[0.65rem] text-gray-300 flex items-center gap-1.5">
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    networkQuality === "good"
+                      ? "bg-green-500"
+                      : networkQuality === "poor"
+                        ? "bg-yellow-500"
+                        : "bg-red-500"
+                  }`}
+                />
+
+                <span>
+                  {networkQuality === "good"
+                    ? "Good connection"
+                    : networkQuality === "poor"
+                      ? "Poor connection"
+                      : "Very poor connection"}
+                </span>
+              </div>
             )}
+          </div>
+
+          {/* RIGHT — Lap */}
+          <div className="flex-1 flex justify-end">
             {user?.role !== "student" && isInCall && (
               <button
                 onClick={() => setShowModal(!showModal)}
-                className="text-white flex bg-gray-800 px-4 items-center gap-2 text-xs p-2 hover:bg-gray-700 rounded-md duration-300 ease-in-out transition-all hover:cursor-pointer absolute right-5"
+                className="text-white flex bg-gray-800 px-4 py-2 items-center gap-2 text-xs hover:bg-gray-700 rounded-md duration-300 ease-in-out transition-all"
               >
-                Lap <BsFillRecordCircleFill className="" />
+                Lap
+                <BsFillRecordCircleFill />
               </button>
             )}
           </div>
-
-          {/* Empty div for perfect center alignment */}
-          <div className="w-[60px]" />
         </div>
       )}
-      <div className="fixed h-[90%] w-full inset-0 z-10000">
+      <div className="fixed h-[88%] w-full inset-0 z-10000">
         {(isCalling || isIncoming) && !isInCall && (
           <>
             {isCalling && !isIncoming && (

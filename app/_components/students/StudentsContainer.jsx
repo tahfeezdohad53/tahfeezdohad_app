@@ -542,6 +542,7 @@ function StudentsContainer() {
             setSelectedStudents={setSelectedStudents}
             classStatus={el.classStatus}
             classDuration={el.classDuration}
+            role={user?.role}
           />
         ))}
         {modal.show && (modal.type === "diary" || modal.type === "proxy") && (
