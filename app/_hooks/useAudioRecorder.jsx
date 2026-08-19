@@ -207,7 +207,7 @@ function useAudioRecorder() {
       let data;
 
       // Step 1: Get signed URL
-      for(const i=0;i<4;i++){
+      for(let i=0;i<4;i++){
         try {
           const res = await axios.get(
             `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${name}`,

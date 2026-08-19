@@ -117,10 +117,10 @@ function StudentsContainer() {
       setIsSubmitting(false);
     }
   }
-  const { data: students, isLoading } = useQuery({
+  const { data: students, isLoading,isFetching:isFetchingStudents } = useQuery({
     queryKey: ["myStudents", user?.role, searchParams.get("batch"),searchParams.get('classStatus')],
     queryFn: handleGetMyStudents,
-    refetchOnWindowFocus: false,
+    // refetchOnWindowFocus: false,
     enabled: user?.role === "teacher" || user?.role === "admin",
   });
 
@@ -328,11 +328,17 @@ function StudentsContainer() {
         >
           Recorded
         </button>
+        <button
+          onClick={() => queryClient.invalidateQueries({queryKey:['myStudents']})}
+          className={`bg-(--card) border- hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all  shadow-(--shadow-md) p-2 rounded-md `}
+        >
+          <BiRefresh className="text-lg"/>
+        </button>
       </div>
         </>
       )}
       <RecordWithNumberCard />
-      {!isSelecting && students?.length > 0 && (
+      {(!isSelecting && students?.length > 0 && !isFetchingStudents) && (
         <div className="flex items-center gap-5 mt-7">
           <button
             onClick={() => setIsSelecting(true)}
@@ -720,6 +726,7 @@ export default StudentsContainer;
 import { HiOutlineUserAdd } from "react-icons/hi";
 import { NoStudentsAssigned } from "../gurfah/StudentContainer";
 import { IoFilter } from "react-icons/io5";
+import { BiRefresh } from "react-icons/bi";
 
 export function RecordWithNumberCard({ page = "entry", userType = "teacher" }) {
   const [showSelector, setShowSelector] = useState(false);
