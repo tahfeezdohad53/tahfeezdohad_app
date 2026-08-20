@@ -150,6 +150,7 @@ export function CallingFnProvider({ children }) {
     async function handleOnline(){
       setTimeout(async () => {
         toast.success('online');
+        console.log('online');
         if(isInCall) await restartIce();
       }, 1000);
     }
