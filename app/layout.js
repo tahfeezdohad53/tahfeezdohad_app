@@ -1,14 +1,13 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
-import Navbar from "./_components/Navbar";
 import { Suspense } from "react";
 import GlobalQueryProvider from "./_components/providers/GlobalQueryProvider";
 import AppProvider from "./_components/providers/AppProvider";
 import { SessionProvider } from "next-auth/react";
 import SocketProvider from "./_components/providers/SocketProvider";
 import VideoCallProvider from "./_components/providers/VideoCallProvider";
-import Socket, { CallingFnProvider } from "./_components/socket-listeners/Socket";
+import { CallingFnProvider } from "./_components/socket-listeners/Socket";
 import VideoCallWrapper from "./_components/video_call/VideoCallWrapper";
 import UserProvider from "./_components/providers/UserProvider";
 import PhoneNav from "./_components/navbar/PhoneNav";
@@ -16,9 +15,7 @@ import PhoneTopBar from "./_components/navbar/PhoneTopBar";
 import PlaceHolderDiv from "./_components/PlaceHolderDiv";
 import Sidebar from "./_components/navbar/Sidebar";
 import SidebarPlaceholder from "./_components/navbar/SidebarPlaceholder";
-import Greeting from "./_components/Greeting";
 import Notification from "./_components/Notification";
-import Appreciation from "./_components/Appreciation";
 import SecondaryEmailForm from "./_components/SecondaryEmailForm";
 
 const poppins = Poppins({
@@ -49,7 +46,6 @@ export default function RootLayout({ children }) {
                       <VideoCallWrapper />
                       <div id="root"></div>
                       <div id="video"></div>
-                      <Greeting />
                       <SecondaryEmailForm />
                       <Notification />
                       {/* <Appreciation /> */}

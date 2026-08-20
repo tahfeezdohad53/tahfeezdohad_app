@@ -147,6 +147,18 @@ export function CallingFnProvider({ children }) {
   }
 
   useEffect(() => {
+    async function handleOnline(){
+      setTimeout(async () => {
+        if(isInCall) await restartIce();
+      }, 1000);
+
+      window.addEventListener('online',handleOnline);
+
+      return () => window.removeEventListener('online',handleOnline);
+    }
+  },[isInCall,restartIce])
+
+  useEffect(() => {
     if(!localMedia.current) return;
     const localAudio = localMedia.current.getAudioTracks()[0];
 
