@@ -31,7 +31,7 @@ function PhoneNav() {
             </p>
           </Link>
         )}
-        {role === "admin" && (
+        {(role === "admin" || role === "teacher") && (
           <Link
             href={"/recordings"}
             className={`p-2 flex flex-col items-center gap-1 ${pathname.includes("recordings") && " bg-(--card-hover) shadow-(--shadow-sm) rounded-md font-bold text-(--primary)"}`}

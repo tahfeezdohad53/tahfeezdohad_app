@@ -32,7 +32,7 @@ function Sidebar() {
               <span>Students</span>
             </Link>}
 
-            {user?.role === 'admin' && <Link href="/recordings" className={linkStyle("/recordings")}>
+            {(user?.role === 'admin' || user?.role === 'teacher') && <Link href="/recordings" className={linkStyle("/recordings")}>
               <CiMicrophoneOn size={20} />
               <span>Recordings</span>
             </Link>}

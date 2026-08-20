@@ -31,7 +31,6 @@ async function Page({searchParams}) {
       <div className="self-end">
         <Filter />
       </div>
-
       <div>
         <div className="relative rounded-2xl w-full lg:pb-2">
           <div className="w-full rounded-lg overflow-hidden lg:pb-0">

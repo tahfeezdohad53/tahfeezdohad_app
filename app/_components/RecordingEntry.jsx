@@ -15,16 +15,16 @@ import { TbRewindBackward5, TbRewindForward5 } from "react-icons/tb";
 import { LuInfo, LuCheck } from "react-icons/lu";
 import { formatName } from "@/helpers";
 import { useQueryClient } from "@tanstack/react-query";
-function RecordingEntry({el,i,isDummy=false}) {
+function RecordingEntry({el,i,isDummy=false,role}) {
     const [isExpand,setIsExpand] = useState(false);
     const audioRef = useRef(null);
     if(!isDummy)return (
       <div
-        className="w-full hover:bg-(--card-hover) duration-300 ease-in-out transition-all hover:cursor-pointer"
+        className=" w-full hover:bg-(--card-hover) duration-300 ease-in-out transition-all hover:cursor-pointer"
         onClick={() => setIsExpand(!isExpand)}
       >
-        <div className="w-full grid grid-cols-7 lg:grid-cols-12 px-3 py-3 border-b border-(--border) gap-1">
-          <div className="flex gap-2 items-center text-[0.55rem] tracking-wider lg:col-span-2 col-span-2">
+        <div className="w-full grid grid-cols-12 lg:grid-cols-12 px-3 py-3 border-b border-(--border) gap-1">
+          <div className="flex gap-2 items-center text-[0.55rem] tracking-wider lg:col-span-2 col-span-3">
             <span className="lg:block hidden p-2 rounded-md bg-orange-100">
               <CiCalendar className="text-orange-600" />
             </span>
@@ -37,15 +37,15 @@ function RecordingEntry({el,i,isDummy=false}) {
             </div>
           </div>
 
-          <p className="text-[0.60rem] lg:text-sm flex items-center">
+          <p className="col-span-2 lg:col-span-1 text-[0.60rem] lg:text-sm flex items-center">
             {Math.round(el?.duration) || ""} min
           </p>
 
-          <p className="col-span-2 lg:col-span-4 text-[0.60rem] lg:text-sm text-left hyphens-auto">
+          <p className="col-span-3 lg:col-span-4 text-[0.60rem] lg:text-sm text-left hyphens-auto">
             {formatName(el?.studentName)}
           </p>
 
-          <p className="col-span-2 lg:col-span-4 text-[0.60rem] lg:text-sm text-left">
+          <p className="col-span-3 lg:col-span-4 text-[0.60rem] lg:text-sm text-left hyphens-auto">
             {formatName(el?.teacherName)}
           </p>
           <p
@@ -55,11 +55,11 @@ function RecordingEntry({el,i,isDummy=false}) {
           </p>
           
 
-          {/* <button className="text-xs lg:flex justify-center">
+          <button className="flex items-center text-xs justify-end lg:hidden">
             <IoIosArrowDown
               className={`${isExpand && "rotate-180"} duration-300 ease-in-out`}
             />
-          </button> */}
+          </button>
         </div>
 
         {isExpand && (
@@ -123,10 +123,10 @@ function RecordingEntry({el,i,isDummy=false}) {
             </div>
 
             {/* EVALUATION */}
-            {el?.evaluationStatus !== "evaluated" && (
+            {(el?.evaluationStatus !== "evaluated" && role === 'admin') && (
               <EvaluationForm id={el?._id} />
             )}
-            {el?.evaluationStatus === "evaluated" && (
+            {(el?.evaluationStatus === "evaluated" && role === 'admin') && (
               <EvaluationResult el={el}/>
             )}
           </div>

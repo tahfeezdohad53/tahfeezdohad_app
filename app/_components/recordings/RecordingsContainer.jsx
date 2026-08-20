@@ -18,7 +18,7 @@ function RecordingsContainer({params}) {
           useEffect(() => {
               if(session.status === "loading") return;
               if(isFetching) return;
-              if(user?.role && user?.role !== 'admin') router.replace('/gurfah');
+              if(user?.role && (user?.role !== 'admin' && user?.role !== 'teacher')) router.replace('/gurfah');
               if(!user?._id) {
                 router.replace("/auth");
               }
@@ -75,7 +75,7 @@ function RecordingsContainer({params}) {
         </div>
         <div className="space-y-">
           {recordingsData?.recordings?.map((el, i) => (
-            <RecordingEntry key={el._id} el={el} i={i} />
+            <RecordingEntry key={el._id} el={el} i={i} role={user?.role}/>
           ))}
           {/* {Array.from({ length: 10 - recordingsData?.recordings?.length }).map(
             (el, i) => (

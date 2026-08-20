@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
                       <Greeting />
                       <SecondaryEmailForm />
                       <Notification />
-                      <Appreciation />
+                      {/* <Appreciation /> */}
                       <Suspense>
                         {/* <Navbar /> */}
                         <div className="flex flex-col lg:h-screen  lg:min-w-full">

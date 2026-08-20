@@ -84,7 +84,7 @@ function Filter({role}) {
     if (i === 0) return { label: "all", value: "" };
     else return { label: el.name, value: el.name };
   })
-  if(user?.role === 'student' || user?.role === 'teacher') return null;
+  if(user?.role === 'student') return null;
 
   async function handleDownloadExcel(){
     try{
@@ -111,11 +111,12 @@ function Filter({role}) {
       toast.error('failed to download excel');
     }
   }
+  // if(!user?._id) return;
   return (
     <div className="relative  px-2 w-fit flex gap-5">
-      <button onClick={handleDownloadExcel} className="flex font-semibold hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-blue-900 text-white text-sm items-center gap-3 px-4 py-2 bg-blue-800 rounded-md shadow-(--shadow-md)">
+     {user?.role === 'admin' && <button onClick={handleDownloadExcel} className="flex font-semibold hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-blue-900 text-white text-sm items-center gap-3 px-4 py-2 bg-blue-800 rounded-md shadow-(--shadow-md)">
         <TfiExport className="text-white font-bold"/> export
-      </button>
+      </button>}
       <button
         className="flex font-semibold hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-(--primary) text-white text-sm items-center gap-3 px-4 py-2 bg-(--primary-light) rounded-md shadow-(--shadow-md)"
         onClick={() => setIsShowFilter(!isShowFilter)}
@@ -135,6 +136,7 @@ function Filter({role}) {
               },
               text: "Students",
               icon: <PiStudentBold className="text-amber-800" />,
+              authorized:['teacher','admin']
             },
             {
               handler: () => {
@@ -144,6 +146,7 @@ function Filter({role}) {
               },
               text: "Teacher",
               icon: <LiaChalkboardTeacherSolid className="text-amber-800" />,
+              authorized:['admin']
             },
             {
               handler: () => {
@@ -153,6 +156,7 @@ function Filter({role}) {
               },
               text: "Date",
               icon: <CiCalendarDate className="text-amber-800" />,
+              authorized:['teacher','admin']
             },
             {
               handler: () => {
@@ -163,6 +167,7 @@ function Filter({role}) {
               },
               text: "Reset",
               icon: <GoBlocked className="text-amber-800" />,
+              authorized:['admin','teacher']
             },
           ]}
         />
@@ -172,9 +177,9 @@ function Filter({role}) {
         {isShowModal && (
           <Modal
             heading={
-              (filterType === "student" && "select student") ||
-              (filterType === "teacher" && "select teacher") ||
-              (filterType === "date" && "select date")
+              (filterType === "student" && "Select student") ||
+              (filterType === "teacher" && "Select teacher") ||
+              (filterType === "date" && "Select date")
             }
             onClose={() => setIsShowModal(false)}
             className={filterType === "date" && "h-fit w-fit"}

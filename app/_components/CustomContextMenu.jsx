@@ -3,9 +3,11 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { FaCheck } from "react-icons/fa";
+import { useUser } from "./providers/UserProvider";
 
 function CustomContextMenu({options,className,onClose}) {
     const ref = useRef(null);
+    const {user} = useUser();
     function close(e){
         if(!ref.current.contains(e.target)) onClose();
     }
@@ -18,7 +20,7 @@ function CustomContextMenu({options,className,onClose}) {
     return (
         <div ref={ref} className={`absolute flex flex-col top-[110%] z-999 right-1 rounded-md shadow-(--shadow-lg) border border-(--border)/50 bg-(--card)`}>
             {options?.map(el => {
-            return (
+            if(el?.authorized.includes(user?.role))return (
               <button
                 onClick={el?.handler}
                 key={el?.text}
