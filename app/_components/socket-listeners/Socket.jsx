@@ -149,10 +149,12 @@ export function CallingFnProvider({ children }) {
   useEffect(() => {
     async function handleOnline(){
       setTimeout(async () => {
+        toast.success('online');
         if(isInCall) await restartIce();
       }, 1000);
 
       window.addEventListener('online',handleOnline);
+      
 
       return () => window.removeEventListener('online',handleOnline);
     }
