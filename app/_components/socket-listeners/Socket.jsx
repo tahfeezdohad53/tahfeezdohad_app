@@ -152,12 +152,9 @@ export function CallingFnProvider({ children }) {
         toast.success('online');
         if(isInCall) await restartIce();
       }, 1000);
-
-      window.addEventListener('online',handleOnline);
-      
-
-      return () => window.removeEventListener('online',handleOnline);
     }
+    window.addEventListener('online',handleOnline);
+    return () => window.removeEventListener('online',handleOnline);
   },[isInCall,restartIce])
 
   useEffect(() => {
