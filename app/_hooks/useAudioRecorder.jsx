@@ -142,7 +142,8 @@ function useAudioRecorder() {
       }
     };
 
-    recorder.current.start();
+    if(!isIOS)recorder.current.start();
+    if(isIOS)recorder.current.start(1000);
   }
 
   function handlePause() {
