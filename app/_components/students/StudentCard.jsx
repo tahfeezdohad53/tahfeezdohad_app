@@ -10,6 +10,7 @@ import { IoTimerOutline } from "react-icons/io5";
 import { LiaGraduationCapSolid } from "react-icons/lia";
 import { LuGraduationCap } from "react-icons/lu";
 import { SiGoogleclassroom } from "react-icons/si";
+import { TbNotes } from "react-icons/tb";
 
 function StudentCard({
   image,
@@ -119,7 +120,7 @@ function StudentCard({
             className={`border-b border-(--border) py-2  flex items-center gap-3`}
           >
             <div>
-              <FaCheckToSlot className="text-xl text-(--primary)" />
+              <TbNotes className="text-xl text-(--primary)" />
             </div>
             <div className="w-full">
               <p className="text-(--text-muted) text-[0.70rem]">
