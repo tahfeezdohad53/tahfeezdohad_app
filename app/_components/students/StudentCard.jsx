@@ -3,8 +3,9 @@ import { formatName } from "@/helpers";
 import Image from "next/image";
 import Link from "next/link";
 import { BiDotsVertical } from "react-icons/bi";
-import { CiUser } from "react-icons/ci";
+import { CiTimer, CiUser } from "react-icons/ci";
 import { FaMicrophone, FaRegUser, FaUser, FaUserCircle } from "react-icons/fa";
+import { FaCheckToSlot } from "react-icons/fa6";
 import { LiaGraduationCapSolid } from "react-icons/lia";
 import { LuGraduationCap } from "react-icons/lu";
 import { SiGoogleclassroom } from "react-icons/si";
@@ -117,7 +118,7 @@ function StudentCard({
             className={`border-b border-(--border) py-2  flex items-center gap-3`}
           >
             <div>
-              <FaRegUser className="text-xl text-(--primary)" />
+              <FaCheckToSlot className="text-xl text-(--primary)" />
             </div>
             <div className="w-full">
               <p className="text-(--text-muted) text-[0.70rem]">
@@ -139,7 +140,7 @@ function StudentCard({
             className={` ${role === "admin" && "border-t mt-2"} border-(--border) py-2  flex items-center gap-3`}
           >
             <div>
-              <FaRegUser className="text-xl text-(--primary)" />
+              <CiTimer className="text-xl text-(--primary)" />
             </div>
             <div className="w-full truncate">
               <p className="text-(--text-muted) text-[0.70rem]">
