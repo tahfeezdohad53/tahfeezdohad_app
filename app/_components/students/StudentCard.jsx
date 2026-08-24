@@ -6,6 +6,7 @@ import { BiDotsVertical } from "react-icons/bi";
 import { CiTimer, CiUser } from "react-icons/ci";
 import { FaMicrophone, FaRegUser, FaUser, FaUserCircle } from "react-icons/fa";
 import { FaCheckToSlot } from "react-icons/fa6";
+import { IoTimerOutline } from "react-icons/io5";
 import { LiaGraduationCapSolid } from "react-icons/lia";
 import { LuGraduationCap } from "react-icons/lu";
 import { SiGoogleclassroom } from "react-icons/si";
@@ -140,7 +141,7 @@ function StudentCard({
             className={` ${role === "admin" && "border-t mt-2"} border-(--border) py-2  flex items-center gap-3`}
           >
             <div>
-              <CiTimer className="text-xl text-(--primary)" />
+              <IoTimerOutline className="text-xl text-(--primary)" />
             </div>
             <div className="w-full truncate">
               <p className="text-(--text-muted) text-[0.70rem]">
