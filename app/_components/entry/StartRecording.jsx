@@ -85,7 +85,10 @@ function StartRecording({ startRecording, studentName,classType,setClassType }) 
               </button>
             ))}
           </div>
-            <p className="text-xs text-gray-600 mt-3 flex items-center gap-3"><BsExclamationCircle /> if you are taking full class please select jadeed.</p>
+          <p className="text-xs text-gray-600 mt-3 flex items-center gap-3">
+            <BsExclamationCircle />
+            please select jadeed if you are taking full class.
+          </p>
         </div>
 
         {/* Before you start */}
@@ -131,7 +134,7 @@ function StartRecording({ startRecording, studentName,classType,setClassType }) 
         {/* Start Recording */}
         <div className="w-full">
           <button
-          disabled={!classType}
+            disabled={!classType}
             onClick={() => startRecording()}
             className="disabled:bg-(--primary-soft) flex items-center gap-2 justify-center bg-(--primary) text-white shadow-lg py-4 rounded-md w-full"
           >
