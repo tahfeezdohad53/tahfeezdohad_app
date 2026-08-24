@@ -38,7 +38,8 @@ function RecordingWrapper({studentName,studentId}) {
         minutes,
         seconds,
         audioSize,
-        audioChunks
+        audioChunks,
+        classType,
       },
 
       actions: {
@@ -57,6 +58,7 @@ function RecordingWrapper({studentName,studentId}) {
         setTotalSeconds,
         setIsPause,
         setIsRecording,
+        setClassType
       },
     } = useAudioRecorder();
      
@@ -83,7 +85,7 @@ function RecordingWrapper({studentName,studentId}) {
     // return <StartRecording />
     // return <RecordingInProgress hours={hours} minutes={minutes} seconds={seconds} isPause={isPause} handlePause={handlePause} handleResume={handleResume}/>
     if (!isRecording && !isRecorded){
-        return<StartRecording startRecording={startRecording} studentName={studentName}/>
+        return<StartRecording startRecording={startRecording} studentName={studentName} classType={classType} setClassType={setClassType}/>
     }
     if (isRecording){
         return (

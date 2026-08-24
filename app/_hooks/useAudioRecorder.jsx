@@ -18,6 +18,7 @@ function useAudioRecorder() {
   const [isRedirect, setIsRedirect] = useState(false);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [audioSize, setAudioSize] = useState(0);
+  const [classType,setClassType] = useState('');
   const audioType = useRef('');
   const wakeLockRef = useRef(null);
   const queryClient = useQueryClient();
@@ -280,6 +281,7 @@ function useAudioRecorder() {
             isOnline: false,
             url: data.url,
             duration: totalSeconds / 60,
+            slot:classType,
           },
           { withCredentials: true },
         );
@@ -321,6 +323,7 @@ function useAudioRecorder() {
       seconds,
       audioSize,
       audioChunks,
+      classType
     },
 
     actions: {
@@ -339,6 +342,7 @@ function useAudioRecorder() {
       setTotalSeconds,
       setIsPause,
       setIsRecording,
+      setClassType
     },
   };
 }

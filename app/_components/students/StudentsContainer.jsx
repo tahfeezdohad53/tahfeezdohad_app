@@ -543,6 +543,8 @@ function StudentsContainer() {
             classStatus={el.classStatus}
             classDuration={el.classDuration}
             role={user?.role}
+            slots={el?.slots}
+            batch={el.batch}
           />
         ))}
         {modal.show && (modal.type === "diary" || modal.type === "proxy") && (

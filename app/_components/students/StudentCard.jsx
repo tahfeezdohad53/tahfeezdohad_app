@@ -22,7 +22,9 @@ function StudentCard({
   selectedStudents,
   classStatus,
   classDuration,
-  role
+  role,
+  slots=[],
+  batch,
 }) {
   const isProxy = proxyTeacherId === teacherId;
 
@@ -111,6 +113,28 @@ function StudentCard({
             </>
           )}
 
+          <div
+            className={`border-b border-(--border) py-2  flex items-center gap-3`}
+          >
+            <div>
+              <FaRegUser className="text-xl text-(--primary)" />
+            </div>
+            <div className="w-full">
+              <p className="text-(--text-muted) text-[0.70rem]">
+                Slots
+              </p>
+              <div className="flex items-center gap-1 w-full flex-wrap">
+                <p className={`${slots.includes('jd') ? "text-green-500" : "text-red-500"}`}>Jd,</p>
+                <p className={`${slots.includes('mj') || slots.includes("jz-mj") ? "text-green-500" : "text-red-500"}`}>Mj,</p>
+                <p className={`${slots.includes('jz') || slots.includes("jz-mj") ? "text-green-500" : "text-red-500"}`}>Jz,</p>
+                <p className={`${slots.includes('t1') ? "text-green-500" : "text-red-500"}`}>T1,</p>
+                <p className={`${slots.includes('t2') ? "text-green-500" : "text-red-500"}`}>T2,</p>
+                {batch.includes('yaqoot') && <p className={`${slots.includes('t3') ? "text-green-500" : "text-red-500"}`}>T3,</p>}
+                {batch.includes('yaqoot') && <p className={`${slots.includes('t4') ? "text-green-500" : "text-red-500"}`}>T4,</p>}
+                {batch.includes('yaqoot') && <p className={`${slots.includes('t5') ? "text-green-500" : "text-red-500"}`}>T5</p>}
+              </div>
+            </div>
+          </div>
           <div
             className={` ${role === "admin" && "border-t mt-2"} border-(--border) py-2  flex items-center gap-3`}
           >

@@ -39,7 +39,7 @@ function PhoneTopBar() {
   }
   if (pathname.includes("entry")) {
     heading = "Record";
-    subHeading = "Record you student's class here";
+    subHeading = "Record your student's class here";
   }
   if (pathname.includes("leave")) {
     heading = "Leaves";
