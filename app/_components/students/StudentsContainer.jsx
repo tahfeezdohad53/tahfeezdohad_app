@@ -303,42 +303,49 @@ function StudentsContainer() {
           <p className="text-white/80 text-xs">record and manage students</p>
         </div>
       </div>
-      {((students?.length === 0 && searchParams.get('classStatus') === 'all') || !user?.role === "teacher") ? '' : (
+      {(students?.length === 0 && searchParams.get("classStatus") === "all") ||
+      !user?.role === "teacher" ? (
+        ""
+      ) : (
         <>
           <StudentsFilter
             reset={() => setFilteredStudents(students)}
             handleFilterStudents={handleFilterStudents}
           />
-      <div className="text-[0.70rem] mb-5 flex gap-3 items-center justify-center">
-        <button
-          onClick={() => handleChangeSearchParams("classStatus", "all")}
-          className={`${searchParams.get("classStatus") === "all" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border-  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all border-(--border) shadow-(--shadow-md)  p-2 rounded-md `}
-        >
-          All
-        </button>
-        <button
-          onClick={() => handleChangeSearchParams("classStatus", "pending")}
-          className={`${searchParams.get("classStatus") === "pending" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border-  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all border-(--border) shadow-(--shadow-md)  p-2 rounded-md `}
-        >
-          Pending
-        </button>
-        <button
-          onClick={() => handleChangeSearchParams("classStatus", "recorded")}
-          className={`${searchParams.get("classStatus") === "recorded" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border- hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all  shadow-(--shadow-md)  p-2 rounded-md `}
-        >
-          Recorded
-        </button>
-        <button
-          onClick={() => queryClient.invalidateQueries({queryKey:['myStudents']})}
-          className={`bg-(--card) border- hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all  shadow-(--shadow-md) p-2 rounded-md `}
-        >
-          <BiRefresh className="text-lg"/>
-        </button>
-      </div>
+          <div className="text-[0.70rem] mb-5 flex gap-3 items-center justify-center">
+            <button
+              onClick={() => handleChangeSearchParams("classStatus", "all")}
+              className={`${searchParams.get("classStatus") === "all" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border-  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all border-(--border) shadow-(--shadow-md)  p-2 rounded-md `}
+            >
+              All
+            </button>
+            <button
+              onClick={() => handleChangeSearchParams("classStatus", "pending")}
+              className={`${searchParams.get("classStatus") === "pending" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border-  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all border-(--border) shadow-(--shadow-md)  p-2 rounded-md `}
+            >
+              Pending
+            </button>
+            <button
+              onClick={() =>
+                handleChangeSearchParams("classStatus", "recorded")
+              }
+              className={`${searchParams.get("classStatus") === "recorded" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border- hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all  shadow-(--shadow-md)  p-2 rounded-md `}
+            >
+              Recorded
+            </button>
+            <button
+              onClick={() =>
+                queryClient.invalidateQueries({ queryKey: ["myStudents"] })
+              }
+              className={`bg-(--card) border- hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all  shadow-(--shadow-md) p-2 rounded-md `}
+            >
+              <BiRefresh className="text-lg" />
+            </button>
+          </div>
         </>
       )}
       <RecordWithNumberCard />
-      {(!isSelecting && students?.length > 0 && !isFetchingStudents) && (
+      {!isSelecting && students?.length > 0 && !isFetchingStudents && (
         <div className="flex items-center gap-5 mt-7">
           <button
             onClick={() => setIsSelecting(true)}
@@ -379,12 +386,14 @@ function StudentsContainer() {
                   {
                     text: "change diary",
                     icon: <FaBook className="text-(--primary)" />,
+                    authorized: ["teacher", "admin"],
                     handler: () =>
                       setModal({ type: "multiple-diary", show: true }),
                   },
                   {
                     text: "assign proxy",
                     icon: <FaBook className="text-(--primary)" />,
+                    authorized: ["teacher", "admin"],
                     handler: () =>
                       setModal({ type: "multiple-proxy", show: true }),
                   },

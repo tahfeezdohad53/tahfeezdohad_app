@@ -20,7 +20,7 @@ function CustomContextMenu({options,className,onClose}) {
     return (
         <div ref={ref} className={`absolute flex flex-col top-[110%] z-999 right-1 rounded-md shadow-(--shadow-lg) border border-(--border)/50 bg-(--card)`}>
             {options?.map(el => {
-            if(el?.authorized.includes(user?.role))return (
+            if(el?.authorized?.includes(user?.role))return (
               <button
                 onClick={el?.handler}
                 key={el?.text}

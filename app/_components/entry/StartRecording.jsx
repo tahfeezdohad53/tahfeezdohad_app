@@ -10,7 +10,8 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { MdOutlineSocialDistance } from "react-icons/md";
 import { PiRecordFill } from "react-icons/pi";
-
+import { FiBookOpen, FiFileText, FiEdit3, FiCheck } from "react-icons/fi";
+import toast from "react-hot-toast";
 function StartRecording({ startRecording, studentName,classType,setClassType }) {
   const [audioConfig, setAudioConfig] = useState({
     ns: false,
@@ -23,125 +24,204 @@ function StartRecording({ startRecording, studentName,classType,setClassType }) 
   // const {actions:{startRecording}} = useAudioRecorder();
   return (
     <div className="w-full">
-      <div className="flex items-center gap-1 text-sm text-(--text) mb-2">
-        <button className="shadow-(--shadow-md) bg-(--card) rounded-lg p-2">
-          <Link href={"/students"}>
-            <IoMdArrowRoundBack />
-          </Link>
-        </button>
-        Back
-      </div>
+      {/* Header */}
 
-      <div className="flex flex-col items-center gap-6 lg:w-full lg:mx-auto px-5 h-fit py-5 rounded-2xl shadow-(--shadow-xl)">
-        {/* Student */}
-        <div className="border border-(--border) w-full py-4 rounded-lg shadow-(--shadow-lg)">
-          <div className="flex flex-col items-center">
-            <header className="font-bold text-sm text-(--text)">
+      {/* Main Container */}
+      <div className="w-full max-w-4xl mx-auto rounded-[28px] bg-(--card) p-5 sm:p-7 shadow-(--shadow-xl)">
+      {/* <div className="flex items-center gap-4 mb-2">
+        <Link
+          href="/students"
+          className="flex items-center justify-center w-8 h-8 rounded-2xl bg-(--card) shadow-(--shadow-md) text-(--text)"
+        >
+          <IoMdArrowRoundBack className="text-xl" />
+        </Link>
+      </div> */}
+        {/* Recording Card */}
+        <div className="w-full rounded-[24px] border border-(--border) bg-(--bg-main)/40 px-2 py-3 sm:px-8 sm:py-12">
+          <div className="flex flex-col items-center text-center">
+            <p className="text-lg font-bold text-(--text)">
               Start Recording Class of
-            </header>
+            </p>
 
-            <h1 className="font-bold text-sm my-2 text-center text-(--text-secondary)">
+            <h1 className="text-sm font-bold text-(--primary) mt-3">
               {formattedName}
             </h1>
-          </div>
 
-          <div className="border border-(--border) shadow-2xl rounded-full p-3 bg-(--layer) w-fit mx-auto">
-            <div className="borde border-(--text-muted) bg-(--bg-main)/50 shadow-(--shadow-lg) rounded-full w-fit p-6">
-              <FaMicrophoneLines className="text-2xl text-amber-900" />
+            {/* Microphone */}
+            <div className="mt-5 flex items-center justify-center w-[130px] h-[130px] rounded-full border border-(--border) bg-(--card) shadow-xl">
+              <button onClick={() => {
+                if(!classType) return toast.error('please select class type first');
+                startRecording();
+              }} className="flex items-center justify-center w-[100px] h-[100px] rounded-full bg-(--primary) shadow-lg">
+                <FaMicrophoneLines className="text-4xl text-white" />
+              </button>
             </div>
+
+            <p className="text-base text-(--text-secondary) mt-7">
+              Tap to start recording
+            </p>
           </div>
         </div>
 
         {/* Class Type */}
-        <div className="w-full">
-          <p className="text-sm font-bold text-(--text) mb-3">
+        {/* Class Type */}
+        <div className="w-full mt-9">
+          <p className="text-xl font-bold text-(--text) mb-5">
             Select Class Type
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             {[
-              { label: "Jadeed", value: "jd" },
-              { label: "Juzhaali-Muraja'ah", value: "jz-mj" },
-              { label: "Muraja'ah", value: "mj" },
-              { label: "Juzhaali", value: "jz" },
-              { label: "Tasmee 1", value: "t1" },
-              { label: "Tasmee 2", value: "t2" },
-              { label: "Tasmee 3", value: "t3" },
-              { label: "Tasmee 4", value: "t4" },
-              { label: "Tasmee 5", value: "t5" },
-              { label: "Tamreen", value: "tm" },
-            ].map(({ label, value }) => (
-              <button
-                key={value}
-                type="button"
-                className={`py-3 px-3 rounded-lg border font-semibold text-sm transition-all ${
-                  classType === value
-                    ? "bg-(--primary) text-white border-(--primary) shadow-md"
-                    : "bg-(--card) text-(--text) border-(--border) hover:bg-(--bg-tertiary)"
-                }`}
-                onClick={() => setClassType(value)}
-              >
-                {label}
-              </button>
-            ))}
+              {
+                label: "Jadeed",
+                value: "jd",
+                icon: <FiBookOpen />,
+              },
+              {
+                label: "Juz/Mur",
+                value: "jz-mj",
+                icon: <FiBookOpen />,
+              },
+              {
+                label: "Muraja'ah",
+                value: "mj",
+                icon: <FiBookOpen />,
+              },
+              {
+                label: "Juzhaali",
+                value: "jz",
+                icon: <FiBookOpen />,
+              },
+              {
+                label: "Tasmee 1",
+                value: "t1",
+                icon: <FiFileText />,
+              },
+              {
+                label: "Tasmee 2",
+                value: "t2",
+                icon: <FiFileText />,
+              },
+              {
+                label: "Tasmee 3",
+                value: "t3",
+                icon: <FiFileText />,
+              },
+              {
+                label: "Tasmee 4",
+                value: "t4",
+                icon: <FiFileText />,
+              },
+              {
+                label: "Tasmee 5",
+                value: "t5",
+                icon: <FiFileText />,
+              },
+              {
+                label: "Tamreen",
+                value: "tm",
+                icon: <FiEdit3 />,
+              },
+            ].map(({ label, value, icon }) => {
+              const selected = classType === value;
+
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setClassType(value)}
+                  className={`
+            relative
+            flex
+            items-center
+            gap-2
+            py-1
+            px-4
+            rounded-xl
+            border
+            
+            text-left
+            transition-all
+            ${
+              selected
+                ? "border-transparent shadow-md bg-(--bg-tertiary)/40"
+                : "border-(--border) hover:shadow-md bg-(--card)"
+            }
+          `}
+                >
+                  {/* Icon */}
+                  <div
+                    className={`
+              flex
+              items-center
+              justify-center
+              w-11
+              h-11
+              rounded-xl
+              shrink-0
+              text-xl
+              ${selected ? "text-(--primary)" : "text-(--text-secondary)"}
+            `}
+                  >
+                    {icon}
+                  </div>
+
+                  {/* Label */}
+                  <span className="text-sm sm:text-base font-semibold text-(--text)">
+                    {label}
+                  </span>
+
+                  {/* Selected Checkmark */}
+                  {selected && (
+                    <div className="absolute -top-2 -right-2 flex items-center justify-center w-6 h-6 rounded-full bg-(--primary) text-white shadow-md">
+                      <FiCheck className="text-base" />
+                    </div>
+                  )}
+                </button>
+              );
+            })}
           </div>
-          <p className="text-xs text-gray-600 mt-3 flex items-center gap-3">
-            <BsExclamationCircle />
-            please select jadeed if you are taking full class.
-          </p>
+
+          {/* Info */}
+          <div className="flex items-center gap-3 mt-5 px-4 py-4 rounded-2xl bg-(--bg-tertiary)/70">
+            <BsExclamationCircle className="text-lg text-(--primary) shrink-0" />
+
+            <p className="text-xs text-(--text-secondary)">
+              Please select{" "}
+              <span className="font-semibold text-(--text)">Jadeed</span> if you
+              are taking a full class.
+            </p>
+          </div>
         </div>
 
-        {/* Before you start */}
-        {/* <div className="shadow-(--shadow-lg) text-(--text) bg-(--bg-tertiary)/50 border border-(--border) w-full rounded-2xl px-4 py-5">
-          <div className="flex items-center gap-1 text-sm text-amber-800 font-bold tracking-wide">
-            <IoInformationCircleOutline className="text-lg" />
-            <p>Before you start</p>
-          </div>
-
-          <div className="mt-3 flex flex-col gap-3">
-            <div className="flex items-center gap-3 border-b border-(--border) pb-3">
-              <span className="border border-(--border) shadow rounded-md p-2 text-white/90 bg-(image:--gradient-soft)">
-                <BsBrowserChrome className="text-xl" />
-              </span>
-
-              <p className="text-xs font-semibold">
-                do not keep browser in background for more than 30 seconds.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 border-b border-(--border) pb-3">
-              <span className="border border-(--border) shadow rounded-md p-2 text-white/90 bg-(image:--gradient-soft)">
-                <MdOutlineSocialDistance className="text-lg" />
-              </span>
-
-              <p className="text-xs font-semibold">
-                keep phone close to the reciter.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 border-b border-(--border) pb-3">
-              <span className="border border-(--border) shadow rounded-md p-2 text-white/90 bg-(image:--gradient-soft)">
-                <FaHeart className="text-lg" />
-              </span>
-
-              <p className="text-xs font-semibold">
-                Listen with your heart not just with ears.
-              </p>
-            </div>
-          </div>
-        </div> */}
-
         {/* Start Recording */}
-        <div className="w-full">
+        {/* <div className="w-full mt-7">
           <button
             disabled={!classType}
             onClick={() => startRecording()}
-            className="disabled:bg-(--primary-soft) flex items-center gap-2 justify-center bg-(--primary) text-white shadow-lg py-4 rounded-md w-full"
+            className="
+          flex
+          items-center
+          justify-center
+          gap-3
+          w-full
+          py-5
+          rounded-2xl
+          bg-(--primary)
+          text-white
+          text-lg
+          font-semibold
+          shadow-lg
+          transition-all
+          hover:shadow-xl
+          disabled:bg-(--primary-soft)
+          disabled:cursor-not-allowed
+        "
           >
-            <PiRecordFill />
+            <PiRecordFill className="text-2xl" />
             Start Recording
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
