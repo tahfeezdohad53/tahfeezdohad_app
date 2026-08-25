@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useVideoCallContext } from "../_components/providers/VideoCallProvider";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { useQueryClient } from "@tanstack/react-query";
+import RecordingUploadToast from "../_components/toast/RecordingUploadToast";
 
 function useAudioRecorder() {
   const [isRecording, setIsRecording] = useState(false);
@@ -242,9 +243,12 @@ function useAudioRecorder() {
               (progress.loaded * 100) / progress.total,
             );
 
-            toast.loading(`Uploading... ${percent}%`, {
-              id: toastId,
-            });
+            // toast.loading(`Uploading... ${percent}%`, {
+            //   id: toastId,
+            // });
+            toast.custom((t) => {
+              return <RecordingUploadToast totalMB={progress.total / (1024 * 1024)} uploadedMB={progress.loaded / (1024 * 1024)} progress={percent} fileName={data?.key || 'unknown'} onClose={()=>toast.dismiss(t.id)}/>
+            },{id:toastId})
           },
         });
       } catch (error) {

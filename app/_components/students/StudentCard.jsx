@@ -149,7 +149,7 @@ function StudentCard({
               />
             </div>
           ) : (
-            <FaUserCircle className="text-[72px] text-amber-900" />
+            <FaUserCircle className="text-5xl text-amber-900" />
           )}
 
           <div className="max-w-full text-center">
