@@ -3,6 +3,7 @@ import ProtectRoutes from "../_components/auth/ProtectRoutes";
 import UploadImage from "../_components/profile/UploadImage";
 import UpdatePassword from "../_components/profile/UpdatePassword";
 import InfoFields from "../_components/profile/InfoFields";
+import Broadcast from "../_components/profile/Broadcast";
 
 async function Page() {
 
@@ -21,6 +22,7 @@ async function Page() {
               {/* Email */}
              <InfoFields />
               <UpdatePassword />
+              <Broadcast />
             </div>
           </div>
           <div className="mt-4 w-full">

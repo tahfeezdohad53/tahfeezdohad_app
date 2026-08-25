@@ -13,6 +13,7 @@ import { MdMessage } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import Image from "next/image";
 import { isIOS } from "@/helpers";
+import { FiBell, FiX } from "react-icons/fi";
 const Context = createContext(null);
 
 export function CallingFnProvider({ children }) {
@@ -850,6 +851,45 @@ export function CallingFnProvider({ children }) {
       }
     });
 
+    socket.on("broadcast", ({ message }) => {
+      notificationRef.current.play();
+      setInterval(() => {
+        navigator.vibrate([1000,1000,1000]);
+      }, 2500);
+      toast.custom((t) => (
+        <div
+          className={`flex w-[380px] items-start gap-3 rounded-xl border border-amber-200 bg-white p-4 shadow-xl ${
+            t.visible
+              ? "animate-in slide-in-from-top-5 fade-in"
+              : "animate-out fade-out"
+          }`}
+        >
+          {/* Icon */}
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+            <FiBell size={20} />
+          </div>
+
+          {/* Content */}
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-gray-900">
+              Message from Administrator
+            </p>
+
+            <p className="mt-1 text-sm leading-relaxed text-gray-600">
+              {message}
+            </p>
+          </div>
+
+          {/* Close */}
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="text-gray-400 transition hover:text-gray-700"
+          >
+            <FiX size={18} />
+          </button>
+        </div>
+      ),{duration:Infinity});
+    });
     socket.on('to-dev',({rating,suggestion}) => {
       if(rating === 0 ) return toast.success('rating dismissed');
       toast.success(`rated ${rating} stars`,{duration:Infinity});

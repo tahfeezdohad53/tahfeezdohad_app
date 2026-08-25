@@ -226,7 +226,7 @@ function useAudioRecorder() {
              "Failed to get upload URL. please report this exact message to your supervisor or the system administrator.",
              { id: toastId, duration: 8000 },
            );
-           throw err;
+          //  throw err;
          }
         }
       }
@@ -253,10 +253,21 @@ function useAudioRecorder() {
         });
 
         // if (error.code === "ERR_NETWORK") {
-          if(!data?.url) throw new Error('url is missing');
-          const { data: status } = await axios.get(
+          if(!data?.url) {
+            toast.error('url is missing but your recording will be submitted, please report this message to admin',{duration:8000});
+            // throw new Error("url is missing");
+          };
+          try{
+            const { data: status } = await axios.get(
             `${process.env.NEXT_PUBLIC_URL}/recording/isUploaded`,{params:{url:data?.url},withCredentials:true},
           );
+          }catch(err){
+            toast.error(
+              "something went wrong but your recording entry will be saved, please report this message to admin",
+              { duration: 8000 },
+            );
+            
+          }
 
           // if (status.uploaded) {
           //   // 🎉 Upload actually succeeded
@@ -302,9 +313,7 @@ function useAudioRecorder() {
       
     } catch (err) {
       console.error("Submission Error:", err);
-      toast.error("Upload Failed!", {
-        id: toastId,
-      });
+      toast.error("Upload Failed!");
     } finally {
       setIsSubmitting(false);
     }
