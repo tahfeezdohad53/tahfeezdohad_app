@@ -1,9 +1,11 @@
-// 'use client';
+'use client';
 
 import { updatePassword } from "@/actions/profile";
+import { useUser } from "../providers/UserProvider";
 
 function UpdatePassword() {
-    return (
+  const {user} = useUser();
+    if(user?._id && user?.role !== 'admin')return (
       <form action={updatePassword} className="flex flex-col gap-2">
         <label className="text-[#6f542d] text-sm">update password</label>
         <input

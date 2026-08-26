@@ -853,7 +853,7 @@ export function CallingFnProvider({ children }) {
 
     socket.on("broadcast", ({ message }) => {
       notificationRef.current.play();
-      setInterval(() => {
+      setTimeout(() => {
         navigator.vibrate([1000,1000,1000]);
       }, 2500);
       toast.custom((t) => (
