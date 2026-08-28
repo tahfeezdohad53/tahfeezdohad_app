@@ -6,6 +6,7 @@ import { useVideoCallContext } from "../_components/providers/VideoCallProvider"
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { useQueryClient } from "@tanstack/react-query";
 import RecordingUploadToast from "../_components/toast/RecordingUploadToast";
+import { api } from "@/lib/axios";
 
 function useAudioRecorder() {
   const [isRecording, setIsRecording] = useState(false);
@@ -189,9 +190,24 @@ function useAudioRecorder() {
   }
 
   async function submitRecording(studentId, name) {
+ 
       if(audioSize < 1024) return toast.error(
         "Something went wrong while recording this class. Please do not submit this recording. Refresh your browser before recording the next class.",
       {duration:5000});
+      const ObjectUrl = URL.createObjectURL(audio);
+      const newAudio = new Audio(ObjectUrl);
+      let duration;
+      await new Promise((res, rej) => {
+        newAudio.onloadedmetadata = () => {
+          duration = newAudio.duration;
+          res();
+        };
+
+        newAudio.onerror = () => {
+          duration = totalSeconds;
+          rej();
+        };
+      });
         const localAudioType = audioType.current;
     setIsSubmitting(true);
     const toastId = "uploading";
@@ -212,10 +228,7 @@ function useAudioRecorder() {
       // Step 1: Get signed URL
       for(let i=0;i<4;i++){
         try {
-          const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_URL}/recording/signedToken/${name}`,
-            { withCredentials: true },
-          );
+          const res = await api.get(`/recording/signedToken/${name}`);
 
           data = res.data;
           break;
@@ -265,6 +278,38 @@ function useAudioRecorder() {
             const { data: status } = await axios.get(
             `${process.env.NEXT_PUBLIC_URL}/recording/isUploaded`,{params:{url:data?.url},withCredentials:true},
           );
+
+          if(!status.uploaded){
+            try{
+               await axios.put(data.signedUrl, blob, {
+               headers: {
+                 "Content-Type": localAudioType,
+               },
+               onUploadProgress: (progress) => {
+                 const percent = Math.round(
+                   (progress.loaded * 100) / progress.total,
+                 );
+                 toast.custom(
+                   (t) => {
+                     return (
+                       <RecordingUploadToast
+                         totalMB={progress.total / (1024 * 1024)}
+                         uploadedMB={progress.loaded / (1024 * 1024)}
+                         progress={percent}
+                         fileName={data?.key || "unknown"}
+                         retrying={true}
+                         onClose={() => toast.dismiss(t.id)}
+                       />
+                     );
+                   },
+                   { id: toastId },
+                 );
+               },
+             });
+            }catch(err){
+              console.log(err);
+            }
+          }
           }catch(err){
             toast.error(
               "something went wrong but your recording entry will be saved, please report this message to admin",
@@ -272,34 +317,155 @@ function useAudioRecorder() {
             );
             
           }
-
-          // if (status.uploaded) {
-          //   // 🎉 Upload actually succeeded
-          //   console.log("Upload succeeded despite ERR_NETWORK");
-          // } else {
-          //   // Object isn't there → safe to retry
-          //   // throw error;
-          //   // console.log("Upload genuinely failed");
-          // }
-        // }else{
-        //   throw error
-        // }
        
+      }
+
+      toast.loading("Almost done...", { id: toastId });
+      
+
+      // Step 3: Save recording in database
+     
+      for(let i=0;i<4;i++){
+        try {
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_URL}/recording/create/${studentId}`,
+            {
+              isOnline: false,
+              url: data.url,
+              duration: duration / 60,
+              slot: classType,
+            },
+            { withCredentials: true },
+          );
+          break;
+        } catch (err) {
+          console.error("Database Save Error:", err);
+          if(i === 3){
+            toast.error(
+              "Recording was uploaded, but we couldn't save it. Please report this exact message to your supervisor or the system administrator.",
+              { id: toastId, duration: 8000 },
+            );
+            throw err;
+          }
+        }
+      }
+
+      toast.success("Upload complete!", {
+        id: toastId,
+      });
+      queryClient.invalidateQueries({ queryKey: ["myStudents"] });
+      
+    } catch (err) {
+      console.error("Submission Error:", err);
+      toast.error("Upload Failed!");
+    } finally {
+      setIsSubmitting(false);
+      URL.revokeObjectURL(ObjectUrl);
+      
+    }
+  }
+  async function submitIkhtebaarRecording(studentId,name) {
+      if(audioSize < 1024) return toast.error(
+        "Something went wrong while recording this class. Please do not submit this recording. Refresh your browser before recording the next class.",
+      {duration:5000});
+      const ObjectUrl = URL.createObjectURL(audio);
+      const newAudio = new Audio(ObjectUrl);
+      let duration;
+      await new Promise((res, rej) => {
+        newAudio.onloadedmetadata = () => {
+          duration = newAudio.duration;
+          res();
+        };
+
+        newAudio.onerror = () => {
+          duration = totalSeconds;
+          rej();
+        };
+      });
+        const localAudioType = audioType.current;
+    setIsSubmitting(true);
+    const toastId = "uploading";
+    try {
+      let blob = audio;
+
+      toast.loading("Upload starting...", { id: toastId });
+
+      let data;
+
+      // Step 1: Get signed URL
+      for(let i=0;i<4;i++){
+        try {
+          const res = await api.get(`/recording/signedToken/${name}`);
+
+          data = res.data;
+          break;
+        } catch (err) {
+          
+         if(i === 3){
+           console.error("Signed URL Error:", err);
+           toast.error(
+             "Failed to get upload URL. please report this exact message to your supervisor or the system administrator.",
+             { id: toastId, duration: 8000 },
+           );
+           throw err;
+         }
+        }
+      }
+
+      // Step 2: Upload to R2
+      try {
+        await axios.put(data.signedUrl, blob, {
+          headers: {
+            "Content-Type": localAudioType,
+          },
+          onUploadProgress: (progress) => {
+            const percent = Math.round(
+              (progress.loaded * 100) / progress.total,
+            );
+
+            // toast.loading(`Uploading... ${percent}%`, {
+            //   id: toastId,
+            // });
+            toast.custom((t) => {
+              return <RecordingUploadToast totalMB={progress.total / (1024 * 1024)} uploadedMB={progress.loaded / (1024 * 1024)} progress={percent} fileName={data?.key || 'unknown'} onClose={()=>toast.dismiss(t.id)}/>
+            },{id:toastId})
+          },
+        });
+      } catch (error) {
+        toast.loading(`wait...`, {
+          id: toastId,
+        });
+
+        // if (error.code === "ERR_NETWORK") {
+          if(!data?.url) {
+            toast.error('url is missing but your recording will be submitted, please report this message to admin',{duration:8000});
+            // throw new Error("url is missing");
+          };
+          try{
+            const { data: status } = await api.get(`/recording/isUploaded`,{params:{url:data?.url}});
+            if(!status.uploaded) throw error;
+          }catch(err){
+            toast.error(
+              "something went wrong but your recording entry will be saved, please report this message to admin",
+              { duration: 8000 },
+            );
+            
+          }
       }
 
       toast.loading("Almost done...", { id: toastId });
 
       // Step 3: Save recording in database
+      
       try {
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_URL}/recording/create/${studentId}`,
+        await api.post(
+          `/recording/create/${studentId}`,
           {
             isOnline: false,
             url: data.url,
-            duration: totalSeconds / 60,
+            duration: duration / 60,
             slot:classType,
           },
-          { withCredentials: true },
         );
       } catch (err) {
         console.error("Database Save Error:", err);
@@ -314,12 +480,13 @@ function useAudioRecorder() {
         id: toastId,
       });
       queryClient.invalidateQueries({ queryKey: ["myStudents"] });
-      
+      return {url:data.url,classDuration:duration / 60};
     } catch (err) {
       console.error("Submission Error:", err);
-      toast.error("Upload Failed!");
+      toast.error("Recording Upload Failed!");
     } finally {
       setIsSubmitting(false);
+      URL.revokeObjectURL(ObjectUrl);
     }
   }
   return {
@@ -342,6 +509,7 @@ function useAudioRecorder() {
 
     actions: {
       startRecording,
+      submitIkhtebaarRecording,
       handlePause,
       handleResume,
       finishRecording,

@@ -5,6 +5,7 @@ function RecordingUploadToast({
   uploadedMB = 12.8,
   totalMB = 20,
   progress = 64,
+  retrying=false,
   onClose,
 }) {
   return (
@@ -39,7 +40,7 @@ function RecordingUploadToast({
 
           {/* Upload Info */}
           <div className="mt-2 flex items-center justify-between text-[11px] text-gray-400">
-            <span>Uploading...</span>
+            <span>{retrying ? 'Retrying' : 'Uploading'}...</span>
 
             <span>
               {uploadedMB.toFixed(1)} MB / {totalMB.toFixed(1)} MB

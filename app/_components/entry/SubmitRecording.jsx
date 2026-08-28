@@ -20,23 +20,19 @@ function SubmitRecording({
   clientAudioUrl,
   submitRecording,
   isSubmitting,
-  setOnlineClassBlobUrl,
-  setOnlineClassBlob,
   setIsRecorded,
   setClientAudioUrl,
   setAudio,
   setTotalSeconds,
   setIsPause,
   setIsRecording,
-  setvideoCallSeconds,
-  audioChunks,
 }) {
   const audioRef = useRef(null);
   const formattedName = formatName(studentName);
   return (
-    <div className="my-auto flex w-full flex-col gap-5 rounded-3xl border border-(--border) bg-(--card) px-5 py-7 shadow-(--shadow-lg) lg:w-1/2 lg:mx-auto">
+    <div className="my-auto flex w-full flex-col gap-5 rounded-3xl border border-(--border) bg-(--card) px-5 py-5 shadow-(--shadow-lg) lg:w-1/2 lg:mx-auto">
       {/* Success / Student */}
-      <div className="flex flex-col items-center text-center pt-2 pb-3">
+      <div className="flex flex-col items-center text-center pb-3">
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
           <FaCircleCheck className="text-[3.2rem] text-emerald-500" />
         </div>
@@ -47,13 +43,13 @@ function SubmitRecording({
 
         
 
-        <p className=" mt-4 max-w-full px-3 font-bold text-amber-800">
+        <p className=" mt-1 max-w-full px-3 font-bold text-amber-800">
           {formattedName}
         </p>
       </div>
 
       {/* Audio */}
-      <div className="rounded-2xl border border-(--border)/60 bg-white/60 p-4">
+      <div className="rounded-2xl border border-(--border)/60 bg-white/60 p-4 flex flex-col gap-2">
         <div className="mb-4 flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-50">
             {/* <TbWaveform className="text-xl text-amber-800" /> */} <PiWaveform className="text-xl text-amber-800"/>
@@ -130,7 +126,7 @@ function SubmitRecording({
         <div className="flex items-center gap-2 border-b border-(--border)/60 px-4 py-3">
           <IoInformationCircleOutline className="text-xl text-amber-800" />
 
-          <p className="text-sm font-bold">Recording Details</p>
+          <p className="text-xs font-bold">Recording Details</p>
         </div>
 
         <div className="flex items-center justify-between px-4 py-4">
@@ -140,13 +136,13 @@ function SubmitRecording({
             </div>
 
             <div>
-              <p className="text-sm font-medium">File size</p>
+              <p className="text-xs font-medium">File size</p>
 
-              <p className="text-[11px] text-stone-500">Audio recording</p>
+              <p className="text-[10px] text-stone-500">Audio recording</p>
             </div>
           </div>
 
-          <p className="text-sm font-bold">
+          <p className="text-xs font-bold">
             {Number((audioSize / 1024 / 1024).toFixed(1))} MB
           </p>
         </div>

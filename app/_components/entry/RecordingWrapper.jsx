@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useUser } from "../providers/UserProvider";
 import { useRouter } from "next/navigation";
+import IkhtebaarForm from "@/features/entry/components/IkhtebaarForm";
 
 function RecordingWrapper({studentName,studentId}) {
     // const session = useSession();
@@ -48,6 +49,7 @@ function RecordingWrapper({studentName,studentId}) {
         handleResume,
         finishRecording,
         submitRecording,
+        submitIkhtebaarRecording,
         setConfirmSubmit,
         setIsRedirect,
         handleConfirmFinishRecording,
@@ -103,7 +105,7 @@ function RecordingWrapper({studentName,studentId}) {
           />
         );
     }
-    if (isRecorded){
+    if (isRecorded && classType !== 'tm'){
       return (
         <SubmitRecording
         setIsPause={setIsPause}
@@ -119,6 +121,26 @@ function RecordingWrapper({studentName,studentId}) {
           audioSize={audioSize}
           clientAudioUrl={clientAudioUrl}
           audioChunks={audioChunks}
+        />
+      );
+    }
+    // tm === tamreen
+    if (isRecorded && classType === 'tm'){
+      return (
+        <IkhtebaarForm
+          setIsPause={setIsPause}
+          setTotalSeconds={setTotalSeconds}
+          setIsRecording={setIsRecording}
+          setClientAudioUrl={setClientAudioUrl}
+          setAudio={setAudio}
+          setIsRecorded={setIsRecorded}
+          studentId={studentId}
+          isSubmitting={isSubmitting}
+          studentName={studentName}
+          audioSize={audioSize}
+          clientAudioUrl={clientAudioUrl}
+          audioChunks={audioChunks}
+          submitIkhtebaarRecording={submitIkhtebaarRecording}
         />
       );
     }
