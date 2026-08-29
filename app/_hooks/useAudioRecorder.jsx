@@ -264,6 +264,8 @@ function useAudioRecorder() {
             },{id:toastId})
           },
         });
+                await api.post("/recording/updateStats", { status: "success" });
+
       } catch (error) {
         toast.loading(`wait...`, {
           id: toastId,
@@ -306,7 +308,14 @@ function useAudioRecorder() {
                  );
                },
              });
+                await api.post("/recording/updateStats", { status: "success" });
+
             }catch(err){
+              try{
+                await api.post("/recording/updateStats",{status:'fail'});
+              }catch(error2){
+                console.log(error2);
+              }
               console.log(err);
             }
           }
