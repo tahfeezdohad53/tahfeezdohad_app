@@ -280,45 +280,49 @@ function useAudioRecorder() {
             const { data: status } = await axios.get(
             `${process.env.NEXT_PUBLIC_URL}/recording/isUploaded`,{params:{url:data?.url},withCredentials:true},
           );
-
-          if(!status.uploaded){
-            try{
-               await axios.put(data.signedUrl, blob, {
-               headers: {
-                 "Content-Type": localAudioType,
-               },
-               onUploadProgress: (progress) => {
-                 const percent = Math.round(
-                   (progress.loaded * 100) / progress.total,
-                 );
-                 toast.custom(
-                   (t) => {
-                     return (
-                       <RecordingUploadToast
-                         totalMB={progress.total / (1024 * 1024)}
-                         uploadedMB={progress.loaded / (1024 * 1024)}
-                         progress={percent}
-                         fileName={data?.key || "unknown"}
-                         retrying={true}
-                         onClose={() => toast.dismiss(t.id)}
-                       />
-                     );
-                   },
-                   { id: toastId },
-                 );
-               },
-             });
-                await api.post("/recording/updateStats", { status: "success" });
-
-            }catch(err){
-              try{
-                await api.post("/recording/updateStats",{status:'fail'});
-              }catch(error2){
-                console.log(error2);
-              }
-              console.log(err);
-            }
-          }
+                if (status.uploaded) await api.post("/recording/updateStats", {status: "success"});
+                
+                  if (!status.uploaded) {
+                    try {
+                      await axios.put(data.signedUrl, blob, {
+                        headers: {
+                          "Content-Type": localAudioType,
+                        },
+                        onUploadProgress: (progress) => {
+                          const percent = Math.round(
+                            (progress.loaded * 100) / progress.total,
+                          );
+                          toast.custom(
+                            (t) => {
+                              return (
+                                <RecordingUploadToast
+                                  totalMB={progress.total / (1024 * 1024)}
+                                  uploadedMB={progress.loaded / (1024 * 1024)}
+                                  progress={percent}
+                                  fileName={data?.key || "unknown"}
+                                  retrying={true}
+                                  onClose={() => toast.dismiss(t.id)}
+                                />
+                              );
+                            },
+                            { id: toastId },
+                          );
+                        },
+                      });
+                      await api.post("/recording/updateStats", {
+                        status: "success",
+                      });
+                    } catch (err) {
+                      try {
+                        await api.post("/recording/updateStats", {
+                          status: "fail",
+                        });
+                      } catch (error2) {
+                        console.log(error2);
+                      }
+                      console.log(err);
+                    }
+                  }
           }catch(err){
             toast.error(
               "something went wrong but your recording entry will be saved, please report this message to admin",
