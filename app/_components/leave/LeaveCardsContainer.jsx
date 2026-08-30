@@ -350,17 +350,20 @@ function LeaveCardsContainer({ setShow, show }) {
             <div className="lg:w-1/2 mt-5">
               <div className="relative bg-(--card) flex gap-8 items-center border border-gray-300 rounded-md p-3 py-4">
                 <div className="min-h-15 min-w-15 overflow-hidden flex justify-center items-center relative rounded-full bg-(--bg-tertiary)/50">
-                  {!showLeaveDetails.details?.profileImage && <FaUser className="text-2xl" />}
+                  {!showLeaveDetails.details?.profileImage && (
+                    <FaUser className="text-2xl" />
+                  )}
                   {showLeaveDetails.details?.profileImage && (
-                    <Image fill src={showLeaveDetails.details.profileImage} alt="profile photo" />
+                    <Image
+                      fill
+                      src={showLeaveDetails.details.profileImage}
+                      alt="profile photo"
+                    />
                   )}
                 </div>
                 <div className="flex flex-col text-xs w-full gap-1">
                   <h1 className="font-bold text-lg">
-                    {showLeaveDetails.details.name
-                      .split(" ")
-                      .slice(1)
-                      .join(" ")}
+                    {formatName(showLeaveDetails.details.name)}
                   </h1>
                   {/* <p
                     className={`px-2 py-1 rounded-md ${showLeaveDetails.details.status === "rejected" && "bg-red-500"} ${showLeaveDetails.details.status === "accepted" && "bg-green-500"} ${showLeaveDetails.details.status === "pending" && "bg-yellow-500"} text-white absolute right-2 top-2`}
@@ -419,7 +422,10 @@ function LeaveCardsContainer({ setShow, show }) {
                   <div>
                     <p className="text-xs text-gray-500">From</p>
                     <h3 className="font-semibold text-xs">
-                      {format(showLeaveDetails.details.from.split('T')[0], "dd MMM, yyyy")}
+                      {format(
+                        showLeaveDetails.details.from.split("T")[0],
+                        "dd MMM, yyyy",
+                      )}
                     </h3>
                   </div>
                 </div>
@@ -432,7 +438,10 @@ function LeaveCardsContainer({ setShow, show }) {
                   <div>
                     <p className="text-xs text-gray-500">To</p>
                     <h3 className="font-semibold text-xs">
-                      {format(showLeaveDetails.details.to.split('T')[0], "dd MMM, yyyy")}
+                      {format(
+                        showLeaveDetails.details.to.split("T")[0],
+                        "dd MMM, yyyy",
+                      )}
                     </h3>
                   </div>
                 </div>

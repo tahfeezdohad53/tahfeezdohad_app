@@ -2,7 +2,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import StudentCard from "./StudentCard";
 import axios from "axios";
-import ContextMenu from "../ContextMenu";
+import ContextMenu from "../../../app/_components/ContextMenu";
 import { Item, Separator, useContextMenu } from "react-contexify";
 import {
   FaBook,
@@ -15,16 +15,16 @@ import {
   FaUserShield,
 } from "react-icons/fa";
 import { MdCheckBoxOutlineBlank, MdDelete } from "react-icons/md";
-import CustomSelect from "../Select";
-import Modal from "../Modal";
-import { useAppProvider } from "../providers/AppProvider";
+import CustomSelect from "../../../app/_components/Select";
+import Modal from "../../../app/_components/Modal";
+import { useAppProvider } from "../../../app/_components/providers/AppProvider";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import StudentsFilter from "./StudentsFilter";
+import StudentsFilter from "../../../shared/components/StudentsFilter";
 import { IoIosCheckboxOutline } from "react-icons/io";
 import { PiDotsThreeVertical, PiDotsThreeVerticalBold } from "react-icons/pi";
-import { useUser } from "../providers/UserProvider";
-import CustomContextMenu from "../CustomContextMenu";
+import { useUser } from "../../../app/_components/providers/UserProvider";
+import CustomContextMenu from "../../../app/_components/CustomContextMenu";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -40,6 +40,9 @@ import {
 import { FaUsers } from "react-icons/fa";
 const recentStudents = ["Ahmed Khan", "Muhammad Ali", "Zainab Fatima"];
 function StudentsContainer() {
+  const {students, filteredStudents,setFilteredStudents, isLoading, isFetchingStudents } = useStudents();
+  
+  
   const { user, isFetching } = useUser();
   const { teachers } = useAppProvider();
   const queryClient = useQueryClient();
@@ -58,7 +61,6 @@ function StudentsContainer() {
     teacher: "",
     proxyTeacher: "",
   });
-  const [filteredStudents, setFilteredStudents] = useState([]);
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedStudents, setSelectedStudents] = useState([]);
   function showContextMenu(e) {
@@ -74,6 +76,14 @@ function StudentsContainer() {
     });
     show({ event: e });
   }
+
+  const {mutateAsync} = useUpdateStudent();
+
+  // async function handleChangeDiary(){
+  //   setIsSubmitting(true);
+  //   await mutateAsync({type:'diary'});
+
+  // }
 
   async function handleChangeDiary(teacherId) {
     setIsSubmitting(true);
@@ -117,28 +127,7 @@ function StudentsContainer() {
       setIsSubmitting(false);
     }
   }
-  const { data: students, isLoading,isFetching:isFetchingStudents } = useQuery({
-    queryKey: ["myStudents", user?.role, searchParams.get("batch"),searchParams.get('classStatus')],
-    queryFn: handleGetMyStudents,
-    // refetchOnWindowFocus: false,
-    enabled: user?.role === "teacher" || user?.role === "admin",
-  });
-
-  async function handleGetMyStudents() {
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_URL}/student/getStudents?batch=${searchParams.get("batch")}&classStatus=${searchParams.get('classStatus')}`,
-        {
-          withCredentials: true,
-        },
-      );
-      setFilteredStudents(res.data.students);
-      return res.data.students;
-    } catch (err) {
-      console.log(err);
-      return [];
-    }
-  }
+  
 
   function handleSelectAll() {
     const allStudents = students.map((el) => el._id);
@@ -150,50 +139,6 @@ function StudentsContainer() {
     setSelectedStudents([]);
   }
 
-  function handleFilterStudents(value) {
-    if (value.length < 3) return setFilteredStudents(students);
-    setFilteredStudents(students);
-    setFilteredStudents((el) => {
-      const isNumber = Number(value);
-      if (isNumber) {
-        return el.filter((el) => {
-          return el.name.includes(value);
-        });
-      } else {
-        return el.filter((el) => {
-          const nameArr = el.name.split(" ");
-          const firstName = nameArr[1];
-          const lastName = nameArr[nameArr.length - 1];
-          const queryArr = value.toLowerCase().split(" ");
-          if (queryArr.length > 1) {
-            return (
-              (firstName.includes(queryArr[0]) &&
-                lastName.includes(queryArr[1])) ||
-              firstName.includes(queryArr[1] && lastName.includes(queryArr[0]))
-            );
-          }
-          return (
-            firstName.includes(value.toLowerCase()) ||
-            lastName.includes(value.toLowerCase())
-          );
-        });
-      }
-
-      // return el.filter(el => {
-      //   const nameArr = el.name.split(" ");
-      //   const firstName = nameArr[0];
-      //   const lastName = nameArr[nameArr.length - 1];
-      //   const queryArr = value.split(' ');
-      //   if(queryArr.length > 1){
-      //     return ((firstName.includes(queryArr[0]) && lastName.includes(queryArr[1])) || (firstName.includes(queryArr[1] && lastName.includes(queryArr[0]))));
-      //   }
-      //   return firstName.includes(value) || lastName.includes(value);
-      // })
-    });
-    // setFilteredStudents((student) =>
-    //   student.filter((el) => el.name.toLowerCase().includes(value.toLowerCase())),
-    // );
-  }
   async function handleChangeMultipleDiaries(teacherId) {
     setIsSubmitting(true);
     try {
@@ -248,44 +193,18 @@ function StudentsContainer() {
     }
   }, [user?.role, session?.status, isFetching]);
 
-  useEffect(() => {
-    const urlsearch = new URLSearchParams(searchParams);
-    if(!searchParams.get('classStatus')){
-      urlsearch.set("classStatus", "all");
-      if(user?.role !== 'admin')router.replace(`${pathname}?${urlsearch}`);
-    }
+  
 
-    if (user?.role !== "admin") return;
-    if (searchParams.get("batch")) return;
-    urlsearch.set("batch", "yaqoot_mardo");
-    router.replace(`${pathname}?${urlsearch}`);
-  },[searchParams,user?.role,pathname])
+  
 
-  function handleChangeSearchParams(type, value) {
-    const params = new URLSearchParams(searchParams);
-    params.set(type, value);
-    router.replace(`${pathname}?${params}`);
-  }
-
-  // if (!user?.role) {
-  //   return(
-  //     <div className="absolute top-1/2 left-1/2 -translate-1/2 w-full flex-col gap-3 flex items-center justify-center ">
-  //       <h1>You are not authorized, please login</h1>
-  //       <Link href={'/auth'} className="bg-(image:--gradient-primary) text-white rounded-md p-1 px-4">Login</Link>
-  //     </div>
-  //   )
-  // };
+  
   if (!user?._id || user?.role === "student") return null;
+
   const customizedTeachers = teachers?.map((el) => ({
     label: el.name,
     value: el._id,
   }));
-  if (!user?._id)
-    return (
-      <div className="fixed top-1/2 left-1/2 -translate-1/2">
-        authenticating...
-      </div>
-    );
+  
   return (
     <div className="">
       <div className="mb-10 bg-(image:--gradient-primary) mt-2 rounded-xl p-5 flex items-center gap-5 w-full ">
@@ -310,38 +229,9 @@ function StudentsContainer() {
         <>
           <StudentsFilter
             reset={() => setFilteredStudents(students)}
-            handleFilterStudents={handleFilterStudents}
+            handleFilterStudents={(value) => handleFilterStudents(value,setFilteredStudents,students)}
           />
-          <div className="text-[0.70rem] mb-5 flex gap-3 items-center justify-center">
-            <button
-              onClick={() => handleChangeSearchParams("classStatus", "all")}
-              className={`${searchParams.get("classStatus") === "all" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border-  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all border-(--border) shadow-(--shadow-md)  p-2 rounded-md `}
-            >
-              All
-            </button>
-            <button
-              onClick={() => handleChangeSearchParams("classStatus", "pending")}
-              className={`${searchParams.get("classStatus") === "pending" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border-  hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all border-(--border) shadow-(--shadow-md)  p-2 rounded-md `}
-            >
-              Pending
-            </button>
-            <button
-              onClick={() =>
-                handleChangeSearchParams("classStatus", "recorded")
-              }
-              className={`${searchParams.get("classStatus") === "recorded" ? "bg-(image:--gradient-primary) text-white -translate-y-1 borde border-(--border)" : "bg-(--card) border-transparent"} border- hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all  shadow-(--shadow-md)  p-2 rounded-md `}
-            >
-              Recorded
-            </button>
-            <button
-              onClick={() =>
-                queryClient.invalidateQueries({ queryKey: ["myStudents"] })
-              }
-              className={`bg-(--card) border- hover:bg-(--card-highlight) hover:cursor-pointer ease-in-out duration-300 transition-all  shadow-(--shadow-md) p-2 rounded-md `}
-            >
-              <BiRefresh className="text-lg" />
-            </button>
-          </div>
+          <StudentClassStatusFilter />
         </>
       )}
       <RecordWithNumberCard />
@@ -557,155 +447,129 @@ function StudentsContainer() {
           />
         ))}
         {modal.show && (modal.type === "diary" || modal.type === "proxy") && (
-          <Modal
-            onClose={() => setModal({ show: false, type: "" })}
-            className="w-[90%] h-fit rounded-2xl"
-            headingStyles="text-xl font-bold text-center"
-            // heading={
-            //   modal.type === "diary"
-            //     ? "Select teacher to change diary"
-            //     : "Select teacher to assign proxy"
-            // }
-          >
-            <div className="space-y-4">
-              <div className="flex flex-col items-center">
-                {/* Icon Circle */}
-                <div className="p-4 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center shadow-sm border border-amber-100">
-                  {modal.type === "diary" ? (
-                    <FaBookOpen className="text-3xl text-amber-700" />
-                  ) : (
-                    <FaUserShield className="text-3xl text-amber-700" />
-                  )}
-                </div>
-
-                {/* Heading */}
-                <h2 className="mt-5 lg:text-2xl font-bold text-[var(--text-primary)] text-center">
-                  {modal.type === "diary"
-                    ? "Select teacher to change diary"
-                    : "Select teacher to assign proxy"}
-                </h2>
-
-                {/* Decorative Line */}
-                <div className="flex items-center gap-2 mt-4">
-                  <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
-                  <div className="w-2 h-2 rounded-full bg-amber-600" />
-                  <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  {modal.type === "diary"
-                    ? "Select new teacher"
-                    : "Select proxy teacher"}
-                </label>
-
-                <CustomSelect
-                  isSubmitting={isSubmitting}
-                  options={customizedTeachers}
-                  isButton
-                  handler={
-                    modal.type === "diary"
-                      ? handleChangeDiary
-                      : handleAssignProxy
-                  }
-                />
-              </div>
-              {/* Student & Teacher Card */}
-              <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
-                {/* Student */}
-                <div className="flex gap-3 p-4">
-                  <div className="flex items-center">
-                    <div className="p-3 rounded-full bg-amber-100 flex items-center justify-center">
-                      <FaUser className="text-amber-700 text-lg" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-gray-500 font-medium uppercase">
-                      Student
-                    </p>
-                    <p className="text-xs lg:text-sm mt-1 font-semibold text-gray-800">
-                      {selectedStudent.name}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="border-t border-neutral-200" />
-
-                {/* Current Teacher */}
-                <div className="flex gap-3 p-4">
-                  <div className="flex items-center">
-                    <div className="p-3 rounded-full bg-amber-100 flex items-center justify-center">
-                      <FaChalkboardTeacher className="text-amber-700 text-lg" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-gray-500 font-medium uppercase">
-                      Current Teacher
-                    </p>
-                    <p className="text-xs lg:text-sm mt-1 font-semibold text-gray-800">
-                      {selectedStudent.teacher || "No Teacher Assigned"}
-                    </p>
-                  </div>
-                </div>
-
-                {selectedStudent.proxyTeacher && (
-                  <>
-                    <div className="border-t border-neutral-200" />
-
-                    <div className="flex gap-3 p-4">
-                      <div className="flex items-center">
-                        <div className="p-3 rounded-full bg-green-100 flex items-center justify-center">
-                          <FaUserCheck className="text-green-700 text-lg" />
-                        </div>
-                      </div>
-
-                      <div>
-                        <p className="text-xs text-gray-500 font-medium uppercase">
-                          Current Proxy
-                        </p>
-                        <p className="text-xs lg:text-sm mt-1 font-semibold text-gray-800">
-                          {selectedStudent.proxyTeacher}
-                        </p>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Select */}
-              {/* <div>
-                <label className="block mb-2 text-sm font-semibold text-gray-700">
-                  {modal.type === "diary"
-                    ? "Select new teacher"
-                    : "Select proxy teacher"}
-                </label>
-
-                <CustomSelect
-                  isSubmitting={isSubmitting}
-                  options={customizedTeachers}
-                  isButton
-                  handler={
-                    modal.type === "diary"
-                      ? handleChangeDiary
-                      : handleAssignProxy
-                  }
-                />
-              </div> */}
-
-              {/* Footer Note */}
-              <div className="flex items-center gap-2 text-xs justify-center text-gray-500">
-                <FaShieldAlt className="text-green-600" />
-                <span>
-                  {modal.type === "diary"
-                    ? "This will update the teacher's diary."
-                    : "This will assign a proxy teacher."}
-                </span>
-              </div>
-            </div>
-          </Modal>
+         <Modal
+                 onClose={() => setModal({ show: false, type: "" })}
+                 className="w-[90%] h-fit rounded-2xl"
+                 headingStyles="text-xl font-bold text-center"
+                 
+               >
+                 <div className="space-y-4">
+                   <div className="flex flex-col items-center">
+                     {/* Icon Circle */}
+                     <div className="p-4 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center shadow-sm border border-amber-100">
+                       {modal.type === "diary" ? (
+                         <FaBookOpen className="text-3xl text-amber-700" />
+                       ) : (
+                         <FaUserShield className="text-3xl text-amber-700" />
+                       )}
+                     </div>
+         
+                     {/* Heading */}
+                     <h2 className="mt-5 lg:text-2xl font-bold text-[var(--text-primary)] text-center">
+                       {modal.type === "diary"
+                         ? "Select teacher to change diary"
+                         : "Select teacher to assign proxy"}
+                     </h2>
+         
+                     {/* Decorative Line */}
+                     <div className="flex items-center gap-2 mt-4">
+                       <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
+                       <div className="w-2 h-2 rounded-full bg-amber-600" />
+                       <div className="w-10 h-[2px] bg-amber-300 rounded-full" />
+                     </div>
+                   </div>
+         
+                   <div className="mt-6">
+                     <label className="block mb-2 text-sm font-semibold text-gray-700">
+                       {modal.type === "diary"
+                         ? "Select new teacher"
+                         : "Select proxy teacher"}
+                     </label>
+         
+                     <CustomSelect
+                       isSubmitting={isSubmitting}
+                       options={customizedTeachers}
+                       isButton
+                       handler={
+                         modal.type === "diary" ? handleChangeDiary : handleAssignProxy
+                       }
+                     />
+                   </div>
+                   {/* Student & Teacher Card */}
+                   <div className="rounded-2xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
+                     {/* Student */}
+                     <div className="flex gap-3 p-4">
+                       <div className="flex items-center">
+                         <div className="p-3 rounded-full bg-amber-100 flex items-center justify-center">
+                           <FaUser className="text-amber-700 text-lg" />
+                         </div>
+                       </div>
+         
+                       <div>
+                         <p className="text-xs text-gray-500 font-medium uppercase">
+                           Student
+                         </p>
+                         <p className="text-xs lg:text-sm mt-1 font-semibold text-gray-800">
+                           {selectedStudent.name}
+                         </p>
+                       </div>
+                     </div>
+         
+                     <div className="border-t border-neutral-200" />
+         
+                     {/* Current Teacher */}
+                     <div className="flex gap-3 p-4">
+                       <div className="flex items-center">
+                         <div className="p-3 rounded-full bg-amber-100 flex items-center justify-center">
+                           <FaChalkboardTeacher className="text-amber-700 text-lg" />
+                         </div>
+                       </div>
+         
+                       <div>
+                         <p className="text-xs text-gray-500 font-medium uppercase">
+                           Current Teacher
+                         </p>
+                         <p className="text-xs lg:text-sm mt-1 font-semibold text-gray-800">
+                           {selectedStudent.teacher || "No Teacher Assigned"}
+                         </p>
+                       </div>
+                     </div>
+         
+                     {selectedStudent.proxyTeacher && (
+                       <>
+                         <div className="border-t border-neutral-200" />
+         
+                         <div className="flex gap-3 p-4">
+                           <div className="flex items-center">
+                             <div className="p-3 rounded-full bg-green-100 flex items-center justify-center">
+                               <FaUserCheck className="text-green-700 text-lg" />
+                             </div>
+                           </div>
+         
+                           <div>
+                             <p className="text-xs text-gray-500 font-medium uppercase">
+                               Current Proxy
+                             </p>
+                             <p className="text-xs lg:text-sm mt-1 font-semibold text-gray-800">
+                               {selectedStudent.proxyTeacher}
+                             </p>
+                           </div>
+                         </div>
+                       </>
+                     )}
+                   </div>
+         
+                   {/* Footer Note */}
+                   <div className="flex items-center gap-2 text-xs justify-center text-gray-500">
+                     <FaShieldAlt className="text-green-600" />
+                     <span>
+                       {modal.type === "diary"
+                         ? "This will update the teacher's diary."
+                         : "This will assign a proxy teacher."}
+                     </span>
+                   </div>
+                 </div>
+               </Modal>
         )}
         <ContextMenu>
           <Item onClick={() => setModal({ show: true, type: "diary" })}>
@@ -736,9 +600,14 @@ function StudentsContainer() {
 export default StudentsContainer;
 
 import { HiOutlineUserAdd } from "react-icons/hi";
-import { NoStudentsAssigned } from "../gurfah/StudentContainer";
+import { NoStudentsAssigned } from "../../../app/_components/gurfah/StudentContainer";
 import { IoFilter } from "react-icons/io5";
 import { BiRefresh } from "react-icons/bi";
+import StudentClassStatusFilter from "./StudentClassStatusFilter";
+import useStudents from "../hooks/useStudents";
+import { handleFilterStudents } from "../helper/handleFilterStudents";
+import useUpdateStudent from "../hooks/useUpdateStudent";
+import DiaryAndProxyForm from "./DiaryAndProxyForm";
 
 export function RecordWithNumberCard({ page = "entry", userType = "teacher" }) {
   const [showSelector, setShowSelector] = useState(false);

@@ -354,6 +354,7 @@ function useAudioRecorder() {
               "Recording was uploaded, but we couldn't save it. Please report this exact message to your supervisor or the system administrator.",
               { id: toastId, duration: 8000 },
             );
+                await api.post("/recording/updateStats", { status: "saveFailed" });
             throw err;
           }
         }

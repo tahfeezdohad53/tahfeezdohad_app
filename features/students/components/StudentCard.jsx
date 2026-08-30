@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { formatName } from "@/helpers";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -29,32 +29,36 @@ function StudentCard({
   classStatus,
   classDuration,
   role,
-  slots=[],
+  slots = [],
   batch,
 }) {
   const isProxy = proxyTeacherId === teacherId;
   const queryClient = useQueryClient();
-  function handleSelectedStudent(e){
-    if(!e.target.checked){
-      setSelectedStudents(arr => arr.filter(el => el !== studentId));
-    }else{
-      setSelectedStudents(arr => [...arr,studentId]);
+  function handleSelectedStudent(e) {
+    if (!e.target.checked) {
+      setSelectedStudents((arr) => arr.filter((el) => el !== studentId));
+    } else {
+      setSelectedStudents((arr) => [...arr, studentId]);
     }
   }
 
-  async function handleMarkAbsent(){
-    try{
-      await axios.post(`${process.env.NEXT_PUBLIC_URL}/student/absent`,{studentId},{withCredentials:true});
-      toast.success('Student marked as absent');
-      queryClient.invalidateQueries(['myStudents']);
-    }catch(err){
+  async function handleMarkAbsent() {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_URL}/student/absent`,
+        { studentId },
+        { withCredentials: true },
+      );
+      toast.success("Student marked as absent");
+      queryClient.invalidateQueries(["myStudents"]);
+    } catch (err) {
       console.log(err);
-      toast.error('failed to mark student as absent');
+      toast.error("failed to mark student as absent");
     }
   }
 
   const formattedName = formatName(name);
-  
+
   return (
     <div
       className="
@@ -193,77 +197,33 @@ function StudentCard({
               <p className="mb-1 text-[10px] text-(--text-muted)">Slots</p>
 
               <div className="flex flex-wrap gap-x-1 text-[10px] font-medium">
-                <span
-                  className={
-                    slots.includes("jd") ? "text-green-500" : "text-red-500"
-                  }
-                >
-                  Jd,
-                </span>
+                {["jd", "mr", "jz", "tm"].map((el, i, arr) => {
+                    return (
+                      <span
+                        key={el}
+                        className={
+                          slots.includes(el) ? "text-green-500" : "text-red-500"
+                        }
+                      >
+                        {el.slice(0,1).toUpperCase().concat(el.slice(1))},
+                      </span>
+                    );
+                })}
 
-                <span
-                  className={
-                    slots.includes("mj") || slots.includes("jz-mj")
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }
-                >
-                  Mj,
-                </span>
-
-                <span
-                  className={
-                    slots.includes("jz") || slots.includes("jz-mj")
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }
-                >
-                  Jz,
-                </span>
-
-                <span
-                  className={
-                    slots.includes("t1") ? "text-green-500" : "text-red-500"
-                  }
-                >
-                  T1,
-                </span>
-
-                <span
-                  className={
-                    slots.includes("t2") ? "text-green-500" : "text-red-500"
-                  }
-                >
-                  T2,
-                </span>
-
-                {batch.includes("yaqoot") && (
-                  <>
-                    <span
-                      className={
-                        slots.includes("t3") ? "text-green-500" : "text-red-500"
-                      }
-                    >
-                      T3,
-                    </span>
-
-                    <span
-                      className={
-                        slots.includes("t4") ? "text-green-500" : "text-red-500"
-                      }
-                    >
-                      T4,
-                    </span>
-
-                    <span
-                      className={
-                        slots.includes("t5") ? "text-green-500" : "text-red-500"
-                      }
-                    >
-                      T5
-                    </span>
-                  </>
-                )}
+                {["t1", "t2", "t3", "t4", "t5"].map((el, i, arr) => {
+                  if (i < 2 || batch.includes("yaqoot"))
+                    return (
+                      <span
+                        key={el}
+                        className={
+                          slots.includes(el) ? "text-green-500" : "text-red-500"
+                        }
+                      >
+                        {el.toUpperCase()}
+                        {arr.length === i + 1 ? "" : ","}
+                      </span>
+                    );
+                })}
               </div>
             </div>
           </div>
@@ -276,15 +236,21 @@ function StudentCard({
 
             <div className="min-w-0 flex-1 truncate">
               <p className="text-[10px] text-(--text-muted)">
-                {classStatus === 'absent' ? 'Class status' : 'Recording duration'}
+                {classStatus === "absent"
+                  ? "Class status"
+                  : "Recording duration"}
               </p>
 
-              {classStatus !== 'absent' && <p className="truncate text-xs font-medium text-(--text)">
-                {classDuration} min
-              </p>}
-              {classStatus == 'absent' && <p className="truncate text-xs font-medium text-(--text) text-red-500">
-                Absent
-              </p>}
+              {classStatus !== "absent" && (
+                <p className="truncate text-xs font-medium text-(--text)">
+                  {classDuration} min
+                </p>
+              )}
+              {classStatus == "absent" && (
+                <p className="truncate text-xs font-medium text-(--text) text-red-500">
+                  Absent
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -345,4 +311,4 @@ function StudentCard({
   );
 }
 
-export default StudentCard
+export default StudentCard;

@@ -3,7 +3,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import StudentsFilter from "../students/StudentsFilter";
+import StudentsFilter from "../../../shared/components/StudentsFilter";
 import { FaGraduationCap, FaUser } from "react-icons/fa";
 import { RiArrowDropRightLine } from "react-icons/ri";
 import Link from "next/link";
@@ -17,7 +17,7 @@ import { HiUserGroup } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
 import { LuHeadphones } from "react-icons/lu";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
-import { RecordWithNumberCard } from "../students/StudentsContainer";
+import { RecordWithNumberCard } from "../../../features/students/components/StudentsContainer";
 import { useAppProvider } from "../providers/AppProvider";
 import { formatName } from "@/helpers";
 

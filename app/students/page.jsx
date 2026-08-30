@@ -1,4 +1,4 @@
-import StudentsContainer from "../_components/students/StudentsContainer";
+import StudentsContainer from "../../features/students/components/StudentsContainer";
 
 async function Page() {
  
