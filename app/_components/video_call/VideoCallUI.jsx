@@ -5,6 +5,7 @@ import { useVideoCallContext } from "../providers/VideoCallProvider";
 import { useCallingFn } from "../socket-listeners/Socket";
 import { useSession } from "next-auth/react";
 import Select from "react-select";
+import { FiBookOpen, FiFileText, FiEdit3 } from "react-icons/fi";
 
 import {
   FiMic,
@@ -12,12 +13,13 @@ import {
   FiVideo,
   FiVideoOff,
   FiPhoneOff,
+  FiCheck,
 } from "react-icons/fi";
 import { IoIosCall } from "react-icons/io";
 import { MdCallEnd } from "react-icons/md";
 import Draggable from "react-draggable";
 import { useUser } from "../providers/UserProvider";
-import { BsFillRecordCircleFill } from "react-icons/bs";
+import { BsExclamationCircle, BsFillRecordCircleFill } from "react-icons/bs";
 import Modal from "../Modal";
 import { FaGraduationCap, FaRegLightbulb } from "react-icons/fa";
 import CustomSelect from "../Select";
@@ -28,6 +30,7 @@ import { HiXMark } from "react-icons/hi2";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { formatName } from "@/helpers";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import { api } from "@/lib/axios";
 function VideoCallUI() {
   const { user } = useUser();
   const videoRef = useRef(null);
@@ -395,6 +398,7 @@ function SelectStudent({ onclose }) {
   const [student, setStudent] = useState({ id: "", name: "" });
   const formattedName = formatName(student.name);
   const [error, setError] = useState(false);
+  const [classType,setClassType] = useState('');
   const {
     isLap,
     setIsLap,
@@ -414,7 +418,7 @@ function SelectStudent({ onclose }) {
   useEffect(() => {
     async function submitVideoCallRecording() {
       if (!student.id) return setError(true);
-
+      if(!classType) return toast.error('Please select class type');
       const url = URL.createObjectURL(onlineClassBlob);
       const audio = new Audio(url);
       let dur;
@@ -487,14 +491,14 @@ function SelectStudent({ onclose }) {
 
       try {
         toast.loading("almost done...", { id: toastId });
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_URL}/recording/create/${student.id}`,
+        await api.post(
+          `/recording/create/${student.id}`,
           {
             isOnline: true,
             url: data.url,
             duration: dur,
-          },
-          { withCredentials: true },
+            slot:classType,
+          }
         );
       } catch (err) {
         console.log(err);
@@ -508,10 +512,10 @@ function SelectStudent({ onclose }) {
       setIsLap((val) => !val);
     }
     if (onlineClassBlob) submitVideoCallRecording();
-  }, [onlineClassBlob, student.id]);
+  }, [onlineClassBlob, student.id,classType]);
 
   return (
-    <div className="fixed rounded-md lg:w-1/2 z-999999999999999 backdrop-opacity-0 top-1/2 left-1/2 -translate-1/2 bg-(--card) p-10 w-[90%] flex flex-col gap-6">
+    <div className="fixed overflow-auto h-full lg:w-1/2 z-999999999999999 backdrop-opacity-0  bg-(--card) p-10 w-full flex flex-col gap-6">
       {/* Header */}
       <button className="absolute right-3 top-3" onClick={onclose}>
         <HiXMark />
@@ -547,6 +551,134 @@ function SelectStudent({ onclose }) {
           </p>
         )}
       </div>
+      <div className="w-full mt-9">
+                <p className="text-xl font-bold text-(--text) mb-5">
+                  Select Class Type
+                </p>
+      
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    {
+                      label: "Jadeed",
+                      value: "jd",
+                      icon: <FiBookOpen />,
+                    },
+                    {
+                      label: "Juz/Mur",
+                      value: "jz-mj",
+                      icon: <FiBookOpen />,
+                    },
+                    {
+                      label: "Muraja'ah",
+                      value: "mj",
+                      icon: <FiBookOpen />,
+                    },
+                    {
+                      label: "Juzhaali",
+                      value: "jz",
+                      icon: <FiBookOpen />,
+                    },
+                    {
+                      label: "Tasmee 1",
+                      value: "t1",
+                      icon: <FiFileText />,
+                    },
+                    {
+                      label: "Tasmee 2",
+                      value: "t2",
+                      icon: <FiFileText />,
+                    },
+                    {
+                      label: "Tasmee 3",
+                      value: "t3",
+                      icon: <FiFileText />,
+                    },
+                    {
+                      label: "Tasmee 4",
+                      value: "t4",
+                      icon: <FiFileText />,
+                    },
+                    {
+                      label: "Tasmee 5",
+                      value: "t5",
+                      icon: <FiFileText />,
+                    },
+                    {
+                      label: "Tamreen",
+                      value: "tm",
+                      icon: <FiEdit3 />,
+                    },
+                  ].map(({ label, value, icon }) => {
+                    const selected = classType === value;
+      
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => setClassType(value)}
+                        className={`
+                  relative
+                  flex
+                  items-center
+                  gap-2
+                  py-1
+                  px-4
+                  rounded-xl
+                  border
+                  
+                  text-left
+                  transition-all
+                  ${
+                    selected
+                      ? "border-transparent shadow-md bg-(--bg-tertiary)/40"
+                      : "border-(--border) hover:shadow-md bg-(--card)"
+                  }
+                `}
+                      >
+                        {/* Icon */}
+                        <div
+                          className={`
+                    flex
+                    items-center
+                    justify-center
+                    w-11
+                    h-11
+                    rounded-xl
+                    shrink-0
+                    text-xl
+                    ${selected ? "text-(--primary)" : "text-(--text-secondary)"}
+                  `}
+                        >
+                          {icon}
+                        </div>
+      
+                        {/* Label */}
+                        <span className="text-sm sm:text-base font-semibold text-(--text)">
+                          {label}
+                        </span>
+      
+                        {/* Selected Checkmark */}
+                        {selected && (
+                          <div className="absolute -top-2 -right-2 flex items-center justify-center w-6 h-6 rounded-full bg-(--primary) text-white shadow-md">
+                            <FiCheck className="text-base" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+      
+                {/* Info */}
+                <div className="flex items-center gap-3 mt-5 px-4 py-4 rounded-2xl bg-(--bg-tertiary)/70">
+                  <BsExclamationCircle className="text-lg text-(--primary) shrink-0" />
+      
+                  <p className="text-xs text-(--text-secondary)">
+                    Please select{" "}
+                    <span className="font-semibold text-(--text)">Jadeed</span> if you
+                    are taking a full class.
+                  </p>
+                </div>
+              </div>
       <button
         onClick={() => {
           if (student.id) recorderRef?.current?.stop?.();
@@ -555,21 +687,6 @@ function SelectStudent({ onclose }) {
       >
         Submit Recording
       </button>
-      <div className="flex items-start gap-4 rounded-2xl border border-amber-100 bg-amber-50 p-4">
-        <div className="flex p-3 items-center justify-center rounded-full bg-amber-100">
-          <FaRegLightbulb className="text-xl text-amber-700" />
-        </div>
-
-        <div>
-          <p className="font-semibold text-amber-900 text-sm">
-            Can't find the student?
-          </p>
-
-          <p className="mt-1 text-sm text-gray-500 text-xs">
-            Try searching with a name, ITS or lastname.
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
