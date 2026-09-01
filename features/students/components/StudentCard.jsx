@@ -197,12 +197,12 @@ function StudentCard({
               <p className="mb-1 text-[10px] text-(--text-muted)">Slots</p>
 
               <div className="flex flex-wrap gap-x-1 text-[10px] font-medium">
-                {["jd", "mr", "jz", "tm"].map((el, i, arr) => {
+                {["jd", "mj", "jz", "tm"].map((el, i, arr) => {
                     return (
                       <span
                         key={el}
                         className={
-                          slots.includes(el) ? "text-green-500" : "text-red-500"
+                          slots.includes(el) || (el === 'mj' && slots.includes('jz-mj')) || (el === 'jz' && slots.includes('jz-mj')) ? "text-green-500" : "text-red-500"
                         }
                       >
                         {el.slice(0,1).toUpperCase().concat(el.slice(1))},
