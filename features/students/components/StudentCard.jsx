@@ -144,7 +144,7 @@ function StudentCard({
         {/* Profile */}
         <div className="flex flex-col items-center gap-2">
           {image ? (
-            <div className="relative h-[72px] w-[72px] overflow-hidden rounded-full border- border-(--primary-soft)">
+            <div className="relative h-18 w-18 overflow-hidden rounded-full border- border-(--primary-soft)">
               <Image
                 src={image}
                 alt="user photo"
@@ -247,7 +247,7 @@ function StudentCard({
                 </p>
               )}
               {classStatus == "absent" && (
-                <p className="truncate text-xs font-medium text-(--text) text-red-500">
+                <p className="truncate text-xs font-medium text-red-500">
                   Absent
                 </p>
               )}

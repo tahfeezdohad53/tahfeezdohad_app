@@ -7,6 +7,7 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { useQueryClient } from "@tanstack/react-query";
 import RecordingUploadToast from "../_components/toast/RecordingUploadToast";
 import { api } from "@/lib/axios";
+import { isIOS } from "@/helpers";
 
 function useAudioRecorder() {
   const [isRecording, setIsRecording] = useState(false);
@@ -337,6 +338,13 @@ function useAudioRecorder() {
       
 
       // Step 3: Save recording in database
+
+      let formattedDuration;
+
+      if(isIOS() || duration < 10){
+        formattedDuration = totalSeconds / 60;
+      }
+      else formattedDuration = duration / 60;
      
       for(let i=0;i<4;i++){
         try {
@@ -345,7 +353,7 @@ function useAudioRecorder() {
             {
               isOnline: false,
               url: data.url,
-              duration: duration / 60,
+              duration: formattedDuration,
               slot: classType,
             },
             { withCredentials: true },
