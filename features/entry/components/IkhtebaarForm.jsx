@@ -21,21 +21,23 @@ function IkhtebaarForm({
 }) {
 
     const [rec,setRec] = useState({url:'',duration:0,isUploaded:false});
-    const [isAudioUploaded,setIsAudioUploaded] = useState(false);
+    const [isTriedUploadingAudio,setIsTriedUploadingAudio] = useState(false);
     const router = useRouter();
     async function handleSubmitAudio(){
         try{
             const {url,classDuration} = await submitIkhtebaarRecording(studentId,studentName);
             setRec({url,duration:classDuration,isUploaded:true});
         }catch(err){
-            toast.error('failed to upload audio, please try again!');
+            toast.error('failed to upload audio, please try again! if the problem persists please download the audio and submit details',{duration:8000});
             console.log(err);
+        }finally{
+          setIsTriedUploadingAudio(true);
         }
     }
   async function handleDetailsSubmit(e) {
     e.preventDefault();
-    const isConfirm = confirm('make sure you have submitted recording first');
-    if(!isConfirm) return;
+
+    if(!isTriedUploadingAudio) return toast.error('Please upload audio recording first!');
     const formData = new FormData(e.currentTarget);
 
     const details = {
@@ -45,20 +47,20 @@ function IkhtebaarForm({
       tambeeh: formData.get("tambeeh"),
       talqeen: formData.get("talqeen"),
       questions: formData.get("questions"),
-      grade: formData.get("grade"),
-      ahkaam: formData.get("ahkaam"),
+      from: formData.get("from"),
+      to: formData.get("to"),
       makharij: formData.get("makharij"),
       remarks: formData.get("remarks"),
       classMode: "in-person",
       classType:'tm',
     };
 
-    console.log(details);
+    // console.log(details);
     try {
       details.audio = rec.url;
       details.duration = rec.classDuration;
       await api.post(`/report/create`, details);
-      toast.success('created');
+      toast.success('ikhtebaar report submitted.');
       setAudio(null);
       setIsRecording(false);
       setIsRecorded(false);
@@ -111,7 +113,9 @@ function IkhtebaarForm({
             {/* Juz + Page */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="mb-1.5 block text-xs font-medium">Juz</label>
+                <label className="mb-1.5 block text-xs font-medium">
+                  Currently At Juz
+                </label>
 
                 <input
                   required
@@ -123,13 +127,44 @@ function IkhtebaarForm({
               </div>
 
               <div>
-                <label className="mb-1.5 block text-xs font-medium">Page</label>
+                <label className="mb-1.5 block text-xs font-medium">
+                  Currently At Page
+                </label>
 
                 <input
                   required
                   type="number"
                   name="page"
                   placeholder="Page"
+                  className="w-full rounded-lg border border-(--border) bg-(--card) px-3 py-2.5 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1.5 block text-xs font-medium">From</label>
+
+                <input
+                  max={30}
+                  min={1}
+                  required
+                  type="number"
+                  name="from"
+                  placeholder="1-30"
+                  className="w-full rounded-lg border border-(--border) bg-(--card) px-3 py-2.5 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-medium">To</label>
+
+                <input
+                  max={30}
+                  min={1}
+                  required
+                  type="number"
+                  name="to"
+                  placeholder="1-30"
                   className="w-full rounded-lg border border-(--border) bg-(--card) px-3 py-2.5 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
                 />
               </div>
@@ -183,45 +218,8 @@ function IkhtebaarForm({
                 />
               </div>
 
-              <div>
-                <label className="mb-1.5 block text-xs font-medium">
-                  Grade
-                </label>
-
-                <select
-                  required
-                  name="grade"
-                  defaultValue=""
-                  className="w-full rounded-lg border border-(--border) bg-(--card) px-3 py-2.5 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
-                >
-                  <option value="" disabled>
-                    Grade
-                  </option>
-
-                  <option value="A+">A+</option>
-                  <option value="A">A</option>
-                  <option value="B+">B+</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Ahkaam */}
-            <div>
-              <label className="mb-1.5 block text-xs font-medium">Ahkaam</label>
-
-              <input
-                required
-                type="text"
-                name="ahkaam"
-                placeholder="Ahkaam"
-                className="w-full rounded-lg border border-(--border) bg-(--card) px-3 py-2.5 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
-              />
-            </div>
-
-            {/* Makharij */}
+              
+               
             <div>
               <label className="mb-1.5 block text-xs font-medium">
                 Makharij
@@ -235,6 +233,11 @@ function IkhtebaarForm({
                 className="w-full rounded-lg border border-(--border) bg-(--card) px-3 py-2.5 text-sm outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
               />
             </div>
+            </div>
+
+            {/* Ahkaam */}
+
+            {/* Makharij */}
 
             {/* Remarks */}
             <div>
