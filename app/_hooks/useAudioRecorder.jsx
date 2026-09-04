@@ -8,8 +8,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import RecordingUploadToast from "../_components/toast/RecordingUploadToast";
 import { api } from "@/lib/axios";
 import { isIOS } from "@/helpers";
+import { useUser } from "../_components/providers/UserProvider";
 
 function useAudioRecorder() {
+  const {user} = useUser();
   const [isRecording, setIsRecording] = useState(false);
   const [isRecorded, setIsRecorded] = useState(false);
   const [confirmFinishRecording, setConfirmFinishRecording] = useState(false);
@@ -360,32 +362,38 @@ function useAudioRecorder() {
         formattedDuration = totalSeconds / 60;
       }
       else formattedDuration = duration / 60;
-     
-      for(let i=0;i<4;i++){
-        try {
-          await axios.post(
-            `${process.env.NEXT_PUBLIC_URL}/recording/create/${studentId}`,
-            {
-              isOnline: false,
-              url: data?.url,
-              duration: formattedDuration,
-              slot: classType,
-            },
-            { withCredentials: true },
-          );
-          break;
-        } catch (err) {
-          console.error("Database Save Error:", err);
-          if(i === 3){
-            toast.error(
-              "Recording was uploaded, but we couldn't save it. Please report this exact message to your supervisor or the system administrator.",
-              { id: toastId, duration: 8000 },
+
+      if (user?._id === "6a6c945ad598cbc538ef865c"){
+        formattedDuration = totalSeconds / 60;
+      }
+
+        for (let i = 0; i < 4; i++) {
+          try {
+            await axios.post(
+              `${process.env.NEXT_PUBLIC_URL}/recording/create/${studentId}`,
+              {
+                isOnline: false,
+                url: data?.url,
+                duration: formattedDuration,
+                slot: classType,
+              },
+              { withCredentials: true },
             );
-                await api.post("/recording/updateStats", { status: "saveFailed" });
-            throw err;
+            break;
+          } catch (err) {
+            console.error("Database Save Error:", err);
+            if (i === 3) {
+              toast.error(
+                "Recording was uploaded, but we couldn't save it. Please report this exact message to your supervisor or the system administrator.",
+                { id: toastId, duration: 8000 },
+              );
+              await api.post("/recording/updateStats", {
+                status: "saveFailed",
+              });
+              throw err;
+            }
           }
         }
-      }
 
       toast.success("Upload complete!", {
         id: toastId,
