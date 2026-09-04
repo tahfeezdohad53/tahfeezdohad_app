@@ -1,58 +1,58 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaCheck, FaLock, FaMicrophone } from "react-icons/fa";
+
+import {
+  FaCheck,
+  FaShield,
+  FaArrowLeft,
+  FaRotate,
+  FaTriangleExclamation,
+} from "react-icons/fa6";
 
 import { useUser } from "./providers/UserProvider";
 
 function Notification() {
   const { user } = useUser();
-
-  const [isRecordingNotified, setIsRecordingNotified] = useState(null);
+  const [isNotifiedAboutLosingRecording, setIsNotifiedAboutLosingRecording] = useState(null);
 
   useEffect(() => {
-    const notified = localStorage.getItem("recordingsPrivacyNotified");
-
-    setIsRecordingNotified(notified === "true");
+    const notified = localStorage.getItem("isNotifiedAboutLosingRecording");
+    setIsNotifiedAboutLosingRecording(notified === "true");
   }, []);
 
   function handleClose() {
-    localStorage.setItem("recordingsPrivacyNotified", "true");
-    localStorage.removeItem('ratingDismissed');
-    localStorage.removeItem('isAppreciated');
-    localStorage.removeItem('isNotified');
-    localStorage.removeItem('isNotified2');
-    localStorage.removeItem('isRated');
-    localStorage.removeItem('isRated2');
-    setIsRecordingNotified(true);
+    localStorage.removeItem("recordingsPrivacyNotified");
+    localStorage.setItem("isNotifiedAboutLosingRecording","true");
+    setIsNotifiedAboutLosingRecording(true);
   }
 
-  if(user?.role === 'student') return;
+  if (user?.role === "student") return;
 
-  if (!user?._id || isRecordingNotified === null) {
+  if (!user?._id || isNotifiedAboutLosingRecording === null) {
     return null;
   }
 
-  if (isRecordingNotified) {
+  if (isNotifiedAboutLosingRecording) {
     return null;
   }
 
   return (
-    <div className="fixed inset-0 z-999 flex items-center justify-center bg-black/50 px-4 backdrop-blur-[2px]">
-      <div className="w-full max-w-sm overflow-hidden rounded-2xl bg-(--card) shadow-2xl">
+    <div className="overflow-auto fixed inset-0 z-999 flex items-center justify-center bg-black/50 px-4 backdrop-blur-[2px]">
+      <div className="w-full lg:w-1/3 overflow-hidden rounded-2xl bg-(--card) shadow-2xl">
         {/* Header */}
         <div className="flex items-center gap-3 border-b border-(--border) px-5 py-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--primary)/10 text-(--primary)">
-            <FaMicrophone size={16} />
+            <FaShield size={16} />
           </div>
 
           <div>
             <h2 className="text-base font-semibold text-(--foreground)">
-              Recordings page
+              Recording Protection
             </h2>
 
             <p className="mt-0.5 text-xs text-gray-500">
-              Listen to your class recordings anytime
+              Your recordings are now safer
             </p>
           </div>
         </div>
@@ -60,29 +60,72 @@ function Notification() {
         {/* Content */}
         <div className="px-5 py-5">
           <p className="text-sm leading-6 text-(--foreground)">
-            You can now access the{" "}
-            <span className="font-semibold">Recordings</span> page to listen to
-            your recorded classes.
+            We’ve received several reports about recordings being accidentally
+            lost by clicking the <span className="font-semibold">Back</span>{" "}
+            button. We’ve now added protection to help prevent this.
           </p>
 
-          {/* Privacy */}
-          <div className="mt-4 flex gap-3 rounded-xl border border-(--border) bg-(--card-hover) p-4">
+          {/* Back Protection */}
+          <div className="mt-4 flex gap-3 rounded-xl border border-(--border) bg-(--card-hover) p-3.5">
             <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-(--primary)/10 text-(--primary)">
-              <FaLock size={13} />
+              <FaArrowLeft size={13} />
             </div>
 
             <div>
               <p className="text-sm font-semibold text-(--foreground)">
-                Your recordings are private
+                Back button protection
               </p>
 
               <p className="mt-1 text-xs leading-5 text-gray-500">
-                You can only listen to recordings that you have recorded. Other
-                teachers will not be able to access or listen to your
-                recordings. Administrators have access to your recordings.
+                The Back button in your device and browser is disabled while recording and before
+                submitting your recording, helping prevent accidental loss.
               </p>
             </div>
           </div>
+
+          {/* Refresh Protection */}
+          <div className="mt-3 flex gap-3 rounded-xl border border-(--border) bg-(--card-hover) p-3.5">
+            <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-(--primary)/10 text-(--primary)">
+              <FaRotate size={13} />
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold text-(--foreground)">
+                Refresh protection
+              </p>
+
+              <p className="mt-1 text-xs leading-5 text-gray-500">
+                Refreshing the page during recording or before submitting is
+                also protected.
+              </p>
+            </div>
+          </div>
+
+          {/* Leaving Site */}
+          <div className="mt-3 flex gap-3 rounded-xl border border-(--border) bg-(--card-hover) p-3.5">
+            <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-(--primary)/10 text-(--primary)">
+              <FaTriangleExclamation size={13} />
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold text-(--foreground)">
+                Accidentally leaving the site?
+              </p>
+
+              <p className="mt-1 text-xs leading-5 text-gray-500">
+                If you accidentally click the browser Home button or try to
+                leave the site, a confirmation message will appear. If you leave
+                by mistake, simply click your device Back button to return to
+                the site without losing your recording.
+              </p>
+            </div>
+          </div>
+
+          {/* Support */}
+          <p className="mt-4 text-xs leading-5 text-gray-500">
+            If you face any problems or unexpected behavior, please report it to
+            the administration so we can investigate and improve the system.
+          </p>
         </div>
 
         {/* Footer */}
@@ -94,6 +137,10 @@ function Notification() {
             <FaCheck size={12} />
             Got it
           </button>
+
+          <p className="mt-2 text-center text-[10px] text-gray-400">
+            Regards, System Administrator
+          </p>
         </div>
       </div>
     </div>
@@ -101,3 +148,5 @@ function Notification() {
 }
 
 export default Notification;
+
+// localStorage.setItem("recordingsPrivacyNotified", "true");
