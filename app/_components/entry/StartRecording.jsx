@@ -28,16 +28,16 @@ function StartRecording({ startRecording, studentName,classType,setClassType }) 
 
       {/* Main Container */}
       <div className="w-full max-w-4xl mx-auto rounded-[28px] bg-(--card) p-5 sm:p-7 shadow-(--shadow-xl)">
-      {/* <div className="flex items-center gap-4 mb-2">
+        {/* Recording Card */}
+        <div className="relative w-full rounded-[24px] border border-(--border) bg-(--bg-main)/40 px-2 py-3 sm:px-8 sm:py-12">
+      <div className="flex items-center gap-4 mb-2">
         <Link
           href="/students"
-          className="flex items-center justify-center w-8 h-8 rounded-2xl bg-(--card) shadow-(--shadow-md) text-(--text)"
+          className="absolute left-2 top-2 flex items-center justify-center w-8 h-8  text-(--text)"
         >
           <IoMdArrowRoundBack className="text-xl" />
         </Link>
-      </div> */}
-        {/* Recording Card */}
-        <div className="w-full rounded-[24px] border border-(--border) bg-(--bg-main)/40 px-2 py-3 sm:px-8 sm:py-12">
+      </div>
           <div className="flex flex-col items-center text-center">
             <p className="text-lg font-bold text-(--text)">
               Start Recording Class of
