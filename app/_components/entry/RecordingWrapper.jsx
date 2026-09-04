@@ -93,15 +93,20 @@ function RecordingWrapper({studentName,studentId}) {
       
 
       function handlePopState() {
-        
-          window.history.go(1);
-        
+          window.history.go(1); 
+      }
+      function handleUnload(e) {
+          e.preventDefault();
+          e.returnValue = "";
       }
 
       window.addEventListener("popstate", handlePopState);
+      window.addEventListener("beforeunload" ,handleUnload)
 
       return () => {
         window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("beforeunload", handleUnload);
+
       };
     }, []);
     
