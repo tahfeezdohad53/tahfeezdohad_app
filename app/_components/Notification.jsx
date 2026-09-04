@@ -38,7 +38,7 @@ function Notification() {
   }
 
   return (
-    <div className=" fixed inset-0 z-999 flex items-center justify-center bg-black/50 p-1 backdrop-blur-[2px]">
+    <div className=" fixed inset-0 z-999 flex items-center justify-center bg-black/50 p-1 px-4 backdrop-blur-[2px]">
       <div className="h-[99%] lg:h-fit overflow-auto w-full lg:w-1/3 rounded-2xl bg-(--card) shadow-2xl">
         {/* Header */}
         <div className="flex items-center gap-3 border-b border-(--border) px-5 py-4">
