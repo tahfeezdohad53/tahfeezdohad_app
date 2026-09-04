@@ -37,7 +37,7 @@ function Notification() {
     return null;
   }
 
-  return (
+  if(user?.role === 'teacher' || user?.role === 'admin')return (
     <div className=" fixed inset-0 z-999 flex items-center justify-center bg-black/50 p-1 px-4 backdrop-blur-[2px]">
       <div className="h-[99%] lg:h-fit overflow-auto w-full lg:w-1/3 rounded-2xl bg-(--card) shadow-2xl">
         {/* Header */}
