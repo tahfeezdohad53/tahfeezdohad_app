@@ -16,13 +16,7 @@ function IkhtebaarReportCard({ report }) {
     {
       icon: Clock3,
       key: "Duration",
-      value: report.duration
-        ? `${Math.floor(report.duration / 60)
-            .toString()
-            .padStart(2, "0")}:${(report.duration % 60)
-            .toString()
-            .padStart(2, "0")}`
-        : "-",
+      value: report.duration ? Math.round(report.duration) + ' min' : '?' 
     },
     {
       icon: Headphones,

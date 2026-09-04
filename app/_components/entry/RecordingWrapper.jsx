@@ -83,6 +83,27 @@ function RecordingWrapper({studentName,studentId}) {
         console.log(err);
       }
     }
+
+    useEffect(() => {
+      // Add 3 fake entries
+      window.history.pushState({ block: 1 }, "", window.location.href);
+      window.history.pushState({ block: 2 }, "", window.location.href);
+      window.history.pushState({ block: 3 }, "", window.location.href);
+
+      
+
+      function handlePopState() {
+        
+          window.history.go(1);
+        
+      }
+
+      window.addEventListener("popstate", handlePopState);
+
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+      };
+    }, []);
     
     // return <StartRecording />
     // return <RecordingInProgress hours={hours} minutes={minutes} seconds={seconds} isPause={isPause} handlePause={handlePause} handleResume={handleResume}/>
