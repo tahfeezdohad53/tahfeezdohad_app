@@ -31,6 +31,10 @@ function Sidebar() {
               <CiUser size={20} />
               <span>Students</span>
             </Link>}
+            {(user?.role === 'admin') && <Link href="/reports" className={linkStyle("/reports")}>
+              <CiUser size={20} />
+              <span>Reports</span>
+            </Link>}
 
             {(user?.role === 'admin' || user?.role === 'teacher') && <Link href="/recordings" className={linkStyle("/recordings")}>
               <CiMicrophoneOn size={20} />

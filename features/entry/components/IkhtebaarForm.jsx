@@ -58,7 +58,7 @@ function IkhtebaarForm({
     // console.log(details);
     try {
       details.audio = rec.url;
-      details.duration = rec.classDuration;
+      details.duration = rec.duration;
       await api.post(`/report/create`, details);
       toast.success('ikhtebaar report submitted.');
       setAudio(null);

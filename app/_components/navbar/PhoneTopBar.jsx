@@ -10,7 +10,7 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { CiEdit } from "react-icons/ci";
 import Image from "next/image";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import { RiUserAddLine } from "react-icons/ri";
+import { RiPagesLine, RiUserAddLine } from "react-icons/ri";
 
 const font = Cinzel({
   subsets: ["latin"],
@@ -28,6 +28,10 @@ function PhoneTopBar() {
   if (pathname.includes("recordings")) {
     heading = "Recordings";
     subHeading = "View all of your student recordings";
+  }
+  if (pathname.includes("reports")) {
+    heading = "Reports";
+    subHeading = "View & Manage Students Report";
   }
   if (pathname.includes("gurfah")) {
     heading = "Gurfah";
@@ -89,6 +93,9 @@ function PhoneTopBar() {
         <div className="p-2 rounded-md bg-(--bg-tertiary)/50 w-fit">
           {pathname.includes("recordings") && (
             <LuAudioLines className="text-xl text-(--primary)" />
+          )}
+          {pathname.includes("reports") && (
+            <RiPagesLine className="text-xl text-(--primary)" />
           )}
           {pathname.includes("gurfah") && (
             <FaHouse className="text-xl text-(--primary)" />

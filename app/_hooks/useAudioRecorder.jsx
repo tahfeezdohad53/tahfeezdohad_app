@@ -237,101 +237,116 @@ function useAudioRecorder() {
           
          if(i === 3){
            console.error("Signed URL Error:", err);
-           toast.error(
-             "Failed to get upload URL. please report this exact message to your supervisor or the system administrator.",
-             { id: toastId, duration: 8000 },
-           );
+          //  toast.error(
+          //    "Failed to get upload URL. please report this exact message to your supervisor or the system administrator.",
+          //    { id: toastId, duration: 8000 },
+          //  );
           //  throw err;
          }
         }
       }
 
       // Step 2: Upload to R2
-      try {
-        await axios.put(data.signedUrl, blob, {
-          headers: {
-            "Content-Type": localAudioType,
-          },
-          onUploadProgress: (progress) => {
-            const percent = Math.round(
-              (progress.loaded * 100) / progress.total,
-            );
+      if(data?.signedUrl){
+        try {
+          await axios.put(data.signedUrl, blob, {
+            headers: {
+              "Content-Type": localAudioType,
+            },
+            onUploadProgress: (progress) => {
+              const percent = Math.round(
+                (progress.loaded * 100) / progress.total,
+              );
 
-            // toast.loading(`Uploading... ${percent}%`, {
-            //   id: toastId,
-            // });
-            toast.custom((t) => {
-              return <RecordingUploadToast totalMB={progress.total / (1024 * 1024)} uploadedMB={progress.loaded / (1024 * 1024)} progress={percent} fileName={data?.key || 'unknown'} onClose={()=>toast.dismiss(t.id)}/>
-            },{id:toastId})
-          },
-        });
-                await api.post("/recording/updateStats", { status: "success" });
+              // toast.loading(`Uploading... ${percent}%`, {
+              //   id: toastId,
+              // });
+              toast.custom(
+                (t) => {
+                  return (
+                    <RecordingUploadToast
+                      totalMB={progress.total / (1024 * 1024)}
+                      uploadedMB={progress.loaded / (1024 * 1024)}
+                      progress={percent}
+                      fileName={data?.key || "unknown"}
+                      onClose={() => toast.dismiss(t.id)}
+                    />
+                  );
+                },
+                { id: toastId },
+              );
+            },
+          });
+          await api.post("/recording/updateStats", { status: "success" });
+        } catch (error) {
+          toast.loading(`wait...`, {
+            id: toastId,
+          });
 
-      } catch (error) {
-        toast.loading(`wait...`, {
-          id: toastId,
-        });
-
-        // if (error.code === "ERR_NETWORK") {
-          if(!data?.url) {
-            toast.error('url is missing but your recording will be submitted, please report this message to admin',{duration:8000});
-            // throw new Error("url is missing");
-          };
-          try{
-            const { data: status } = await axios.get(
-            `${process.env.NEXT_PUBLIC_URL}/recording/isUploaded`,{params:{url:data?.url},withCredentials:true},
-          );
-                if (status.uploaded) await api.post("/recording/updateStats", {status: "success"});
-                
-                  if (!status.uploaded) {
-                    try {
-                      await axios.put(data.signedUrl, blob, {
-                        headers: {
-                          "Content-Type": localAudioType,
-                        },
-                        onUploadProgress: (progress) => {
-                          const percent = Math.round(
-                            (progress.loaded * 100) / progress.total,
-                          );
-                          toast.custom(
-                            (t) => {
-                              return (
-                                <RecordingUploadToast
-                                  totalMB={progress.total / (1024 * 1024)}
-                                  uploadedMB={progress.loaded / (1024 * 1024)}
-                                  progress={percent}
-                                  fileName={data?.key || "unknown"}
-                                  retrying={true}
-                                  onClose={() => toast.dismiss(t.id)}
-                                />
-                              );
-                            },
-                            { id: toastId },
-                          );
-                        },
-                      });
-                      await api.post("/recording/updateStats", {
-                        status: "success",
-                      });
-                    } catch (err) {
-                      try {
-                        await api.post("/recording/updateStats", {
-                          status: "fail",
-                        });
-                      } catch (error2) {
-                        console.log(error2);
-                      }
-                      console.log(err);
-                    }
-                  }
-          }catch(err){
+          // if (error.code === "ERR_NETWORK") {
+          if (!data?.url) {
             toast.error(
-              "something went wrong but your recording entry will be saved, please report this message to admin",
+              "url is missing but your recording will be submitted, please report this message to admin",
               { duration: 8000 },
             );
-            
+            // throw new Error("url is missing");
           }
-       
+          try {
+            const { data: status } = await axios.get(
+              `${process.env.NEXT_PUBLIC_URL}/recording/isUploaded`,
+              { params: { url: data?.url }, withCredentials: true },
+            );
+            if (status.uploaded)
+              await api.post("/recording/updateStats", { status: "success" });
+
+            if (!status.uploaded) {
+              try {
+                await axios.put(data.signedUrl, blob, {
+                  headers: {
+                    "Content-Type": localAudioType,
+                  },
+                  onUploadProgress: (progress) => {
+                    const percent = Math.round(
+                      (progress.loaded * 100) / progress.total,
+                    );
+                    toast.custom(
+                      (t) => {
+                        return (
+                          <RecordingUploadToast
+                            totalMB={progress.total / (1024 * 1024)}
+                            uploadedMB={progress.loaded / (1024 * 1024)}
+                            progress={percent}
+                            fileName={data?.key || "unknown"}
+                            retrying={true}
+                            onClose={() => toast.dismiss(t.id)}
+                          />
+                        );
+                      },
+                      { id: toastId },
+                    );
+                  },
+                });
+                await api.post("/recording/updateStats", {
+                  status: "success",
+                });
+              } catch (err) {
+                try {
+                  await api.post("/recording/updateStats", {
+                    status: "fail",
+                  });
+                } catch (error2) {
+                  console.log(error2);
+                }
+                console.log(err);
+              }
+            }
+          } catch (err) {
+            // toast.error(
+            //   "something went wrong but your recording entry will be saved, please report this message to admin",
+            //   { duration: 8000 },
+            // );
+          }
+        }
       }
 
       toast.loading("Almost done...", { id: toastId });
@@ -341,7 +356,7 @@ function useAudioRecorder() {
 
       let formattedDuration;
 
-      if(isIOS() || duration < 10){
+      if(isIOS() || duration <= 1){
         formattedDuration = totalSeconds / 60;
       }
       else formattedDuration = duration / 60;
@@ -352,7 +367,7 @@ function useAudioRecorder() {
             `${process.env.NEXT_PUBLIC_URL}/recording/create/${studentId}`,
             {
               isOnline: false,
-              url: data.url,
+              url: data?.url,
               duration: formattedDuration,
               slot: classType,
             },

@@ -31,6 +31,19 @@ function PhoneNav() {
             </p>
           </Link>
         )}
+        {(role === "admin") && (
+          <Link
+            href={"/reports"}
+            className={`p-2 flex flex-col items-center gap-1 ${pathname.includes("reports") && " bg-(--card-hover) shadow-(--shadow-sm) rounded-md font-bold text-(--primary)"}`}
+          >
+            <CiUser className="" />
+            <p
+              className={`text-[0.60rem] ${!pathname.includes("reports") && "text-gray-500"}`}
+            >
+              Reports
+            </p>
+          </Link>
+        )}
         {(role === "admin" || role === "teacher") && (
           <Link
             href={"/recordings"}
