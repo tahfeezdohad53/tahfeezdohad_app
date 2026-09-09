@@ -225,6 +225,13 @@ function EvaluationForm({id}){
       onSubmit={handleSubmit}
       className="w-full rounded-xl bg-(--card) border border-(--border) p-4"
     >
+      <div className="flex items-center gap-1 mb-6 text-amber-800 font-bold">
+        <LuInfo />{" "}
+        <p className="text-xs">
+          please do not enter comma or any special character in makharij missed
+          field, enter makharij with only space in between.
+        </p>
+      </div>
       <div className="lg:grid grid-cols-5 flex flex-col gap-5">
         {/* Makharij */}
 
@@ -286,8 +293,8 @@ function EvaluationForm({id}){
           </label>
 
           <input
-          disabled
-          value={data.hifzGrade}
+            disabled
+            value={data.hifzGrade}
             onChange={(e) => handleSetData("hifzGrade", e.target.value)}
             required
             placeholder="Enter Talqeen, Grades will be calculated"
@@ -301,8 +308,8 @@ function EvaluationForm({id}){
           </label>
 
           <input
-          disabled
-          value={data.makharijGrade}
+            disabled
+            value={data.makharijGrade}
             onChange={(e) => handleSetData("makharijGrade", e.target.value)}
             required
             placeholder="Enter Makharij, Grades will be calculated"

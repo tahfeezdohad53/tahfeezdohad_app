@@ -358,7 +358,7 @@ function useAudioRecorder() {
 
       let formattedDuration;
 
-      if(isIOS() || duration <= 1){
+      if(isIOS() || !isFinite(duration)){ 
         formattedDuration = totalSeconds / 60;
       }
       else formattedDuration = duration / 60;
