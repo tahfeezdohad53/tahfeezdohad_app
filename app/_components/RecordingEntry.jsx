@@ -1,6 +1,6 @@
 'use client';
 import { format } from "date-fns";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CiCalendar } from "react-icons/ci";
 import { IoIosArrowDown } from "react-icons/io";
 import AudioPlayer from "react-h5-audio-player";
@@ -160,12 +160,52 @@ export default RecordingEntry
 function EvaluationForm({id}){
   const querClient = useQueryClient();
 
-  const [data,setData] = useState({talqeenMissed:null,makharijMissed:null,grade:null,remarks:''});
+  const [data,setData] = useState({totalTalqeen:"",talqeenMissed:"",makharijMissed:"",hifzGrade:"",makharijGrade:"",remarks:''});
   function handleSetData(key,value){
     setData(val => {
       return {...val,[key]:value};
     })
   }
+
+  useEffect(() => {
+    if(!data.talqeenMissed || !data.totalTalqeen) {
+      setData(el => {return {...el,hifzGrade:""}});
+      return;
+    };
+    console.log('isInfinite');
+    let grade = "";
+    const percentageMissed = Math.round((data.talqeenMissed / data.totalTalqeen) * 100);
+    console.log(percentageMissed)
+    if (percentageMissed < 10) grade = "A+";
+    if (percentageMissed >= 10 && percentageMissed < 20) grade = "A";
+    if (percentageMissed >= 20 && percentageMissed < 30) grade = "B+";
+    if (percentageMissed >= 30 && percentageMissed < 40) grade = "B";
+    if (percentageMissed >= 40) grade = "D";
+    console.log(grade);
+    setData(el => {return {...el,hifzGrade:grade}});
+
+  },[data.totalTalqeen,data.talqeenMissed])
+
+  useEffect(() => {
+    if(!data.makharijMissed) {
+      setData(el => {return {...el,makharijGrade:""}});
+      return;
+    };
+    console.log('isInfinite');
+    let grade = ""; 
+    const missed = data.makharijMissed.trim().split(' ').length;
+
+    console.log(missed)
+    if (missed === 0) grade = "A+";
+    if (missed === 1) grade = "A";
+    if (missed === 2) grade = "B";
+    if (missed === 3) grade = "C";
+    if (missed > 3) grade = "D";
+    
+    
+    setData(el => {return {...el,makharijGrade:grade}});
+
+  },[data.makharijMissed])
 
   async function handleSubmit(e){
     e.preventDefault();
@@ -181,11 +221,29 @@ function EvaluationForm({id}){
     }
   }
   return (
-    <form onSubmit={handleSubmit} className="w-full rounded-xl bg-(--card) border border-(--border) p-4">
-      <div className="lg:grid grid-cols-3 flex flex-col gap-5">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full rounded-xl bg-(--card) border border-(--border) p-4"
+    >
+      <div className="lg:grid grid-cols-5 flex flex-col gap-5">
         {/* Makharij */}
 
         {/* Tajweed */}
+        <div>
+          <label className="mb-2 flex items-center gap-1.5 text-sm font-medium">
+            Total Talqeen
+            <LuInfo className="text-gray-400" size={14} />
+          </label>
+
+          <input
+            onChange={(e) => handleSetData("totalTalqeen", e.target.value)}
+            value={data.totalTalqeen}
+            required
+            type="number"
+            placeholder="Enter number of total talqeen"
+            className="w-full rounded-lg border border-gray-500 bg-(--card) px-3 py-2.5 text-sm outline-none focus:border-(--primary) placeholder:text-xs"
+          />
+        </div>
         <div>
           <label className="mb-2 flex items-center gap-1.5 text-sm font-medium">
             Talqeen missed
@@ -194,12 +252,13 @@ function EvaluationForm({id}){
 
           <input
             onChange={(e) => handleSetData("talqeenMissed", e.target.value)}
+            value={data.talqeenMissed}
+            disabled={data.totalTalqeen ? false : true}
+            max={Number(data.totalTalqeen)}
             required
             type="number"
-            min="0"
-            max="10"
             placeholder="Enter number of talqeen missed"
-            className="w-full rounded-lg border border-gray-500 bg-(--card) px-3 py-2.5 text-sm outline-none focus:border-(--primary)"
+            className="w-full rounded-lg border border-gray-500 bg-(--card) px-3 py-2.5 text-sm outline-none focus:border-(--primary) placeholder:text-xs"
           />
         </div>
 
@@ -212,28 +271,45 @@ function EvaluationForm({id}){
 
           <input
             onChange={(e) => handleSetData("makharijMissed", e.target.value)}
+            value={data.makharijMissed}
             required
             min="0"
             max="10"
             placeholder="e.g. ص، س، ض، ح، خ، ع، ت"
-            className="w-full rounded-lg border border-gray-500 bg-(--card) px-3 py-2.5 text-sm outline-none focus:border-(--primary)"
+            className="w-full rounded-lg border border-gray-500 bg-(--card) px-3 py-2.5 text-sm outline-none focus:border-(--primary) placeholder:text-xs"
           />
         </div>
         <div className="">
           <label className="mt-2 flex items-center gap-1.5 text-sm font-medium">
-            Grade
+            Hifz Grade
             <LuInfo className="text-gray-400" size={14} />
           </label>
 
           <input
-            onChange={(e) => handleSetData("grade", e.target.value)}
+          disabled
+          value={data.hifzGrade}
+            onChange={(e) => handleSetData("hifzGrade", e.target.value)}
             required
-            placeholder="Enter Grade, A,A+,B etc"
-            className="w-full rounded-lg border border-gray-500 bg-(--card) px-3 py-2.5 text-sm outline-none focus:border-(--primary)"
-          />
+            placeholder="Enter Talqeen, Grades will be calculated"
+            className="disabled:cursor-not-allowed w-full rounded-lg border border-gray-500 bg-(--card) px-3 py-2.5 text-sm outline-none focus:border-(--primary) placeholder:text-xs"
+          ></input>
+        </div>
+        <div className="">
+          <label className="mt-2 flex items-center gap-1.5 text-sm font-medium">
+            Makharij Grade
+            <LuInfo className="text-gray-400" size={14} />
+          </label>
+
+          <input
+          disabled
+          value={data.makharijGrade}
+            onChange={(e) => handleSetData("makharijGrade", e.target.value)}
+            required
+            placeholder="Enter Makharij, Grades will be calculated"
+            className="disabled:cursor-not-allowed w-full rounded-lg border border-gray-500 bg-(--card) px-3 py-2.5 text-sm outline-none focus:border-(--primary) placeholder:text-xs"
+          ></input>
         </div>
       </div>
-
       <div className="lg:w-1/2 mt-5 lg:mt-0">
         <label className="my-2 flex items-center gap-1.5 text-sm font-medium">
           Remarks
@@ -272,6 +348,7 @@ import {
   FiStar,
   FiFileText,
 } from "react-icons/fi";
+import { el } from "date-fns/locale";
 
 function EvaluationResult({el}) {
   return (
@@ -292,7 +369,9 @@ function EvaluationResult({el}) {
 
           <div>
             <p className="text-sm font-medium text-gray-600">Evaluated by</p>
-            <p className="mt-1 text-[15px] font-medium text-gray-900">{el.evaluatedBy}</p>
+            <p className="mt-1 text-[15px] font-medium text-gray-900">
+              {el.evaluatedBy}
+            </p>
           </div>
         </div>
 
@@ -307,7 +386,9 @@ function EvaluationResult({el}) {
             <p className="mt-1 text-[15px] font-medium text-gray-900">
               {format(el.evaluationDate, "dd MMM, yyyy")}
             </p>
-            <p className="text-sm text-gray-500">{format(el.evaluationDate,"hh:mm a")}</p>
+            <p className="text-sm text-gray-500">
+              {format(el.evaluationDate, "hh:mm a")}
+            </p>
           </div>
         </div>
 
@@ -320,10 +401,19 @@ function EvaluationResult({el}) {
           <div>
             <p className="text-sm font-medium text-gray-600">Grade</p>
 
-            <div className="mt-1 flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-100 font-bold text-green-700">
-                {el.grade}
-              </span>
+            <div className="mt-1 fle items-center gap-2">
+              <div className="flex items-center gap-2">
+                hifz
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-100 font-bold text-green-700">
+                  {el.hifzGrade}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                Makharij
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-100 font-bold text-green-700">
+                  {el.makharijGrade}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -337,17 +427,19 @@ function EvaluationResult({el}) {
           <div>
             <p className="text-sm font-medium text-gray-600">Details</p>
 
-            <div className="mt-1 space-y-1 text-[15px] text-gray-900">
+            <div className="mt-1 space-y-1  text-gray-900 text-xs">
               <p>
-                <span className="font-medium">Makharij:</span> {el.makharijMissed}
+                <span className="font-medium">Makharij:</span>{" "}
+                {el.makharijMissed}
               </p>
 
               <p>
-                <span className="font-medium">talqeen missed:</span> {el.talqeenMissed}
+                <span className="font-mediu">talqeen missed:</span>{" "}
+                {el.talqeenMissed}
               </p>
 
               <p>
-                <span className="font-medium">remarks:</span> {el.remarks}
+                <span className="font-mediu">remarks:</span> {el.remarks}
               </p>
             </div>
           </div>

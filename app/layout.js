@@ -33,7 +33,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${poppins.className} h-full`}>
-      <body className=" bg-(--bg-main) h-full">
+      <body className=" bg-(--bg-main) h-full overflow-x-hidden">
         <GlobalQueryProvider>
           <SessionProvider>
             <UserProvider>

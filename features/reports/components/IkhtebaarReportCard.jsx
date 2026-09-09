@@ -40,7 +40,7 @@ function IkhtebaarReportCard({ report }) {
     },
     {
       icon: Scale,
-      key: "Class Mode",
+      key: "Mode",
       value: report.classMode || "-",
     },
     {

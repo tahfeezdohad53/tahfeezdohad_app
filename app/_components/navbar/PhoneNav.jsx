@@ -7,6 +7,7 @@ import { FaMoneyCheck, FaUser } from "react-icons/fa"
 import { IoBookOutline, IoCalendarOutline, IoPersonAddOutline } from "react-icons/io5"
 import { useUser } from "../providers/UserProvider";
 import { Cinzel } from "next/font/google";
+import { RxDashboard } from "react-icons/rx";
 
 
 function PhoneNav() {
@@ -18,6 +19,19 @@ function PhoneNav() {
     if(!user.role) return null;
     return (
       <div className="overflow-x-auto z-60 lg:hidden fixed bottom-0 left-0 flex items-center justify-between w-full px-3 h-15 border-t border-(--border) bg-(--card) shadow-(--shadow-lg)">
+        {(role === "admin" || role === "teacher") && (
+          <Link
+            href={"/dashboard"}
+            className={`p-2 flex flex-col items-center gap-1 ${pathname.includes("dashboard") && " bg-(--card-hover) shadow-(--shadow-sm) rounded-md font-bold text-(--primary)"}`}
+          >
+            <RxDashboard className="" />
+            <p
+              className={`text-[0.60rem] ${!pathname.includes("dashboard") && "text-gray-500"}`}
+            >
+              Dashboard
+            </p>
+          </Link>
+        )}
         {(role === "admin" || role === "teacher") && (
           <Link
             href={"/students"}

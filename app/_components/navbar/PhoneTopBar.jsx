@@ -2,7 +2,7 @@
 import { Cinzel, Playfair_Display } from "next/font/google";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaUser, FaUserFriends } from "react-icons/fa";
+import { FaRegChartBar, FaUser, FaUserFriends } from "react-icons/fa";
 import { FaHouse, FaMicrophoneLines } from "react-icons/fa6";
 import { LuAudioLines } from "react-icons/lu";
 import { useUser } from "../providers/UserProvider";
@@ -28,6 +28,10 @@ function PhoneTopBar() {
   if (pathname.includes("recordings")) {
     heading = "Recordings";
     subHeading = "View all of your student recordings";
+  }
+  if (pathname.includes("dashboard")) {
+    heading = "Dashboard";
+    subHeading = "View your classes data in detail ";
   }
   if (pathname.includes("reports")) {
     heading = "Reports";
@@ -93,6 +97,9 @@ function PhoneTopBar() {
         <div className="p-2 rounded-md bg-(--bg-tertiary)/50 w-fit">
           {pathname.includes("recordings") && (
             <LuAudioLines className="text-xl text-(--primary)" />
+          )}
+          {pathname.includes("dashboard") && (
+            <FaRegChartBar className="text-xl text-(--primary)" />
           )}
           {pathname.includes("reports") && (
             <RiPagesLine className="text-xl text-(--primary)" />
