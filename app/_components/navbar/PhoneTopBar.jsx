@@ -29,6 +29,10 @@ function PhoneTopBar() {
     heading = "Recordings";
     subHeading = "View all of your student recordings";
   }
+  if (pathname.includes("attendance")) {
+    heading = "Attendance";
+    subHeading = "View Attendance record";
+  }
   if (pathname.includes("dashboard")) {
     heading = "Dashboard";
     subHeading = "View your classes data in detail ";
@@ -112,6 +116,9 @@ function PhoneTopBar() {
           )}
           {pathname.includes("maqarat") && (
             <FaUserFriends className="text-xl text-(--primary)" />
+          )}
+          {pathname.includes("attendance") && (
+            <FaUser className="text-xl text-(--primary)" />
           )}
           {pathname.includes("entry") && (
             <FaMicrophoneLines className="text-xl text-(--primary)" />

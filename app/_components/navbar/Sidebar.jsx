@@ -27,6 +27,10 @@ function Sidebar() {
         <img src="/Dohad.png" alt="" className="w-full mx-auto"/>
        {user?._id && <div className="lg:flex flex-col justify-between mt-10 flex-1">
           <div className="space-y-2">
+            {/* {(user?.role === 'teacher' || user?.role === 'admin') && <Link href="/students" className={linkStyle("/students")}>
+              <CiUser size={20} />
+              <span>Attendance</span>
+            </Link>} */}
             {(user?.role === 'teacher' || user?.role === 'admin') && <Link href="/students" className={linkStyle("/students")}>
               <CiUser size={20} />
               <span>Students</span>

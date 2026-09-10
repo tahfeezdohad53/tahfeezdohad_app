@@ -3,11 +3,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation"
 import { AiOutlineHome } from "react-icons/ai"
 import { CiMicrophoneOn, CiUser } from "react-icons/ci"
-import { FaMoneyCheck, FaUser } from "react-icons/fa"
+import { FaClipboardCheck, FaMoneyCheck, FaUser } from "react-icons/fa"
 import { IoBookOutline, IoCalendarOutline, IoPersonAddOutline } from "react-icons/io5"
 import { useUser } from "../providers/UserProvider";
 import { Cinzel } from "next/font/google";
 import { RxDashboard } from "react-icons/rx";
+import { LuClipboardCheck } from "react-icons/lu";
 
 
 function PhoneNav() {
@@ -19,7 +20,7 @@ function PhoneNav() {
     if(!user.role) return null;
     return (
       <div className="overflow-x-auto z-60 lg:hidden fixed bottom-0 left-0 flex items-center justify-between w-full px-3 h-15 border-t border-(--border) bg-(--card) shadow-(--shadow-lg)">
-        {role === "admin" && (
+        {/* {role === "admin" && (
           <Link
             href={"/dashboard"}
             className={`p-2 flex flex-col items-center gap-1 ${pathname.includes("dashboard") && " bg-(--card-hover) shadow-(--shadow-sm) rounded-md font-bold text-(--primary)"}`}
@@ -29,6 +30,19 @@ function PhoneNav() {
               className={`text-[0.60rem] ${!pathname.includes("dashboard") && "text-gray-500"}`}
             >
               Dashboard
+            </p>
+          </Link>
+        )} */}
+        {(user?._id === '6a6454c291b28fe27b99ee76' || user?._id === "6a5b88719b8732dabd07a6f6") &&  (
+          <Link
+            href={"/teacher_attendance"}
+            className={`p-2 flex flex-col items-center gap-1 ${pathname.includes("teacher_attendance") && " bg-(--card-hover) shadow-(--shadow-sm) rounded-md font-bold text-(--primary)"}`}
+          >
+            <LuClipboardCheck className="" />
+            <p
+              className={`text-[0.60rem] ${!pathname.includes("teacher_attendance") && "text-gray-500"}`}
+            >
+              Attendance
             </p>
           </Link>
         )}
