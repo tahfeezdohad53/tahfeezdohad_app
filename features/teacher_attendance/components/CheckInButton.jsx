@@ -100,7 +100,7 @@ function CheckInButton() {
     74.25592556237498,
   );
   
-  if (!isAtLocation) {
+  if (isAtLocation) {
     await mutate.mutateAsync({ batch: selectedBatch });
     setIsSubmitting(false);
     setIsOpen(false);

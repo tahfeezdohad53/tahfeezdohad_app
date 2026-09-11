@@ -33,7 +33,7 @@ function PhoneNav() {
             </p>
           </Link>
         )} */}
-        {(user?._id === '6a6454c291b28fe27b99ee76' || user?._id === "6a5b88719b8732dabd07a6f6") &&  (
+        {(user?.role === 'teacher' || user?.role === 'admin') &&  (
           <Link
             href={"/teacher_attendance"}
             className={`p-2 flex flex-col items-center gap-1 ${pathname.includes("teacher_attendance") && " bg-(--card-hover) shadow-(--shadow-sm) rounded-md font-bold text-(--primary)"}`}
