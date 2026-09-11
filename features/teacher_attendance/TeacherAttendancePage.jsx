@@ -1,6 +1,8 @@
 "use client";
 
 import toast from "react-hot-toast";
+import TodayAttendanceStatus from "./components/TodayAttendanceStatus";
+import TeacherAttendanceTable from "./components/TeacherAttendanceTable";
 
 function isInsideDiameter(userLat, userLon, centerLat, centerLon) {
   const R = 6371000; // Earth radius in meters
@@ -23,23 +25,35 @@ function isInsideDiameter(userLat, userLon, centerLat, centerLon) {
 
 async function getCurrentLocation() {
   navigator.geolocation.getCurrentPosition(handleCheckIn, () =>
-    toast.error("failed to get location!"),
+    toast.error("failed to get location!"),{enableHighAccuracy:true,timeout:15000}
   );
+}
+
+function checkIn(){
+  toast.success('Checked In');
 }
 
 function handleCheckIn(location) {
   const lat = location.coords.latitude;
   const lng = location.coords.longitude;
-
-  const isAtLocation = isInsideDiameter(lat, lng, 22.832626, 74.2558637);
+  console.log(lat,lng)
+  const isAtLocation = isInsideDiameter(
+    lat,
+    lng,
+    22.832543893725756,
+    74.25592556237498,
+  );
   if (isAtLocation) checkIn();
   else toast.error("not at location");
 }
 
 function TeacherAttendancePage() {
   return (
-    <div className="p-5">
+    <div className="p-5 flex flex-col gap-5">
       <button onClick={getCurrentLocation} className="bg-(--primary) text-white p-2 rounded-md text-xs">check in</button>
+      <TodayAttendanceStatus />
+
+      <TeacherAttendanceTable />
     </div>
   );
 }
