@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import useFilter from "./useFilter";
 
-function useSetSearchParams({ paramsList = [], guardClause }) {
+function useSetSearchParams({ paramsList = [], guardClause = () => true }) {
   const { router, pathname, searchParams, handleChangeSearchParams } = useFilter();
 
   useEffect(() => {
