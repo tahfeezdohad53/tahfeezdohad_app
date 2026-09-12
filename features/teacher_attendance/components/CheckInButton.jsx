@@ -76,6 +76,7 @@ async function handleCheckIn(selectedBatch) {
     22.832540011580914,
     74.25593716500295,
   );
+  alert(lat," ",lng);
   if (isAtLocation) await mutate.mutateAsync({batch:selectedBatch});
   else toast.error("not at location");
 }
