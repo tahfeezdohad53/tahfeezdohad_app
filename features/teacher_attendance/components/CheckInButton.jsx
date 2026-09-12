@@ -105,6 +105,7 @@ function CheckInButton() {
 
   alert(lat);
   alert(lng);
+  alert(location.coords.accuracy);
   
   if (isAtLocation) {
     await mutate.mutateAsync({ batch: selectedBatch });
