@@ -6,41 +6,62 @@ import TeacherAttendanceRow from "./TeacherAttendanceRow";
 import TeacherAttendanceRowForAdmin from "./admin/TeacherAttendanceRowForAdmin";
 import { LuCalendarDays } from "react-icons/lu";
 import { useUser } from "@/app/_components/providers/UserProvider";
+import TeacherAttendanceFilter from "./TeacherAttendanceFilter";
+import { Download } from "lucide-react";
+import { handleDownloadExcel } from "../api/handleDownloadExcel";
+import useFilter from "@/shared/hooks/useFilter";
 
 function TeacherAttendanceTable() {
 
   const {data} = useAttendance();
   const {user} = useUser();
-
+  const {searchParams} = useFilter();
   return (
-    <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="rounded-xl border border-gray-200 bg-white shadow-sm px-1">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3">
-        <h2 className="flex items-center gap-3 text-sm">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-900/10 text-amber-900">
-            <LuCalendarDays size={18} />
-          </span>
+        <h2 className="flex items-center justify-between w-full gap-3 text-sm">
+          <div className="flex items-center gap-2">
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-900/10 text-amber-900">
+              <LuCalendarDays size={18} />
+            </span>
 
-          <div>
-            <p className="font-semibold text-amber-950">Attendance Records</p>
+            <div>
+              <p className="font-semibold text-amber-950">Attendance Records</p>
 
-            <p className="mt-1 text-[0.65rem] text-amber-900/60">
-              Your daily check in and check out history
-            </p>
+              <p className="mt-1 text-[0.65rem] text-amber-900/60">
+                Your daily check in and check out history
+              </p>
+            </div>
           </div>
+
+          <button
+          onClick={() => handleDownloadExcel(searchParams)}
+            type="button"
+            className="flex items-center gap-1.5 rounded-lg border border-gray-200
+             bg-(--card) px-3 py-2 text-xs font-medium text-gray-700
+             shadow-sm transition-all
+             hover:border-amber-300 hover:bg-amber-50 hover:text-amber-800
+             active:scale-[0.98]"
+          >
+            <Download size={14} strokeWidth={2} />
+            Export
+          </button>
         </h2>
       </div>
 
+      <TeacherAttendanceFilter />
+
       {/* Table */}
-      <div className="px-3">
+      <div className="">
         {/* Table Header */}
         <div
           className={`grid ${user?.role === "teacher" ? `grid-cols-[1fr_1fr_1fr_1fr_1fr]` : "grid-cols-[2fr_1fr_1fr_0.8fr_0.8fr]"} items-center rounded-md bg-[#f6f3f0] px-2 py-2 text-[10px] font-medium text-gray-600`}
         >
-          <span>Date</span>
+          <span>{user?.role === "teacher" ? "Date" : "Teacher"}</span>
           <span className="text-center">Check In</span>
           <span className="text-center">Check Out</span>
-          <span className="text-center">Total Min</span>
+          <span className="text-center">Min</span>
           <span className="text-center">Verification</span>
         </div>
 
@@ -63,9 +84,11 @@ function TeacherAttendanceTable() {
               No attendance records yet
             </p>
 
-            {user?.role === 'teacher' && <p className="mt-1 text-[10px] text-gray-500">
-              Check in to start recording your attendance.
-            </p>}
+            {user?.role === "teacher" && (
+              <p className="mt-1 text-[10px] text-gray-500">
+                Check in to start recording your attendance.
+              </p>
+            )}
           </div>
         )}
       </div>
