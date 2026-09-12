@@ -3,6 +3,7 @@
 import useAttendance from "../hooks/useAttendance";
 import TeacherAttendanceTablePaginationController from "./TeacherAttendanceTablePaginationController";
 import TeacherAttendanceRow from "./TeacherAttendanceRow";
+import { LuCalendarDays } from "react-icons/lu";
 
 function TeacherAttendanceTable() {
 
@@ -11,8 +12,14 @@ function TeacherAttendanceTable() {
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3">
-        <h2 className="text-sm font-semibold text-gray-900">
-          Attendance Records
+        <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
+          <p className="text-amber-800 bg-amber-50 p-2 rounded-md">
+            <LuCalendarDays />
+          </p>
+          <div>
+            <p className="font-semibold">Attendance Records</p>
+            <p className="text-[0.65rem] mt-1 text-gray-500">Your daily check in and check out history</p>
+          </div>
         </h2>
       </div>
 
