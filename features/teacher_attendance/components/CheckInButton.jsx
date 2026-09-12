@@ -91,18 +91,29 @@ function CheckInButton() {
     if (!selectedBatch) return;
     setIsSubmitting(true);
       toast.loading("Verifying location...", { id: "checkIn" });
-      navigator.geolocation.watchPosition(lo => {
+      const watchPos = navigator.geolocation.watchPosition(async lo => {
         if(lo.coords.accuracy < 20){
-          // const isAtLocation = isInsideDiameter(
-          //   lat,
-          //   lng,
-          //   22.8288288288,
-          //   74.248458742,
-          // );
-          alert(lo.coords.latitude)
-          alert(lo.coords.longitude);
+          const isAtLocation = isInsideDiameter(
+            lat,
+            lng,
+            22.83266222,
+            74.2558682,
+          );
+          if (isAtLocation) {
+            navigator.geolocation.clearWatch(watchPos);
+            await mutate.mutateAsync({ batch: selectedBatch });
+            setIsSubmitting(false);
+            setIsOpen(false);
+            setSelectedBatch(null);
+          }
+
+          else {
+            navigator.geolocation.clearWatch(watchPos);
+            toast.error("not at location", { id: "checkIn" });
+            setIsSubmitting(false);
+          }
         }
-      })
+      },() => toast.error('location permission denied!',{id:'checkIn'}),{enableHighAccuracy:true,timeout:30000,maximumAge:0})
   //   navigator.geolocation.getCurrentPosition(
   //     async (location) => {
   //        const lat = location.coords.latitude;
