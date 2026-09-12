@@ -97,11 +97,11 @@ function CheckInButton() {
             const lng = location.coords.longitude;
             console.log(lat, lng);
             const isAtLocation = isInsideDiameter(
-    lat,
-    lng,
-    22.832543893725756,
-    74.25592556237498,
-  );
+              lat,
+              lng,
+              22.8288288288,
+              74.248458742,
+            );
 
   alert(lat);
   alert(lng);
