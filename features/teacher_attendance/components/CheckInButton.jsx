@@ -91,37 +91,49 @@ function CheckInButton() {
     if (!selectedBatch) return;
     setIsSubmitting(true);
       toast.loading("Verifying location...", { id: "checkIn" });
-    navigator.geolocation.getCurrentPosition(
-      async (location) => {
-         const lat = location.coords.latitude;
-            const lng = location.coords.longitude;
-            console.log(lat, lng);
-            const isAtLocation = isInsideDiameter(
-              lat,
-              lng,
-              22.8288288288,
-              74.248458742,
-            );
+      navigator.geolocation.watchPosition(lo => {
+        if(lo.coords.accuracy < 20){
+          // const isAtLocation = isInsideDiameter(
+          //   lat,
+          //   lng,
+          //   22.8288288288,
+          //   74.248458742,
+          // );
+          alert(lo.coords.latitude)
+          alert(lo.coords.longitude);
+        }
+      })
+  //   navigator.geolocation.getCurrentPosition(
+  //     async (location) => {
+  //        const lat = location.coords.latitude;
+  //           const lng = location.coords.longitude;
+  //           console.log(lat, lng);
+  //           const isAtLocation = isInsideDiameter(
+  //             lat,
+  //             lng,
+  //             22.8288288288,
+  //             74.248458742,
+  //           );
 
-  alert(lat);
-  alert(lng);
-  alert(location.coords.accuracy);
+  // // alert(lat);
+  // // alert(lng);
+  // // alert(location.coords.accuracy);
   
-  if (isAtLocation) {
-    await mutate.mutateAsync({ batch: selectedBatch });
-    setIsSubmitting(false);
-    setIsOpen(false);
-    setSelectedBatch(null);
-  }
+  // if (isAtLocation) {
+  //   await mutate.mutateAsync({ batch: selectedBatch });
+  //   setIsSubmitting(false);
+  //   setIsOpen(false);
+  //   setSelectedBatch(null);
+  // }
 
-  else {
-    toast.error("not at location", { id: "checkIn" });
-    setIsSubmitting(false);
-  }
-      },
-      () => toast.error("failed to get location!"),
-      { enableHighAccuracy: true, timeout: 15000,maximumAge:0 },
-    );
+  // else {
+  //   toast.error("not at location", { id: "checkIn" });
+  //   setIsSubmitting(false);
+  // }
+  //     },
+  //     () => toast.error("failed to get location!"),
+  //     { enableHighAccuracy: true, timeout: 15000,maximumAge:0 },
+  //   );
 
 
     
