@@ -67,12 +67,14 @@ function checkIn() {
 async function handleCheckIn(selectedBatch) {
   const lat = location.coords.latitude;
   const lng = location.coords.longitude;
+  console.log(lat);
+  console.log(lng);
   console.log(lat, lng);
   const isAtLocation = isInsideDiameter(
     lat,
     lng,
-    22.832543893725756,
-    74.25592556237498,
+    22.832540011580914,
+    74.25593716500295,
   );
   if (isAtLocation) await mutate.mutateAsync({batch:selectedBatch});
   else toast.error("not at location");

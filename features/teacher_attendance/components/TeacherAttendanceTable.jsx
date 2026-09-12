@@ -3,11 +3,15 @@
 import useAttendance from "../hooks/useAttendance";
 import TeacherAttendanceTablePaginationController from "./TeacherAttendanceTablePaginationController";
 import TeacherAttendanceRow from "./TeacherAttendanceRow";
+import TeacherAttendanceRowForAdmin from "./admin/TeacherAttendanceRowForAdmin";
 import { LuCalendarDays } from "react-icons/lu";
+import { useUser } from "@/app/_components/providers/UserProvider";
 
 function TeacherAttendanceTable() {
 
   const {data} = useAttendance();
+  const {user} = useUser();
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
       {/* Header */}
@@ -18,7 +22,9 @@ function TeacherAttendanceTable() {
           </p>
           <div>
             <p className="font-semibold">Attendance Records</p>
-            <p className="text-[0.65rem] mt-1 text-gray-500">Your daily check in and check out history</p>
+            <p className="text-[0.65rem] mt-1 text-gray-500">
+              Your daily check in and check out history
+            </p>
           </div>
         </h2>
       </div>
@@ -26,7 +32,9 @@ function TeacherAttendanceTable() {
       {/* Table */}
       <div className="px-3">
         {/* Table Header */}
-        <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] items-center rounded-md bg-[#f6f3f0] px-2 py-2 text-[10px] font-medium text-gray-600">
+        <div
+          className={`grid ${user?.role === "teacher" ? `grid-cols-[1fr_1fr_1fr_1fr_1fr]` : "grid-cols-[2fr_1fr_1fr_0.8fr_0.8fr]"} items-center rounded-md bg-[#f6f3f0] px-2 py-2 text-[10px] font-medium text-gray-600`}
+        >
           <span>Date</span>
           <span className="text-center">Check In</span>
           <span className="text-center">Check Out</span>
@@ -36,9 +44,13 @@ function TeacherAttendanceTable() {
 
         {/* Rows / Empty State */}
         {data?.attendance?.length > 0 ? (
-          data.attendance.map((el) => (
-            <TeacherAttendanceRow key={el._id} el={el} />
-          ))
+          data.attendance.map((el) =>
+            user?.role === "teacher" ? (
+              <TeacherAttendanceRow key={el._id} el={el} />
+            ) : (
+              <TeacherAttendanceRowForAdmin key={el._id} el={el} />
+            ),
+          )
         ) : (
           <div className="flex min-h-35 flex-col items-center justify-center text-center">
             <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-[#f6f3f0] text-gray-500">
