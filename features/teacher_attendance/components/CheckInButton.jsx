@@ -49,7 +49,7 @@ function isInsideDiameter(userLat, userLon, centerLat, centerLon) {
 
   const distance = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-  return distance <= 10; // 5m radius = 10m diameter
+  return distance <= 10; 
 }
 
 async function getCurrentLocation() {
@@ -64,22 +64,22 @@ function checkIn() {
   toast.success("Checked In");
 }
 
-async function handleCheckIn(selectedBatch) {
-  const lat = location.coords.latitude;
-  const lng = location.coords.longitude;
-  console.log(lat);
-  console.log(lng);
-  console.log(lat, lng);
-  const isAtLocation = isInsideDiameter(
-    lat,
-    lng,
-    22.832540011580914,
-    74.25593716500295,
-  );
-  alert(lat," ",lng);
-  if (isAtLocation) await mutate.mutateAsync({batch:selectedBatch});
-  else toast.error("not at location");
-}
+// async function handleCheckIn(selectedBatch) {
+//   const lat = location.coords.latitude;
+//   const lng = location.coords.longitude;
+//   console.log(lat);
+//   console.log(lng);
+//   console.log(lat, lng);
+//   const isAtLocation = isInsideDiameter(
+//     lat,
+//     lng,
+//     22.832540011580914,
+//     74.25593716500295,
+//   );
+//   alert(location.accuracy);
+//   if (isAtLocation) await mutate.mutateAsync({batch:selectedBatch});
+//   else toast.error("not at location");
+// }
 
 function CheckInButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -102,6 +102,9 @@ function CheckInButton() {
     22.832543893725756,
     74.25592556237498,
   );
+
+  alert(lat);
+  alert(lng);
   
   if (isAtLocation) {
     await mutate.mutateAsync({ batch: selectedBatch });
@@ -110,10 +113,13 @@ function CheckInButton() {
     setSelectedBatch(null);
   }
 
-  else toast.error("not at location",{id:'checkIn'});
+  else {
+    toast.error("not at location", { id: "checkIn" });
+    setIsSubmitting(false);
+  }
       },
       () => toast.error("failed to get location!"),
-      { enableHighAccuracy: true, timeout: 15000 },
+      { enableHighAccuracy: true, timeout: 15000,maximumAge:0 },
     );
 
 

@@ -8,14 +8,14 @@ import toast from "react-hot-toast";
 function CheckOutButton() {
   const mutate = useCheckOut();
   async function checkOut() {
-    toast.loading('Checking out...',{id:'checkOut'});
+    // toast.loading('Checking out...',{id:'checkOut'});
     await mutate.mutateAsync();
   }
   return (
     <button
       onClick={checkOut}
       disabled={mutate.isPending}
-      className="flex items-center gap-2 bg-red-500 text-xs py-3 px-3 shadow-(--shadow-sm) text-white rounded-md borde border-(--primary)"
+      className="relative flex items-center gap-2 bg-red-500 text-xs py-3 px-3 shadow-(--shadow-sm) text-white rounded-md borde border-(--primary)"
     >
       <span className={`flex items-center gap-2 ${mutate.isPending ? "opacity-0" : "opacity-100"}`}>
         <IoIosLogOut /> Check out
