@@ -16,13 +16,15 @@ function TeacherAttendanceTable() {
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3">
-        <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-          <p className="text-amber-800 bg-amber-50 p-2 rounded-md">
-            <LuCalendarDays />
-          </p>
+        <h2 className="flex items-center gap-3 text-sm">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-900/10 text-amber-900">
+            <LuCalendarDays size={18} />
+          </span>
+
           <div>
-            <p className="font-semibold">Attendance Records</p>
-            <p className="text-[0.65rem] mt-1 text-gray-500">
+            <p className="font-semibold text-amber-950">Attendance Records</p>
+
+            <p className="mt-1 text-[0.65rem] text-amber-900/60">
               Your daily check in and check out history
             </p>
           </div>
@@ -61,9 +63,9 @@ function TeacherAttendanceTable() {
               No attendance records yet
             </p>
 
-            <p className="mt-1 text-[10px] text-gray-500">
+            {user?.role === 'teacher' && <p className="mt-1 text-[10px] text-gray-500">
               Check in to start recording your attendance.
-            </p>
+            </p>}
           </div>
         )}
       </div>

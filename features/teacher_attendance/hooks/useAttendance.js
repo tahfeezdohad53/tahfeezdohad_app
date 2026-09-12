@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { handleGetAttendance } from "../api/handleGetAttendance";
 import useFilter from "@/shared/hooks/useFilter";
 
@@ -11,6 +11,7 @@ function useAttendance() {
   return useQuery({
     queryKey: ["teacherAttendance",page],
     queryFn: () => handleGetAttendance({page}),
+    placeholderData:keepPreviousData,
     refetchOnWindowFocus: false,
   });
 }

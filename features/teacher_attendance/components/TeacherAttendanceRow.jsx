@@ -4,40 +4,50 @@ import { format } from "date-fns";
 function TeacherAttendanceRow({el}) {
     return (
       <div
-        // key={el.Id}
-        className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] items-center border-b border-gray-100 px-2 py-3 last:border-b-0"
+        className="
+    grid grid-cols-[1fr_1fr_1fr_1fr_1fr]
+    items-center
+    border-b border-amber-900/10
+    px-2 py-3
+    transition-colors
+    hover:bg-amber-900/[0.03]
+    last:border-b-0
+  "
       >
         {/* Date */}
-        <span className="text-[11px] max-w-3/4 font-medium text-gray-800">
+        <span className="max-w-3/4 text-[11px] font-medium text-amber-950">
           {format(new Date(el.checkedIn), "dd MMM, yyyy")}
         </span>
 
         {/* Check In */}
-        <span className="text-[11px] text-center font-medium text-green-600">
+        <span className="text-center text-[11px] font-semibold text-green-600">
           {format(new Date(el.checkedIn), "HH:mm")}
         </span>
 
         {/* Check Out */}
-        <span className="text-[11px] text-center font-medium text-red-500">
+        <span className="text-center text-[11px] font-semibold text-red-500">
           {el?.checkedOut ? format(new Date(el.checkedOut), "HH:mm") : "-"}
         </span>
 
         {/* Total */}
-        <div>
-          <p className="text-[11px] font-medium text-center text-gray-900">
-            <span className="font-bold">
-              {el?.checkedOut ? el.totalMin + " m" : "-"}
-            </span>
+        <div className="text-center">
+          <p className="text-[11px] font-semibold text-amber-950">
+            {el?.checkedOut ? `${el.totalMin} m` : "-"}
           </p>
-          {/* <p className="text-[9px] text-gray-500">({el.duration})</p> */}
         </div>
 
-        {/* Actions */}
-        <button
-          className={`text-[0.65rem] text-center hover:text-gray-900 ${el.isVerified ? "text-green-500" : "text-red-500"}`}
-        >
-          {el.isVerified ? "Verified" : "pending"}
-        </button>
+        {/* Verification */}
+        <div className="flex justify-center">
+          <span
+            className={`rounded-full px-2.5 py-1 text-[0.6rem] font-semibold ${
+              el.isVerified
+                ? "bg-green-600/10 text-green-700"
+                : "bg-red-600/10 text-red-600"
+            }`}
+          >
+            {el.isVerified ? "Verified" : "Pending"}
+          </span>
+        </div>
       </div>
     );
 }
