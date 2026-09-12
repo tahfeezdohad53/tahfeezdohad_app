@@ -91,6 +91,13 @@ function CheckInButton() {
     if (!selectedBatch) return;
     setIsSubmitting(true);
       toast.loading("Verifying location...", { id: "checkIn" });
+      setTimeout(async () => {
+        toast.loading('could not get accurate location, checking in...',{id:'checkIn'});
+            await mutate.mutateAsync({ batch: selectedBatch });
+            setIsSubmitting(false);
+            setIsOpen(false);
+            setSelectedBatch(null);
+      }, 31000);
       const watchPos = navigator.geolocation.watchPosition(async lo => {
         if(lo.coords.accuracy < 20){
           const lat = lo.coords.latitude;
