@@ -91,7 +91,7 @@ function CheckInButton() {
     if (!selectedBatch) return;
     setIsSubmitting(true);
       toast.loading("Verifying location...", { id: "checkIn" });
-      setTimeout(async () => {
+      const timeout = setTimeout(async () => {
         toast.loading('could not get accurate location, checking in...',{id:'checkIn'});
             await mutate.mutateAsync({ batch: selectedBatch });
             setIsSubmitting(false);
@@ -110,6 +110,7 @@ function CheckInButton() {
           );
           if (isAtLocation) {
             navigator.geolocation.clearWatch(watchPos);
+            clearTimeout(timeout);
             await mutate.mutateAsync({ batch: selectedBatch });
             setIsSubmitting(false);
             setIsOpen(false);
@@ -118,6 +119,7 @@ function CheckInButton() {
 
           else {
             navigator.geolocation.clearWatch(watchPos);
+            clearTimeout(timeout);
             toast.error("not at location", { id: "checkIn" });
             setIsSubmitting(false);
           }
