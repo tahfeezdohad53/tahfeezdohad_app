@@ -93,6 +93,8 @@ function CheckInButton() {
       toast.loading("Verifying location...", { id: "checkIn" });
       const watchPos = navigator.geolocation.watchPosition(async lo => {
         if(lo.coords.accuracy < 20){
+          const lat = lo.coords.latitude;
+          const lng = lo.coords.longitude
           const isAtLocation = isInsideDiameter(
             lat,
             lng,
