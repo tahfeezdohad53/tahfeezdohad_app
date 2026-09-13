@@ -99,9 +99,7 @@ function Notification() {
               </p>
 
               <p className="mt-1 text-xs leading-5 text-gray-500">
-                If your GPS is accurate, the system will verify whether you are
-                within your designated attendance location. If your GPS cannot
-                provide a reliable location, you will still be checked in.
+                If your GPS is not working accurately and cannot provide a reliable location, you will still be checked in.
               </p>
             </div>
           </div>
