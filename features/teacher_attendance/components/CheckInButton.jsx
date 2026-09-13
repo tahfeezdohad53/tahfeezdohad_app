@@ -90,9 +90,9 @@ function CheckInButton() {
   const handleCheckIn = async () => {
     if (!selectedBatch) return;
     setIsSubmitting(true);
-      toast.loading("Checking Gps Accuracy...", { id: "checkIn" });
+      toast.loading("Checking Your GPS Accuracy...", { id: "checkIn" });
       const timeout = setTimeout(async () => {
-        toast.loading('Your Gps Accuracy is Low, checking in...',{id:'checkIn'});
+        toast.loading('Your GPS Accuracy is Low, checking in...',{id:'checkIn'});
         await new Promise((res,rej) => {
           setTimeout(() => {
             res();
