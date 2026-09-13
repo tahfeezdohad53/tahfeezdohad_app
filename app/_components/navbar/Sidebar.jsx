@@ -23,7 +23,7 @@ function Sidebar() {
       if(pathname.includes('auth') || pathname.includes('error')) return null;
       if(!user?._id) return null;
     return (
-      <div className="fixed top-0 w-40 p-5 px-2 h-full bg-(--card) border border-(--border) lg:flex flex-col hidden">
+      <div className="fixed overflow-auto top-0 w-45 p-5 px-2 h-full bg-(--card) border border-(--border) lg:flex flex-col hidden">
         <img src="/Dohad.png" alt="" className="w-full mx-auto"/>
        {user?._id && <div className="lg:flex flex-col justify-between mt-10 flex-1">
           <div className="space-y-2">
@@ -31,6 +31,10 @@ function Sidebar() {
               <CiUser size={20} />
               <span>Attendance</span>
             </Link>} */}
+            {(user?.role === 'teacher' || user?.role === 'admin') && <Link href="/teacher_attendance" className={linkStyle("/teacher_attendance")}>
+              <CiUser size={20} />
+              <span>Attendance</span>
+            </Link>}
             {(user?.role === 'teacher' || user?.role === 'admin') && <Link href="/students" className={linkStyle("/students")}>
               <CiUser size={20} />
               <span>Students</span>

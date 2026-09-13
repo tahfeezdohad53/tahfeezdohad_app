@@ -16,7 +16,7 @@ const batches = [
     value: "yaqoot_mardo",
   },
   {
-    label: "Atfaal",
+    label: "Baneen/Banaat",
     value: "atfaal",
   },
   {
@@ -33,7 +33,7 @@ const batches = [
   },
 ];
 
-function isInsideDiameter(userLat, userLon, centerLat, centerLon) {
+function isInsideRadius(userLat, userLon, centerLat, centerLon) {
   const R = 6371000; // Earth radius in meters
 
   const toRad = (deg) => (deg * Math.PI) / 180;
@@ -49,7 +49,7 @@ function isInsideDiameter(userLat, userLon, centerLat, centerLon) {
 
   const distance = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-  return distance <= 10; 
+  return distance <= 30; // 30m radius = 60m diameter
 }
 
 async function getCurrentLocation() {
@@ -90,16 +90,22 @@ function CheckInButton() {
   const handleCheckIn = async () => {
     if (!selectedBatch) return;
     setIsSubmitting(true);
-      toast.loading("Verifying location...", { id: "checkIn" });
+      toast.loading("Checking Gps Accuracy...", { id: "checkIn" });
       const timeout = setTimeout(async () => {
-        toast.loading('could not get accurate location, checking in...',{id:'checkIn'});
+        toast.loading('Your Gps Accuracy is Low, checking in...',{id:'checkIn'});
+        await new Promise((res,rej) => {
+          setTimeout(() => {
+            res();
+          }, 1000);
+        })
             await mutate.mutateAsync({ batch: selectedBatch });
             setIsSubmitting(false);
             setIsOpen(false);
             setSelectedBatch(null);
       }, 31000);
       const watchPos = navigator.geolocation.watchPosition(async lo => {
-        if(lo.coords.accuracy < 20){
+        if(lo.coords.accuracy <= 20){
+          toast.loading('Verifying Location...',{id:'checkIn'});
           const lat = lo.coords.latitude;
           const lng = lo.coords.longitude
           const isAtLocation = isInsideDiameter(
@@ -199,7 +205,7 @@ function CheckInButton() {
                 <button
                   key={batch.label}
                   onClick={() => setSelectedBatch(batch.value)}
-                  className={`rounded-lg border px-3 py-3 text-xs font-medium transition ${
+                  className={`rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${
                     selectedBatch === batch.value
                       ? "border-(--primary) bg-(--primary)/10 text-(--primary)"
                       : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"

@@ -5,7 +5,7 @@ function TeacherAttendanceRow({el}) {
     return (
       <div
         className="
-    grid grid-cols-[1fr_1fr_1fr_1fr_1fr]
+    grid grid-cols-[1fr_1fr_1fr_0.8fr_0.8fr_1fr]
     items-center
     border-b border-amber-900/10
     px-2 py-3
@@ -35,6 +35,10 @@ function TeacherAttendanceRow({el}) {
             {el?.checkedOut ? `${el.totalMin} m` : "-"}
           </p>
         </div>
+
+        <p className="text-center text-[0.65rem] font-semibold text-amber-950">
+          {el?.recordingMin ? `${el.recordingMin} m` : "0 m"}
+        </p>
 
         {/* Verification */}
         <div className="flex justify-center">

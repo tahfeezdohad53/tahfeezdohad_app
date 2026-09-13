@@ -1,13 +1,30 @@
+"use client";
+
 import { formatName } from "@/helpers";
 import { format } from "date-fns";
+import { useState } from "react";
+
 import { IoIosLogOut } from "react-icons/io";
+import {
+  FaCheck,
+  FaClock,
+  FaRightFromBracket,
+  FaTriangleExclamation,
+} from "react-icons/fa6";
+
 import VerifyAttendanceButton from "./VerifyAttendanceButton";
+import { Modal } from "../TeacherAttendanceFilter";
+import { api } from "@/lib/axios";
+import { useQueryClient } from "@tanstack/react-query";
+import ManualCheckOutForm from "./ManualCheckOutForm";
 
 function TeacherAttendanceRowForAdmin({ el }) {
+    const [isShowCheckOutForm, setIsShowCheckOutForm] = useState(false);
+
   return (
     <div
       className="
-        grid grid-cols-[2fr_1fr_1fr_0.8fr_0.9fr]
+        grid grid-cols-[2fr_1fr_1fr_0.8fr_0.8fr_0.9fr]
         items-center
         gap-1
         border-b border-amber-900/10
@@ -31,10 +48,7 @@ function TeacherAttendanceRowForAdmin({ el }) {
       {/* Check Out */}
       <p className="flex flex-col text-center text-[0.6rem] font-bold leading-tight text-red-500">
         {el.checkedOut ? (
-          <>
-            {/* <span>{format(new Date(el.checkedOut), "dd MMM,")}</span> */}
-            <span>{format(new Date(el.checkedOut), "HH:mm")}</span>
-          </>
+          <span>{format(new Date(el.checkedOut), "HH:mm")}</span>
         ) : (
           <span className="text-gray-400">—</span>
         )}
@@ -43,6 +57,11 @@ function TeacherAttendanceRowForAdmin({ el }) {
       {/* Total */}
       <p className="text-center text-[0.65rem] font-semibold text-amber-950">
         {el?.totalMin ? `${el.totalMin} m` : "—"}
+      </p>
+
+      {/* Recording */}
+      <p className="text-center text-[0.65rem] font-semibold text-amber-950">
+        {el?.recordingMin ? `${el.recordingMin} m` : "0 m"}
       </p>
 
       {/* Actions / Verification */}
@@ -54,7 +73,7 @@ function TeacherAttendanceRowForAdmin({ el }) {
 
         {/* Verified */}
         {el.isVerified && el.checkedOut && (
-          <span className="rounded-full ml-auto bg-green-600/10 px-2.5 py-1 text-[0.6rem] font-semibold text-green-700">
+          <span className="ml-auto rounded-full bg-green-600/10 px-2.5 py-1 text-[0.6rem] font-semibold text-green-700">
             Verified
           </span>
         )}
@@ -62,8 +81,11 @@ function TeacherAttendanceRowForAdmin({ el }) {
         {/* Admin Check Out */}
         {!el.checkedOut && (
           <button
+            type="button"
+            onClick={() => setIsShowCheckOutForm(true)}
             className="
-              flex ml-auto w-3/4 items-center justify-center
+              ml-auto flex w-3/4
+              items-center justify-center
               rounded-lg
               border border-red-200
               bg-red-50
@@ -76,9 +98,14 @@ function TeacherAttendanceRowForAdmin({ el }) {
             <IoIosLogOut size={15} />
           </button>
         )}
+
+        {/* Manual Check-Out Modal */}
+        {isShowCheckOutForm && <ManualCheckOutForm onClose={() => setIsShowCheckOutForm(false)} el={el}/>}
       </div>
     </div>
   );
 }
 
 export default TeacherAttendanceRowForAdmin;
+
+

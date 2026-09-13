@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useUser } from "../providers/UserProvider";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { formatName } from "@/helpers";
 
 function InfoFields() {
     const {user,isFetching} = useUser();
@@ -39,7 +40,7 @@ function InfoFields() {
           <input
             name="name"
             type="text"
-            value={user?.name || ""}
+            value={formatName(user?.name) || ""}
             readOnly
             disabled
             placeholder="Enter your name"

@@ -50,7 +50,7 @@ function TeacherAttendanceFilter() {
             <p className="text-[0.65rem]">Date</p>
           </div>
 
-          <IoIosArrowDown className="hidden lg:block" />
+          <IoIosArrowDown className="hidde lg:block" />
         </div>
 
         {user?.role === 'admin' && <div
@@ -62,16 +62,16 @@ function TeacherAttendanceFilter() {
             <p className="text-[0.65rem]">Teacher</p>
           </div>
 
-          <IoIosArrowDown className="hidden lg:block" />
+          <IoIosArrowDown className="hidde lg:block" />
         </div>}
 
-        <div className=" flex items-center justify-between text-xs border border-gray-300  p-2  rounded-md shadow-(--shadow-sm)">
+        <div onClick={() => alert('under development')} className=" flex items-center justify-between text-xs border border-gray-300  p-2  rounded-md shadow-(--shadow-sm)">
           <div className="flex items-center  gap-1 lg:gap-2">
             <CiFilter />
             <p className="text-[0.65rem]">Status</p>
           </div>
 
-          <IoIosArrowDown className="hidden lg:block" />
+          <IoIosArrowDown className="hidde lg:block" />
         </div>
 
         <button
@@ -108,10 +108,10 @@ export default TeacherAttendanceFilter
 
 
 
-function Modal({children,onClose}){
+export function Modal({children,onClose}){
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 backdrop-blur-[1px] px-4">
-        <div className="relative w-[98%] lg:w-1/4 rounded-xl border border-gray-200 bg-(--card) p-4 shadow-xl">
+      <div onClick={onClose} className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 backdrop-blur-[1px] px-4">
+        <div onClick={(e) => e.stopPropagation()} className="relative w-[98%] lg:w-1/4 rounded-xl border border-gray-200 bg-(--card) p-4 shadow-xl">
           {/* Close */}
           <button
             type="button"

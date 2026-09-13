@@ -96,7 +96,7 @@ function PhoneTopBar() {
     </div>
   );
   return (
-    <div className="lg:ml-40 flex items-center justify-between p-3 border-b border-(--border)">
+    <div className="lg:ml-45 flex items-center justify-between p-3 border-b border-(--border)">
       <div className="flex items-center gap-4">
         <div className="p-2 rounded-md bg-(--bg-tertiary)/50 w-fit">
           {pathname.includes("recordings") && (
