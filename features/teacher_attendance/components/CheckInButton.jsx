@@ -89,6 +89,18 @@ function CheckInButton() {
 
   const handleCheckIn = async () => {
     if (!selectedBatch) return;
+    if(selectedBatch === 'taheri_hall') {
+      try {
+        await mutate.mutateAsync({ batch: selectedBatch });
+      } catch (err) {
+        toast.error("failed to check in, try again!");
+      } finally {
+        setIsSubmitting(false);
+        setIsOpen(false);
+        setSelectedBatch(null);
+        return;
+      }
+    }
     setIsSubmitting(true);
       toast.loading("Checking Your GPS Accuracy...", { id: "checkIn" });
       const timeout = setTimeout(async () => {
@@ -98,10 +110,16 @@ function CheckInButton() {
             res();
           }, 1000);
         })
-            await mutate.mutateAsync({ batch: selectedBatch });
-            setIsSubmitting(false);
-            setIsOpen(false);
-            setSelectedBatch(null);
+            try{
+              await mutate.mutateAsync({ batch: selectedBatch });
+            }catch(err){
+              toast.error('failed to check in, try again!');
+            }finally{
+              setIsSubmitting(false);
+              setIsOpen(false);
+              setSelectedBatch(null);
+            }
+            
       }, 31000);
       const watchPos = navigator.geolocation.watchPosition(async lo => {
         if(lo.coords.accuracy <= 20){
@@ -117,10 +135,15 @@ function CheckInButton() {
           if (isAtLocation) {
             navigator.geolocation.clearWatch(watchPos);
             clearTimeout(timeout);
-            await mutate.mutateAsync({ batch: selectedBatch });
-            setIsSubmitting(false);
-            setIsOpen(false);
-            setSelectedBatch(null);
+            try {
+              await mutate.mutateAsync({ batch: selectedBatch });
+            } catch (err) {
+              toast.error("failed to check in, try again!");
+            } finally {
+              setIsSubmitting(false);
+              setIsOpen(false);
+              setSelectedBatch(null);
+            }
           }
 
           else {
