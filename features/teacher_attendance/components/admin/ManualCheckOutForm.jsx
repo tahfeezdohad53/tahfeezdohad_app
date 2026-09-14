@@ -16,43 +16,65 @@ function ManualCheckOutForm({onClose,el}) {
 
     const mutate = useManualCheckOut();
 
-    async function handleSubmit(){
-        if(!checkoutHour || !checkoutMinute) return;
+    async function handleSubmit() {
+      if (!checkoutHour || !checkoutMinute) return;
 
-        const date = new Date();
-        const checkedInDate = new Date(el.checkedIn);
+      const now = new Date();
+      const checkedInDate = new Date(el.checkedIn);
 
-        const currentHour = date.getHours();
-        const currentMin = date.getMinutes();
-        const currentYear = date.getFullYear();
-        const currentMonth= date.getMonth();
-        const currentDate= date.getDate();
+      const currentHour = now.getHours();
+      const currentMin = now.getMinutes();
 
-        const checkedInHour = checkedInDate.getHours();
-        const checkedInMin = checkedInDate.getMinutes();
+      const checkedInHour = checkedInDate.getHours();
+      const checkedInMin = checkedInDate.getMinutes();
 
+      const hour = Number(checkoutHour);
+      const minute = Number(checkoutMinute);
 
-        if(Number(checkoutHour) > currentHour) return toast.error('you cannot set hour greater than current hour!');
-        if(Number(checkoutHour) === currentHour && Number(checkoutMinute) > currentMin) return toast.error("you cannot set min greater than check in min!");
+      // Cannot checkout in the future
+      if (hour > currentHour) {
+        return toast.error("You cannot set hour greater than current hour!");
+      }
 
-        if(checkedInHour > Number(checkoutHour)) return toast.error('you cannot set hour smaller than current hour!');
-        if(checkedInHour === Number(checkoutHour) && Number(checkoutMinute) < checkedInMin) return toast.error("you cannot set min smaller than check in min!");
+      if (hour === currentHour && minute > currentMin) {
+        return toast.error(
+          "You cannot set minute greater than current minute!",
+        );
+      }
 
-        const checkOutDate = `${currentYear}-${String(currentMonth).padStart(2,"0")}-${String(currentDate).padStart(2,"0")}-${String(currentHour).padStart(2,"0")}-${String(currentMin).padStart(2,"0")}:00+05:30`
-        try{
-            setIsSubmitting(true);
-            await mutate.mutateAsync({
-              checkOutDate,
-              teacherId: el.teacher,
-              attendanceId: el._id,
-            });
-            onClose();
-        }catch(err){
-            console.log(err);
-        }finally{
-            setIsSubmitting(false);
+      // Cannot checkout before check-in
+      if (hour < checkedInHour) {
+        return toast.error("You cannot set hour smaller than check-in hour!");
+      }
 
-        }
+      if (hour === checkedInHour && minute < checkedInMin) {
+        return toast.error(
+          "You cannot set minute smaller than check-in minute!",
+        );
+      }
+
+      const checkOutDate =
+        `${now.getFullYear()}-` +
+        `${String(now.getMonth() + 1).padStart(2, "0")}-` +
+        `${String(now.getDate()).padStart(2, "0")}T` +
+        `${String(hour).padStart(2, "0")}:` +
+        `${String(minute).padStart(2, "0")}:00+05:30`;
+
+      try {
+        setIsSubmitting(true);
+
+        await mutate.mutateAsync({
+          checkOutDate,
+          teacherId: el.teacher,
+          attendanceId: el._id,
+        });
+
+        onClose();
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
     return (
       <Modal onClose={onClose}>
