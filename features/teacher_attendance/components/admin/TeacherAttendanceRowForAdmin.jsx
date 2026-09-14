@@ -65,7 +65,7 @@ function TeacherAttendanceRowForAdmin({ el }) {
       </p>
 
       {/* Actions / Verification */}
-      <div className="flex justify-center">
+      <div className="flex flex-col gap-1 items-center justify-center">
         {/* Needs verification */}
         {!el.isVerified && el.checkedOut && (
           <VerifyAttendanceButton attendanceId={el._id} />
@@ -73,18 +73,18 @@ function TeacherAttendanceRowForAdmin({ el }) {
 
         {/* Verified */}
         {el.isVerified && el.checkedOut && (
-          <span className="ml-auto rounded-full bg-green-600/10 px-2.5 py-1 text-[0.6rem] font-semibold text-green-700">
+          <span className="ml-aut rounded-full bg-green-600/10 px-2.5 py-1 text-[0.6rem] font-semibold text-green-700">
             Verified
           </span>
         )}
 
         {/* Admin Check Out */}
-        {!el.checkedOut && (
+        {/* {!el.checkedOut && ( */}
           <button
             type="button"
             onClick={() => setIsShowCheckOutForm(true)}
             className="
-              ml-auto flex w-3/4
+              flex  w-3/4
               items-center justify-center
               rounded-lg
               border border-red-200
@@ -97,7 +97,7 @@ function TeacherAttendanceRowForAdmin({ el }) {
           >
             <IoIosLogOut size={15} />
           </button>
-        )}
+        {/* )} */}
 
         {/* Manual Check-Out Modal */}
         {isShowCheckOutForm && <ManualCheckOutForm onClose={() => setIsShowCheckOutForm(false)} el={el}/>}
