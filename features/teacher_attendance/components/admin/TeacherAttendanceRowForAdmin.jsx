@@ -5,18 +5,11 @@ import { format } from "date-fns";
 import { useState } from "react";
 
 import { IoIosLogOut } from "react-icons/io";
-import {
-  FaCheck,
-  FaClock,
-  FaRightFromBracket,
-  FaTriangleExclamation,
-} from "react-icons/fa6";
+
 
 import VerifyAttendanceButton from "./VerifyAttendanceButton";
-import { Modal } from "../TeacherAttendanceFilter";
-import { api } from "@/lib/axios";
-import { useQueryClient } from "@tanstack/react-query";
 import ManualCheckOutForm from "./ManualCheckOutForm";
+import { MdVerifiedUser } from "react-icons/md";
 
 function TeacherAttendanceRowForAdmin({ el }) {
     const [isShowCheckOutForm, setIsShowCheckOutForm] = useState(false);
@@ -24,29 +17,29 @@ function TeacherAttendanceRowForAdmin({ el }) {
   return (
     <div
       className="
-        grid grid-cols-[2fr_1fr_1fr_0.8fr_0.8fr_0.9fr_0.5fr]
+        grid grid-cols-[2fr_1fr_1fr_0.8fr_0.8fr_0.9fr_0.8fr]
         items-center
         gap-1
         border-b border-amber-900/10
         px-2 py-3
         transition-colors
-        hover:bg-amber-900/[0.03]
+        hover:bg-amber-900/3
         last:border-b-0
       "
     >
       {/* Teacher */}
-      <span className="pr-2 text-[0.65rem] lg:text-sm font-bold leading-tight text-amber-950">
+      <span className="borde pr-2 wrap-break-word text-[0.65rem] lg:text-sm font-bold leading-tight text-amber-950">
         {formatName(el.teacher.name)}
       </span>
 
       {/* Check In */}
-      <p className="flex flex-col lg:flex-row text-center text-[0.65rem] lg:text-sm font-bold leading-tight text-green-600">
+      <p className="borde flex flex-col lg:flex-row text-center text-[0.65rem] lg:text-sm font-bold leading-tight text-green-600">
         <span>{format(new Date(el.checkedIn), "dd MMM , ")}</span>
         <span>{format(new Date(el.checkedIn), "HH:mm")}</span>
       </p>
 
       {/* Check Out */}
-      <p className="flex flex-col text-center text-[0.65rem] lg:text-sm font-bold leading-tight text-red-500">
+      <p className="borde flex flex-col text-center text-[0.65rem] lg:text-sm font-bold leading-tight text-red-500">
         {el.checkedOut ? (
           <span>{format(new Date(el.checkedOut), "HH:mm")}</span>
         ) : (
@@ -55,17 +48,17 @@ function TeacherAttendanceRowForAdmin({ el }) {
       </p>
 
       {/* Total */}
-      <p className="text-center text-[0.65rem] lg:text-sm font-semibold text-amber-950">
-        {el?.totalMin ? `${el.totalMin} m` : "—"}
+      <p className="borde text-center text-[0.65rem] lg:text-sm font-semibold text-amber-950">
+        {el?.totalMin ? `${el.totalMin} m` : "-"}
       </p>
 
       {/* Recording */}
-      <p className="text-center text-[0.65rem] lg:text-sm font-semibold text-amber-950">
+      <p className="borde text-center text-[0.65rem] lg:text-sm font-semibold text-amber-950">
         {el?.recordingMin ? `${el.recordingMin} m` : "0 m"}
       </p>
 
       {/* Actions / Verification */}
-      <div className="flex flex-col lg:flex-row gap-1 items-center justify-center">
+      <div className="borde flex flex-col lg:flex-row gap-1 items-center justify-center">
         {/* Needs verification */}
         <div className="ml-aut hidden lg:block "></div>
         {!el.isVerified && el.checkedOut && (
@@ -74,9 +67,9 @@ function TeacherAttendanceRowForAdmin({ el }) {
 
         {/* Verified */}
         {el.isVerified && el.checkedOut && (
-          <span className="ml-aut rounded-full bg-green-600/10 px-2.5 py-1 text-[0.6rem] font-semibold text-green-700">
-            Verified
-          </span>
+          <span className="borde ml-aut rounded-md b-green-600/10 px-2.5 py-2 text- font-semibold text-green-700">
+            <MdVerifiedUser />
+          </span> 
         )}
 
         {/* Admin Check Out */}
@@ -89,7 +82,7 @@ function TeacherAttendanceRowForAdmin({ el }) {
           <button
             type="button"
             onClick={() => setIsShowCheckOutForm(true)}
-            className="
+            className=" 
               flex ml-auto w-3/4 lg:w-fit
               items-center justify-center
               rounded-lg
