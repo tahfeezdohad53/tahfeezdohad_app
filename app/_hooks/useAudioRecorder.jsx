@@ -53,7 +53,7 @@ function useAudioRecorder() {
   let seconds = totalSeconds % 60;
 
   async function startRecording() {
-    // if(user?.teacherAttendanceStatus !== 'checkedIn') return toast.error('you cannot start recording without checking in!')
+    if(user?.teacherAttendanceStatus !== 'checkedIn') return toast.error('you cannot start recording without checking in!')
     document.addEventListener("visibilitychange",handleScreenLock);
     let wakeLock;
     audioChunks.current = [];
