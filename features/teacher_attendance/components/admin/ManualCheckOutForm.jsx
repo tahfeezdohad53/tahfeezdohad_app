@@ -24,6 +24,9 @@ function ManualCheckOutForm({onClose,el}) {
 
         const currentHour = date.getHours();
         const currentMin = date.getMinutes();
+        const currentYear = date.getFullYear();
+        const currentMonth= date.getMonth();
+        const currentDate= date.getDate();
 
         const checkedInHour = checkedInDate.getHours();
         const checkedInMin = checkedInDate.getMinutes();
@@ -35,11 +38,11 @@ function ManualCheckOutForm({onClose,el}) {
         if(checkedInHour > Number(checkoutHour)) return toast.error('you cannot set hour smaller than current hour!');
         if(checkedInHour === Number(checkoutHour) && Number(checkoutMinute) < checkedInMin) return toast.error("you cannot set min smaller than check in min!");
 
+        const checkOutDate = `${currentYear}-${String(currentMonth).padStart(2,"0")}-${String(currentDate).padStart(2,"0")}-${String(currentHour).padStart(2,"0")}-${String(currentMin).padStart(2,"0")}:00+05:30`
         try{
             setIsSubmitting(true);
             await mutate.mutateAsync({
-              checkoutHour,
-              checkoutMinute,
+              checkOutDate,
               teacherId: el.teacher,
               attendanceId: el._id,
             });
