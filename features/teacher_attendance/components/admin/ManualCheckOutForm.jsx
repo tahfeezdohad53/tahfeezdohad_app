@@ -13,7 +13,7 @@ function ManualCheckOutForm({onClose,el}) {
     const [checkoutHour, setCheckoutHour] = useState("");
     const [checkoutMinute, setCheckoutMinute] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-
+    const [type,setType] = useState('checkOut');
     const mutate = useManualCheckOut();
 
     async function handleSubmit() {
@@ -32,26 +32,26 @@ function ManualCheckOutForm({onClose,el}) {
       const minute = Number(checkoutMinute);
 
       // Cannot checkout in the future
-      if (hour > currentHour) {
-        return toast.error("You cannot set hour greater than current hour!");
-      }
+      // if (hour > currentHour) {
+      //   return toast.error("You cannot set hour greater than current hour!");
+      // }
 
-      if (hour === currentHour && minute > currentMin) {
-        return toast.error(
-          "You cannot set minute greater than current minute!",
-        );
-      }
+      // if (hour === currentHour && minute > currentMin) {
+      //   return toast.error(
+      //     "You cannot set minute greater than current minute!",
+      //   );
+      // }
 
-      // Cannot checkout before check-in
-      if (hour < checkedInHour) {
-        return toast.error("You cannot set hour smaller than check-in hour!");
-      }
+      // // Cannot checkout before check-in
+      // if (hour < checkedInHour) {
+      //   return toast.error("You cannot set hour smaller than check-in hour!");
+      // }
 
-      if (hour === checkedInHour && minute < checkedInMin) {
-        return toast.error(
-          "You cannot set minute smaller than check-in minute!",
-        );
-      }
+      // if (hour === checkedInHour && minute < checkedInMin) {
+      //   return toast.error(
+      //     "You cannot set minute smaller than check-in minute!",
+      //   );
+      // }
 
       const checkOutDate =
         `${now.getFullYear()}-` +
@@ -62,8 +62,9 @@ function ManualCheckOutForm({onClose,el}) {
 
       try {
         setIsSubmitting(true);
-
+        // alert(type)
         await mutate.mutateAsync({
+          type,
           checkOutDate,
           teacherId: el.teacher,
           attendanceId: el._id,
@@ -191,6 +192,15 @@ function ManualCheckOutForm({onClose,el}) {
           </div>
 
           {/* Warning */}
+          <div className="flex gap-5 text-xs mt-3 ">
+            <div className="flex items-center gap-1">
+              <input type="radio" name="time" onChange={(e) => e.target.checked && setType('checkIn')}/> Check in
+            </div>
+
+            <div className="flex items-center gap-1">
+              <input type="radio" defaultChecked name="time" onChange={(e) => e.target.checked && setType('checkOut')}/> Check out
+            </div>
+          </div>
         </div>
 
         {/* Footer */}

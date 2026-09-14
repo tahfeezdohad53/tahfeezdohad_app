@@ -13,7 +13,7 @@ function VerifyAttendanceButton({attendanceId}) {
         setIsUpdating(false);
     }
   return (
-    <button onClick={handleClick} className="relative rounded-lg w-3/4 ml-aut flex items-center justify-center border border-green-200 bg-green-50 px-2 py-2 text-[10px] font-medium text-green-700 hover:bg-green-100">
+    <button onClick={handleClick} className="relative rounded-lg w-3/4 lg:w-fit ml-aut flex items-center justify-center border border-green-200 bg-green-50 px-2 py-2 text-[10px] font-medium text-green-700 hover:bg-green-100">
       <span className={`flex items-center gap-2 ${isUpdating ? "opacity-0" : "opacity-100"}`}>
               <FaCheck />
             </span>

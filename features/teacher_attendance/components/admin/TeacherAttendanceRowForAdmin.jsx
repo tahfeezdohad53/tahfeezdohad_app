@@ -24,7 +24,7 @@ function TeacherAttendanceRowForAdmin({ el }) {
   return (
     <div
       className="
-        grid grid-cols-[2fr_1fr_1fr_0.8fr_0.8fr_0.9fr]
+        grid grid-cols-[2fr_1fr_1fr_0.8fr_0.8fr_0.9fr_0.5fr]
         items-center
         gap-1
         border-b border-amber-900/10
@@ -35,18 +35,18 @@ function TeacherAttendanceRowForAdmin({ el }) {
       "
     >
       {/* Teacher */}
-      <span className="pr-2 text-[0.65rem] font-bold leading-tight text-amber-950">
+      <span className="pr-2 text-[0.65rem] lg:text-sm font-bold leading-tight text-amber-950">
         {formatName(el.teacher.name)}
       </span>
 
       {/* Check In */}
-      <p className="flex flex-col text-center text-[0.6rem] font-bold leading-tight text-green-600">
-        <span>{format(new Date(el.checkedIn), "dd MMM,")}</span>
+      <p className="flex flex-col lg:flex-row text-center text-[0.65rem] lg:text-sm font-bold leading-tight text-green-600">
+        <span>{format(new Date(el.checkedIn), "dd MMM , ")}</span>
         <span>{format(new Date(el.checkedIn), "HH:mm")}</span>
       </p>
 
       {/* Check Out */}
-      <p className="flex flex-col text-center text-[0.6rem] font-bold leading-tight text-red-500">
+      <p className="flex flex-col text-center text-[0.65rem] lg:text-sm font-bold leading-tight text-red-500">
         {el.checkedOut ? (
           <span>{format(new Date(el.checkedOut), "HH:mm")}</span>
         ) : (
@@ -55,18 +55,19 @@ function TeacherAttendanceRowForAdmin({ el }) {
       </p>
 
       {/* Total */}
-      <p className="text-center text-[0.65rem] font-semibold text-amber-950">
+      <p className="text-center text-[0.65rem] lg:text-sm font-semibold text-amber-950">
         {el?.totalMin ? `${el.totalMin} m` : "—"}
       </p>
 
       {/* Recording */}
-      <p className="text-center text-[0.65rem] font-semibold text-amber-950">
+      <p className="text-center text-[0.65rem] lg:text-sm font-semibold text-amber-950">
         {el?.recordingMin ? `${el.recordingMin} m` : "0 m"}
       </p>
 
       {/* Actions / Verification */}
-      <div className="flex flex-col gap-1 items-center justify-center">
+      <div className="flex flex-col lg:flex-row gap-1 items-center justify-center">
         {/* Needs verification */}
+        <div className="ml-aut hidden lg:block "></div>
         {!el.isVerified && el.checkedOut && (
           <VerifyAttendanceButton attendanceId={el._id} />
         )}
@@ -80,11 +81,16 @@ function TeacherAttendanceRowForAdmin({ el }) {
 
         {/* Admin Check Out */}
         {/* {!el.checkedOut && ( */}
+        {/* )} */}
+
+        {/* Manual Check-Out Modal */}
+        {isShowCheckOutForm && <ManualCheckOutForm onClose={() => setIsShowCheckOutForm(false)} el={el}/>}
+      </div>
           <button
             type="button"
             onClick={() => setIsShowCheckOutForm(true)}
             className="
-              flex  w-3/4
+              flex ml-auto w-3/4 lg:w-fit
               items-center justify-center
               rounded-lg
               border border-red-200
@@ -97,11 +103,6 @@ function TeacherAttendanceRowForAdmin({ el }) {
           >
             <IoIosLogOut size={15} />
           </button>
-        {/* )} */}
-
-        {/* Manual Check-Out Modal */}
-        {isShowCheckOutForm && <ManualCheckOutForm onClose={() => setIsShowCheckOutForm(false)} el={el}/>}
-      </div>
     </div>
   );
 }

@@ -33,7 +33,14 @@ function TeacherAttendanceTable() {
             </span>
 
             <div>
-              <p className="font-semibold text-amber-950 flex items-center gap-2">Attendance Records {isFetching && <span><CgSpinner className="animate-spin"/></span>}</p>
+              <p className="font-semibold text-amber-950 flex items-center gap-2">
+                Attendance Records{" "}
+                {isFetching && (
+                  <span>
+                    <CgSpinner className="animate-spin" />
+                  </span>
+                )}
+              </p>
 
               <p className="mt-1 text-[0.65rem] text-amber-900/60">
                 Your daily check in and check out history
@@ -44,20 +51,19 @@ function TeacherAttendanceTable() {
         </h2>
       </div>
 
-      
       <TeacherAttendanceFilter />
 
       {/* Table */}
       <div className="">
         {/* Table Header */}
         <div
-          className={`grid ${user?.role === "teacher" ? `grid-cols-[1fr_1fr_1fr_0.8fr_0.8fr_1fr]` : "grid-cols-[2fr_1fr_1fr_0.8fr_0.8fr_0.8fr]"} items-center rounded-md bg-[#f6f3f0] px-2 py-2 text-[10px] font-medium text-gray-600`}
+          className={`grid ${user?.role === "teacher" ? `grid-cols-[1fr_1fr_1fr_0.8fr_0.8fr_1fr]` : "grid-cols-[2fr_1fr_1fr_0.8fr_0.8fr_0.9fr_0.5fr]"} items-center rounded-md bg-[#f6f3f0] px-2 py-2 text-[10px] font-medium text-gray-600`}
         >
           <span>{user?.role === "teacher" ? "Date" : "Teacher"}</span>
-          <span className="text-center">Check In</span>
+          <span className="text-left">Check In</span>
           <span className="text-center">Check Out</span>
           <span className="text-center">Min</span>
-          <span className="text-center">Rec min</span>
+          <span className="text-center">Rec</span>
           <span className="text-center">Verification</span>
         </div>
 
