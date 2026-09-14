@@ -5,7 +5,7 @@ import useSetSearchParams from "@/shared/hooks/useSetSearchParams";
 import { useEffect } from "react";
 
 function TeacherAttendanceTablePaginationController({count=1}) {
-  useSetSearchParams({paramsList:[{key:'page',value:'1'}]});
+  // useSetSearchParams({paramsList:[{key:'page',value:'1'}]});
   const {searchParams,pathname,router} = useFilter();
 
   const page = searchParams.get("page");

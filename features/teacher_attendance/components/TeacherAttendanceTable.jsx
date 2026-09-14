@@ -11,14 +11,20 @@ import { Download } from "lucide-react";
 import { handleDownloadExcel } from "../api/handleDownloadExcel";
 import useFilter from "@/shared/hooks/useFilter";
 import ExcelDownloadButton from "./ExcelDownloadButton";
+import { CgSpinner } from "react-icons/cg";
+import useSetSearchParams from "@/shared/hooks/useSetSearchParams";
+import { useEffect } from "react";
+import useSetAttendanceSearchParams from "../hooks/useSetAttendanceSearchParams";
 
 function TeacherAttendanceTable() {
 
-  const {data} = useAttendance();
+  const {data,isFetching} = useAttendance();
   const {user} = useUser();
+  useSetAttendanceSearchParams();
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm px-1">
       {/* Header */}
+
       <div className="flex items-center justify-between px-4 py-3">
         <h2 className="flex items-center justify-between w-full gap-3 text-sm">
           <div className="flex items-center gap-2">
@@ -27,17 +33,18 @@ function TeacherAttendanceTable() {
             </span>
 
             <div>
-              <p className="font-semibold text-amber-950">Attendance Records</p>
+              <p className="font-semibold text-amber-950 flex items-center gap-2">Attendance Records {isFetching && <span><CgSpinner className="animate-spin"/></span>}</p>
 
               <p className="mt-1 text-[0.65rem] text-amber-900/60">
                 Your daily check in and check out history
               </p>
             </div>
           </div>
-            <ExcelDownloadButton attendanceLength={data?.attendance?.length}/>
+          <ExcelDownloadButton attendanceLength={data?.attendance?.length} />
         </h2>
       </div>
 
+      
       <TeacherAttendanceFilter />
 
       {/* Table */}

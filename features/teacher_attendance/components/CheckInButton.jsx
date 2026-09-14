@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { IoIosLogOut } from "react-icons/io";
 import useCheckIn from "../hooks/useCheckIn";
 import { ImSpinner2 } from "react-icons/im";
@@ -8,12 +8,12 @@ import toast from "react-hot-toast";
 
 const batches = [
   {
-    label: "Yaqoot Bairao",
-    value: "yaqoot_bairo",
+    label: "Yaqoot Rijaal",
+    value: "yaqoot_mardo",
   },
   {
-    label: "Yaqoot Mardo",
-    value: "yaqoot_mardo",
+    label: "Yaqoot Nisaa",
+    value: "yaqoot_bairo",
   },
   {
     label: "Baneen/Banaat",
@@ -30,6 +30,10 @@ const batches = [
   {
     label: "Taheri Hall",
     value: "taheri_hall",
+  },
+  {
+    label: "Online Class",
+    value: "online",
   },
 ];
 
@@ -49,7 +53,7 @@ function isInsideRadius(userLat, userLon, centerLat, centerLon) {
 
   const distance = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-  return distance <= 30; // 30m radius = 60m diameter
+  return distance <= 60; // 30m radius = 60m diameter
 }
 
 async function getCurrentLocation() {
@@ -85,15 +89,18 @@ function CheckInButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [isSubmitting,setIsSubmitting] = useState(false);
+  const timeoutRef = useRef(null);
+  const watchPositonRef = useRef(null);
   const mutate = useCheckIn();
 
   const handleCheckIn = async () => {
     if (!selectedBatch) return;
-    if(selectedBatch === 'taheri_hall') {
+    setIsSubmitting(true);
+    if(selectedBatch === 'taheri_hall' || selectedBatch === 'online') {
       try {
         await mutate.mutateAsync({ batch: selectedBatch });
       } catch (err) {
-        toast.error("failed to check in, try again!");
+        // toast.error("failed to check in, try again!");
       } finally {
         setIsSubmitting(false);
         setIsOpen(false);
@@ -101,28 +108,28 @@ function CheckInButton() {
         return;
       }
     }
-    setIsSubmitting(true);
       toast.loading("Checking Your GPS Accuracy...", { id: "checkIn" });
-      const timeout = setTimeout(async () => {
+
+      timeoutRef.current = setTimeout(async () => {
         toast.loading('Your GPS Accuracy is Low, checking in...',{id:'checkIn'});
-        await new Promise((res,rej) => {
-          setTimeout(() => {
-            res();
-          }, 1000);
-        })
-            try{
+            try {
               await mutate.mutateAsync({ batch: selectedBatch });
-            }catch(err){
-              toast.error('failed to check in, try again!');
-            }finally{
+            } catch (err) {
+              toast.error("failed to check in, try again!", { id: "checkIn" });
+            } finally {
               setIsSubmitting(false);
               setIsOpen(false);
               setSelectedBatch(null);
+              // if(timeoutRef.current) clearTimeout(timeoutRef.current);
+              if (watchPositonRef.current !== 'null') navigator.geolocation.clearWatch(watchPositonRef.current);
+               timeoutRef.current = null;
+               watchPositonRef.current = null;
             }
             
-      }, 31000);
-      const watchPos = navigator.geolocation.watchPosition(async lo => {
-        if(lo.coords.accuracy <= 20){
+      }, 11000);
+      
+      watchPositonRef.current = navigator.geolocation.watchPosition(async lo => {
+        if(lo.coords.accuracy <= 40){
           toast.loading('Verifying Location...',{id:'checkIn'});
           const lat = lo.coords.latitude;
           const lng = lo.coords.longitude
@@ -133,8 +140,10 @@ function CheckInButton() {
             74.2558682,
           );
           if (isAtLocation) {
-            navigator.geolocation.clearWatch(watchPos);
-            clearTimeout(timeout);
+            navigator.geolocation.clearWatch(watchPositonRef.current);
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+            watchPositonRef.current = null;
             try {
               await mutate.mutateAsync({ batch: selectedBatch });
             } catch (err) {
@@ -147,47 +156,18 @@ function CheckInButton() {
           }
 
           else {
-            navigator.geolocation.clearWatch(watchPos);
-            clearTimeout(timeout);
+            navigator.geolocation.clearWatch(watchPositonRef.current);
+            clearTimeout(timeoutRef.current);
             toast.error("not at location", { id: "checkIn" });
             setIsSubmitting(false);
           }
         }
-      },() => toast.error('location permission denied!',{id:'checkIn'}),{enableHighAccuracy:true,timeout:30000,maximumAge:0})
-  //   navigator.geolocation.getCurrentPosition(
-  //     async (location) => {
-  //        const lat = location.coords.latitude;
-  //           const lng = location.coords.longitude;
-  //           console.log(lat, lng);
-  //           const isAtLocation = isInsideDiameter(
-  //             lat,
-  //             lng,
-  //             22.8288288288,
-  //             74.248458742,
-  //           );
-
-  // // alert(lat);
-  // // alert(lng);
-  // // alert(location.coords.accuracy);
-  
-  // if (isAtLocation) {
-  //   await mutate.mutateAsync({ batch: selectedBatch });
-  //   setIsSubmitting(false);
-  //   setIsOpen(false);
-  //   setSelectedBatch(null);
-  // }
-
-  // else {
-  //   toast.error("not at location", { id: "checkIn" });
-  //   setIsSubmitting(false);
-  // }
-  //     },
-  //     () => toast.error("failed to get location!"),
-  //     { enableHighAccuracy: true, timeout: 15000,maximumAge:0 },
-  //   );
-
-
-    
+      },() => {
+        toast.loading("Your GPS is not giving reliable location", { id: "checkIn" });
+        // if(timeoutRef.current) clearTimeout(timeoutRef.current);
+        if(watchPositonRef.current !== 'null') navigator.geolocation.clearWatch(watchPositonRef.current);
+        setIsSubmitting(false);
+      },{enableHighAccuracy:true,timeout:10000,maximumAge:0})
   };
 
   return (
@@ -228,7 +208,7 @@ function CheckInButton() {
                 <button
                   key={batch.label}
                   onClick={() => setSelectedBatch(batch.value)}
-                  className={`rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${
+                  className={`${batch.value === 'online' && 'col-span-2'} rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${
                     selectedBatch === batch.value
                       ? "border-(--primary) bg-(--primary)/10 text-(--primary)"
                       : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"

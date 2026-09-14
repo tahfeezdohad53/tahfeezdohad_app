@@ -14,6 +14,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { RotateCcw } from "lucide-react";
 import { useUser } from "@/app/_components/providers/UserProvider";
+import TeacherAttendanceBatchFilter from "./admin/TeacherAttendanceBatchFilter";
 
 function TeacherAttendanceFilter() {
     const {user} = useUser();
@@ -33,6 +34,7 @@ function TeacherAttendanceFilter() {
         url.delete('startDate')
         url.delete('endDate')
         url.set('page',1);
+        url.set('batch',"all");
         router.replace(`${pathname}?${url}`,{scroll:false});
     }
 
@@ -40,66 +42,77 @@ function TeacherAttendanceFilter() {
         return {label:el.name,value:el._id}
     })
     return (
-      <div className={`w-full py-3 mb-4 px-2 grid ${user?.role === 'admin' ? 'grid-cols-4':'grid-cols-3'} gap-1`}>
+      <div>
         <div
-          onClick={() => setIsShowDatePicker(true)}
-          className=" flex items-center justify-between text-xs border border-gray-300  p-2  rounded-md shadow-(--shadow-sm)"
+          className={`w-full py-3 mb-4 px-2 grid ${user?.role === "admin" ? "grid-cols-4" : "grid-cols-3"} gap-1`}
         >
-          <div className="flex items-center gap-1 lg:gap-2">
-            <FaRegCalendarAlt />
-            <p className="text-[0.65rem]">Date</p>
+          <div
+            onClick={() => setIsShowDatePicker(true)}
+            className=" flex items-center justify-between text-xs border border-gray-300  p-2  rounded-md shadow-(--shadow-sm)"
+          >
+            <div className="flex items-center gap-1 lg:gap-2">
+              <FaRegCalendarAlt />
+              <p className="text-[0.65rem]">Date</p>
+            </div>
+
+            <IoIosArrowDown className="hidde lg:block" />
           </div>
 
-          <IoIosArrowDown className="hidde lg:block" />
-        </div>
+          {user?.role === "admin" && (
+            <div
+              onClick={() => setIsShowTeacherSelect(true)}
+              className=" flex items-center justify-between text-xs border border-gray-300  p-2  rounded-md shadow-(--shadow-sm)"
+            >
+              <div className="flex items-center  gap-1 lg:gap-2">
+                <CiUser />
+                <p className="text-[0.65rem]">Teacher</p>
+              </div>
 
-        {user?.role === 'admin' && <div
-          onClick={() => setIsShowTeacherSelect(true)}
-          className=" flex items-center justify-between text-xs border border-gray-300  p-2  rounded-md shadow-(--shadow-sm)"
-        >
-          <div className="flex items-center  gap-1 lg:gap-2">
-            <CiUser />
-            <p className="text-[0.65rem]">Teacher</p>
+              <IoIosArrowDown className="hidde lg:block" />
+            </div>
+          )}
+
+          <div
+            onClick={() => alert("under development")}
+            className=" flex items-center justify-between text-xs border border-gray-300  p-2  rounded-md shadow-(--shadow-sm)"
+          >
+            <div className="flex items-center  gap-1 lg:gap-2">
+              <CiFilter />
+              <p className="text-[0.65rem]">Status</p>
+            </div>
+
+            <IoIosArrowDown className="hidde lg:block" />
           </div>
 
-          <IoIosArrowDown className="hidde lg:block" />
-        </div>}
-
-        <div onClick={() => alert('under development')} className=" flex items-center justify-between text-xs border border-gray-300  p-2  rounded-md shadow-(--shadow-sm)">
-          <div className="flex items-center  gap-1 lg:gap-2">
-            <CiFilter />
-            <p className="text-[0.65rem]">Status</p>
-          </div>
-
-          <IoIosArrowDown className="hidde lg:block" />
-        </div>
-
-        <button
-          type="button"
-          onClick={handleReset}
-          className="flex items-center gap-1.5 rounded-lg border border-gray-200
+          <button
+            type="button"
+            onClick={handleReset}
+            className="flex items-center gap-1.5 rounded-lg border border-gray-200
              bg-(--card) px-3 py-2 text-[0.65rem] font-medium text-gray-600
              shadow-sm transition-all
              hover:border-red-200 hover:bg-red-50 hover:text-red-600
              active:scale-[0.98]"
-        >
-          <RotateCcw size={13} strokeWidth={2} />
-          Reset
-        </button>
+          >
+            <RotateCcw size={13} strokeWidth={2} />
+            Reset
+          </button>
 
-        {isShowTeacherSelect && (
-          <TeacherFilterForm
-            setIsShowTeacherSelect={setIsShowTeacherSelect}
-            formattedTeachers={formattedTeachers}
-            handleFilter={handleFilter}
-          />
-        )}
-        {isShowDatePicker && (
-          <DateFilterForm
-            setIsShowDatePicker={setIsShowDatePicker}
-            handleFilter={handleFilter}
-          />
-        )}
+          {isShowTeacherSelect && (
+            <TeacherFilterForm
+              setIsShowTeacherSelect={setIsShowTeacherSelect}
+              formattedTeachers={formattedTeachers}
+              handleFilter={handleFilter}
+            />
+          )}
+          {isShowDatePicker && (
+            <DateFilterForm
+              setIsShowDatePicker={setIsShowDatePicker}
+              handleFilter={handleFilter}
+            />
+          )}
+        </div>
+
+        {user?.role === 'admin' && <TeacherAttendanceBatchFilter />}
       </div>
     );
 }

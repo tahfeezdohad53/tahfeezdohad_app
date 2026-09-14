@@ -4,11 +4,19 @@ import { IoIosLogOut } from "react-icons/io";
 import useCheckOut from "../hooks/useCheckOut";
 import { ImSpinner2 } from "react-icons/im";
 import toast from "react-hot-toast";
+import { useUser } from "@/app/_components/providers/UserProvider";
 
 function CheckOutButton() {
+  const {user} = useUser();
+
   const mutate = useCheckOut();
   async function checkOut() {
-    // toast.loading('Checking out...',{id:'checkOut'});
+    // const date = new Date(user.lastStatusTime);
+    // const hour = date.getHours();
+
+    // if(hour > 12 && hour < 16) return toast.error('you cannot checkout now, please contact admin!');
+    // if(hour > 18) return toast.error("you cannot checkout now, please contact admin!");
+    // if(hour >= 0 && 7) return toast.error("you cannot checkout now, please contact admin!");
     await mutate.mutateAsync();
   }
   return (
