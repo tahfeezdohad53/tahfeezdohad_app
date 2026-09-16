@@ -182,7 +182,7 @@ export function CallingFnProvider({ children }) {
     setShowCallControls(false);
     setRemoteMedia(null);
     if (user?.role === "student") setVideoCallSeconds(0);
-    if (user?.role !== "student" && recorderRef.current) {
+    if (user?.role !== "student" && recorderRef.current && targetUserRef.current) {
       recorderRef.current.stop();
       if (pathname.includes("onlineclass")) {
         const lastIndex = pathname.lastIndexOf("/");
@@ -756,7 +756,7 @@ export function CallingFnProvider({ children }) {
       setIsInCall(false);
       setRemoteMedia(null);
       candidates.current = [];
-      if (user?.role !== "student" && recorderRef.current) {
+      if (user?.role !== "student" && recorderRef.current && targetUserRef.current) {
         recorderRef.current.stop();
         if (pathname.includes("onlineclass")) {
           const lastIndex = pathname.lastIndexOf("/");
