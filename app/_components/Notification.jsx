@@ -42,7 +42,7 @@ function Notification() {
 
   if(user?.role === 'teacher' || user?.role === 'admin')return (
     <div className="fixed inset-0 z-999 flex items-center justify-center bg-black/50 p-1 px-4 backdrop-blur-[2px]">
-      <div className="h-fit w-full overflow-auto rounded-2xl bg-(--card) shadow-2xl lg:h-fit lg:w-1/3">
+      <div className="h-fit max-h-[99%] w-full overflow-auto rounded-2xl bg-(--card) shadow-2xl lg:h-fit lg:w-1/3">
         {/* Header */}
         <div className="flex items-center gap-3 border-b border-(--border) px-5 py-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--primary)/10 text-(--primary)">
