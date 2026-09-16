@@ -3,58 +3,59 @@
 import { useEffect, useState } from "react";
 
 import {
-  FaLocationDot,
-  FaRightToBracket,
-  FaSatelliteDish,
-  FaUserShield,
-  FaRightFromBracket,
-  FaCircleInfo,
+  FaMicrophone,
+  FaCompressAlt,
+  FaWifi,
+  FaBolt,
+  // FaCircleInfo,
   FaCheck,
-} from "react-icons/fa6";
+} from "react-icons/fa";
 
 import { useUser } from "./providers/UserProvider";
+import { CiCircleInfo } from "react-icons/ci";
 
 function Notification() {
   const { user } = useUser();
-  const [isNotifiedAboutAttendancePage, setIsNotifiedAboutAttendancePage] = useState(null);
+  const [isNotifiedAboutBandwithReduced, setIsNotifiedAboutBandwithReduced] = useState(null);
 
   useEffect(() => {
-    const notified = localStorage.getItem("isNotifiedAboutAttendancePage");
-    setIsNotifiedAboutAttendancePage(notified === "true");
+    const notified = localStorage.getItem("isNotifiedAboutBandwithReduced");
+    setIsNotifiedAboutBandwithReduced(notified === "true");
   }, []);
 
   function handleClose() {
     localStorage.removeItem("isNotifiedAboutLosingRecording");
-    localStorage.setItem("isNotifiedAboutAttendancePage","true");
-    setIsNotifiedAboutAttendancePage(true);
+    localStorage.setItem("isNotifiedAboutBandwithReduced","true");
+    // localStorage.setItem("isNotifiedAboutAttendancePage","true");
+    setIsNotifiedAboutBandwithReduced(true);
   }
 
   if (user?.role === "student") return;
 
-  if (!user?._id || isNotifiedAboutAttendancePage === null) {
+  if (!user?._id || isNotifiedAboutBandwithReduced === null) {
     return null;
   }
 
-  if (isNotifiedAboutAttendancePage) {
+  if (isNotifiedAboutBandwithReduced) {
     return null;
   }
 
   if(user?.role === 'teacher' || user?.role === 'admin')return (
     <div className="fixed inset-0 z-999 flex items-center justify-center bg-black/50 p-1 px-4 backdrop-blur-[2px]">
-      <div className="h-[99%] w-full overflow-auto rounded-2xl bg-(--card) shadow-2xl lg:h-fit lg:w-1/3">
+      <div className="h-fit w-full overflow-auto rounded-2xl bg-(--card) shadow-2xl lg:h-fit lg:w-1/3">
         {/* Header */}
         <div className="flex items-center gap-3 border-b border-(--border) px-5 py-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-(--primary)/10 text-(--primary)">
-            <FaLocationDot size={17} />
+            <FaMicrophone size={17} />
           </div>
 
           <div>
             <h2 className="text-base font-semibold text-(--foreground)">
-              Check-In & Check-Out
+              Recording System Update
             </h2>
 
             <p className="mt-0.5 text-xs text-gray-500">
-              A new attendance system is now available
+              Audio uploads now use significantly less bandwidth
             </p>
           </div>
         </div>
@@ -62,99 +63,78 @@ function Notification() {
         {/* Content */}
         <div className="px-5 py-5">
           <p className="text-sm leading-6 text-(--foreground)">
-            We’ve introduced a new{" "}
-            <span className="font-semibold">Check-In & Check-Out</span> system
-            to make attendance more accurate and reliable. Please follow the
-            steps below whenever you start and finish your day.
+            We’ve made an improvement to the{" "}
+            <span className="font-semibold">audio recording system</span> to
+            significantly reduce the bandwidth required to upload your Class
+            recordings.
           </p>
 
-          {/* Check In */}
+          {/* Smaller Files */}
           <div className="mt-5 flex gap-3 rounded-xl border border-(--border) bg-(--card-hover) p-3.5">
             <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-(--primary)/10 text-(--primary)">
-              <FaRightToBracket size={13} />
+              <FaCompressAlt size={13} />
             </div>
 
             <div>
               <p className="text-sm font-semibold text-(--foreground)">
-                1. Check In
+                1. Smaller Recording Files
               </p>
 
               <p className="mt-1 text-xs leading-5 text-gray-500">
-                When you check in, the system will first verify whether your GPS
-                location is working accurately. If it is accurate, your current
-                location will then be checked against your designated location.
+                Recording file sizes have been reduced by more than{" "}
+                <span className="font-semibold">50%</span>, helping  recordings easier to upload.
               </p>
             </div>
           </div>
 
-          {/* GPS Verification */}
+          {/* Less Bandwidth */}
           <div className="mt-3 flex gap-3 rounded-xl border border-(--border) bg-(--card-hover) p-3.5">
             <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-(--primary)/10 text-(--primary)">
-              <FaSatelliteDish size={13} />
+              <FaWifi size={13} />
             </div>
 
             <div>
               <p className="text-sm font-semibold text-(--foreground)">
-                2. GPS & Location Verification
+                2. Less Bandwidth Usage
               </p>
 
               <p className="mt-1 text-xs leading-5 text-gray-500">
-                If your GPS is not working accurately and cannot provide a reliable location, you will still be checked in.
+                Your recordings now require significantly less internet data,
+                which can help improve upload speed and reliability.
               </p>
             </div>
           </div>
 
-          {/* Admin Verification */}
-          {/* <div className="mt-3 flex gap-3 rounded-xl border border-(--border) bg-(--card-hover) p-3.5">
-            <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-(--primary)/10 text-(--primary)">
-              <FaUserShield size={13} />
-            </div>
-
-            <div>
-              <p className="text-sm font-semibold text-(--foreground)">
-                3. Admin Verification
-              </p>
-
-              <p className="mt-1 text-xs leading-5 text-gray-500">
-                Your daily attendance will be reviewed by the administration.
-                Only attendance that has been successfully verified will be
-                counted as your official attendance.
-              </p>
-            </div>
-          </div> */}
-
-          {/* Check Out */}
+          {/* Faster Uploads */}
           <div className="mt-3 flex gap-3 rounded-xl border border-(--border) bg-(--card-hover) p-3.5">
             <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-(--primary)/10 text-(--primary)">
-              <FaRightFromBracket size={13} />
+              <FaBolt size={13} />
             </div>
 
             <div>
               <p className="text-sm font-semibold text-(--foreground)">
-                3. Don’t Forget to Check Out
+                3. Faster & More Reliable Uploads
               </p>
 
               <p className="mt-1 text-xs leading-5 text-gray-500">
-                Remember to check out when you leave. Checking out
-                helps the system record your complete attendance and working
-                duration correctly.
+                Smaller files mean faster uploads, especially when using a
+                slower or unstable internet connection.
               </p>
             </div>
           </div>
 
           {/* Important Note */}
-          <div className="mt-4 flex gap-2.5 rounded-lg bg-(--primary)/5 px-3.5 py-3">
-            <FaCircleInfo
+          {/* <div className="mt-4 flex gap-2.5 rounded-lg bg-(--primary)/5 px-3.5 py-3">
+            <CiCircleInfo
               className="mt-0.5 shrink-0 text-(--primary)"
               size={13}
             />
 
             <p className="text-xs leading-5 text-(--foreground)">
-              <span className="font-semibold">Important:</span> When your
-              browser asks for location permission, make sure to enable Precise
-              location. Also, don’t forget to check out before leaving.
+              <span className="font-semibold">Good to know:</span> This update
+              is applied automatically. You do not need to change any settings.
             </p>
-          </div>
+          </div> */}
         </div>
 
         {/* Footer */}
