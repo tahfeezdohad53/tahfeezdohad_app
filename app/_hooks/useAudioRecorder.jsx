@@ -53,7 +53,10 @@ function useAudioRecorder() {
   let seconds = totalSeconds % 60;
 
   async function startRecording() {
-    // if(user?.teacherAttendanceStatus !== 'checkedIn') return toast.error('you cannot start recording without checking in!')
+    if(user?.teacherAttendanceStatus !== 'checkedIn') {
+      router.replace('/teacher_attendance');
+      return toast.error("you cannot start recording without checking in!");
+    }
     document.addEventListener("visibilitychange",handleScreenLock);
     let wakeLock;
     audioChunks.current = [];
@@ -65,7 +68,7 @@ function useAudioRecorder() {
           echoCancellation: false,
           autoGainControl: false,
           channelCount: 1,
-          sampleRate: 48000,
+          sampleRate: 32000,
         },
         video: false,
       });
@@ -118,7 +121,8 @@ function useAudioRecorder() {
     //  console.log("recording");
     recorder.current = new MediaRecorder(processedStream, {
       mimeType: mimeType,
-      audioBitsPerSecond: 256000,
+      // audioBitsPerSecond: 256000,
+      audioBitsPerSecond: 96000,
     });
     recorder.current.ondataavailable = (e) => {
       // console.log('data avialable')
