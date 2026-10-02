@@ -78,7 +78,7 @@ function PhoneTopBar() {
   if(!user?._id) return null;
   if(pathname.includes('students')) return (
     <div
-      className={`lg:ml-40 flex justify-between items-center p-3 text-lg border-b border-gray-200`}
+      className={`lg:ml-45 flex justify-between items-center p-3 text-lg border-b border-gray-200`}
     >
       <div>
         <h1 className={`text-xl ${font.className} font-semibold`}>

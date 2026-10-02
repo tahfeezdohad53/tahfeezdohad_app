@@ -9,9 +9,11 @@ import RecordingUploadToast from "../_components/toast/RecordingUploadToast";
 import { api } from "@/lib/axios";
 import { isIOS } from "@/helpers";
 import { useUser } from "../_components/providers/UserProvider";
+import { useAppProvider } from "../_components/providers/AppProvider";
 
 function useAudioRecorder() {
   const {user} = useUser();
+  const {recordingsQueue,setRecordingsQueue} = useAppProvider();
   const [isRecording, setIsRecording] = useState(false);
   const [isRecorded, setIsRecorded] = useState(false);
   const [confirmFinishRecording, setConfirmFinishRecording] = useState(false);
@@ -53,10 +55,10 @@ function useAudioRecorder() {
   let seconds = totalSeconds % 60;
 
   async function startRecording() {
-    if(user?.teacherAttendanceStatus !== 'checkedIn') {
-      router.replace('/teacher_attendance');
-      return toast.error("you cannot start recording without checking in!");
-    }
+    // if(user?.teacherAttendanceStatus !== 'checkedIn') {
+    //   router.replace('/teacher_attendance');
+    //   return toast.error("you cannot start recording without checking in!");
+    // }
     document.addEventListener("visibilitychange",handleScreenLock);
     let wakeLock;
     audioChunks.current = [];
@@ -197,8 +199,8 @@ function useAudioRecorder() {
     }
   }
 
-  async function submitRecording(studentId, name) {
- 
+  async function submitRecording(studentId, name,remarks) {
+    
       if(audioSize < 1024) return toast.error(
         "Something went wrong while recording this class. Please do not submit this recording. Refresh your browser before recording the next class.",
       {duration:5000});
@@ -219,9 +221,13 @@ function useAudioRecorder() {
         const localAudioType = audioType.current;
     setIsSubmitting(true);
     const toastId = "uploading";
-    try {
-      let blob = audio;
+    let blob = audio;
+    let formattedDuration;
 
+    if (isIOS() || !isFinite(duration)) {
+      formattedDuration = totalSeconds / 60;
+    } else formattedDuration = duration / 60;
+    try {
       setAudio(null);
       setIsRecording(false);
       setIsRecorded(false);
@@ -291,13 +297,13 @@ function useAudioRecorder() {
           });
 
           // if (error.code === "ERR_NETWORK") {
-          if (!data?.url) {
-            toast.error(
-              "url is missing but your recording will be submitted, please report this message to admin",
-              { duration: 8000 },
-            );
-            // throw new Error("url is missing");
-          }
+          // if (!data?.url) {
+          //   toast.error(
+          //     "url is missing but your recording will be submitted, please report this message to admin",
+          //     { duration: 8000 },
+          //   );
+          //   // throw new Error("url is missing");
+          // }
           try {
             const { data: status } = await axios.get(
               `${process.env.NEXT_PUBLIC_URL}/recording/isUploaded`,
@@ -361,12 +367,7 @@ function useAudioRecorder() {
 
       // Step 3: Save recording in database
 
-      let formattedDuration;
-
-      if(isIOS() || !isFinite(duration)){ 
-        formattedDuration = totalSeconds / 60;
-      }
-      else formattedDuration = duration / 60;
+      
 
       if (user?._id === "6a6c945ad598cbc538ef865c"){
         formattedDuration = totalSeconds / 60;
@@ -381,6 +382,7 @@ function useAudioRecorder() {
                 url: data?.url,
                 duration: formattedDuration,
                 slot: classType,
+                remarks,
               },
               { withCredentials: true },
             );
@@ -408,6 +410,7 @@ function useAudioRecorder() {
     } catch (err) {
       console.error("Submission Error:", err);
       toast.error("Upload Failed!");
+      setRecordingsQueue(rec => [...rec,{id:recordingsQueue?.length,name,blob,isOnline:false,duration:formattedDuration || 0,slot:classType,studentId}])
     } finally {
       setIsSubmitting(false);
       URL.revokeObjectURL(ObjectUrl);

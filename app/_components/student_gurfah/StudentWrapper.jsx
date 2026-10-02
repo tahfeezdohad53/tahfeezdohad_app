@@ -168,7 +168,7 @@ function StudentWrapper() {
     );
   if (!onlineClassBlob)
     return (
-      <div className=" w-full lg:w-[90%] flex flex-col gap-3 items-center  fixed top-0 left-0 lg:left-[10.5%] h-[82.5%]">
+      <div className=" w-full lg:w-[90%] flex flex-col gap-3 items-center  fixed top-0 left-0 lg:left-[9.4%] h-[82.5%]">
         <div className="min-h-17 w-full bg-(--card) flex items-center">
           <div className="flex items-center gap-1 text-sm text-(--text)">
             <button className="duration-300 ease-in-out hover:cursor-pointer transition-all bg-(--card) rounded-lg p-2">
@@ -313,7 +313,7 @@ function StudentWrapper() {
 
         <form
           onSubmit={sendMessage}
-          className="rounded-tl-3xl shadow border border-gray-200 rounded-tr-3xl fixed bottom-0 left-0 lg:left-[10.5%] w-full  bg-(--card) px-4 py-3 backdrop-blur-md"
+          className="rounded-tl-3xl shadow border border-gray-200 rounded-tr-3xl fixed bottom-0 left-0 lg:left-[9.4%] w-full  bg-(--card) px-4 py-3 backdrop-blur-md"
         >
           <div className="mx-auto flex max-w-4xl items-center gap-3">
             <div className="flex-1 relative rounded-full overflow-hidden">

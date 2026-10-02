@@ -12,7 +12,9 @@ import {
   TbRewindForward5,
   
 } from "react-icons/tb";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { LuClipboardList } from "react-icons/lu";
+import { CiCircleInfo } from "react-icons/ci";
 function SubmitRecording({
   studentId,
   studentName,
@@ -29,6 +31,7 @@ function SubmitRecording({
 }) {
   const audioRef = useRef(null);
   const formattedName = formatName(studentName);
+  const [remarks,setRemarks] = useState('');
   return (
     <div className="my-auto flex w-full flex-col gap-5 rounded-3xl border border-(--border) bg-(--card) px-5 py-5 shadow-(--shadow-lg) lg:w-1/2 lg:mx-auto">
       {/* Success / Student */}
@@ -41,8 +44,6 @@ function SubmitRecording({
           Class recorded successfully!
         </h1>
 
-        
-
         <p className=" mt-1 max-w-full px-3 font-bold text-amber-800">
           {formattedName}
         </p>
@@ -52,7 +53,8 @@ function SubmitRecording({
       <div className="rounded-2xl border border-(--border)/60 bg-white/60 p-4 flex flex-col gap-2">
         <div className="mb-4 flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-50">
-            {/* <TbWaveform className="text-xl text-amber-800" /> */} <PiWaveform className="text-xl text-amber-800"/>
+            {/* <TbWaveform className="text-xl text-amber-800" /> */}{" "}
+            <PiWaveform className="text-xl text-amber-800" />
           </div>
 
           <div>
@@ -122,8 +124,8 @@ function SubmitRecording({
       </div>
 
       {/* Recording Details */}
-      <div className="rounded-2xl border border-(--border)/60 bg-white/60">
-        <div className="flex items-center gap-2 border-b border-(--border)/60 px-4 py-3">
+      <div className="w-full">
+        {/* <div className="flex items-center gap-2 border-b border-(--border)/60 px-4 py-3">
           <IoInformationCircleOutline className="text-xl text-amber-800" />
 
           <p className="text-xs font-bold">Recording Details</p>
@@ -145,7 +147,29 @@ function SubmitRecording({
           <p className="text-xs font-bold">
             {Number((audioSize / 1024 / 1024).toFixed(1))} MB
           </p>
+        </div> */}
+        <div className="flex items-center text-xs gap-2 mb-2 bg-(--primary) text-white py-2 rounded-md px-2">
+          <div className="p-1 bg-(--primary)/30 rounded-md">
+            <LuClipboardList className="text-2xl text-white/80" />
+          </div>
+          <div>
+            <p className=" tracking-wide text-xs">Remarks <span className="text-[0.60rem] text-gray-200">(optional)</span></p>
+            <div className="flex items-center">
+              {/* <CiCircleInfo /> */}
+              <p className="text-gray-200 tracking-wide text-[0.60rem]">These remarks will be sent to the student's parent via email.</p>
+            </div>
+          </div>
         </div>
+        <textarea
+        spellCheck={false}
+        onChange={e => setRemarks(e.target.value)}
+        value={remarks}
+        placeholder="Enter any remarks..."
+          rows={4}
+          name=""
+          id=""
+          className="focus:outline-1 outline-amber-800 p-2 px-3 rounded-md border border-(--border)/60 bg-white/60 font-semibold tracking-wider text-xs w-full"
+        ></textarea>
       </div>
 
       {/* Actions */}
@@ -185,7 +209,7 @@ function SubmitRecording({
 
         <button
           disabled={isSubmitting}
-          onClick={() => submitRecording(studentId, formatName(studentName))}
+          onClick={() => submitRecording(studentId, formatName(studentName),remarks)}
           className="
         relative flex items-center justify-center gap-2
         rounded-xl

@@ -16,6 +16,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { TfiExport } from "react-icons/tfi";
 import { GoBlocked } from "react-icons/go";
+import { MdCloudQueue } from "react-icons/md";
+import UploadQueue from "./recordings/UploadQueue";
+import { IoIosArrowDown } from "react-icons/io";
 
 // const teachers = [
 //   {
@@ -71,6 +74,7 @@ function Filter({role}) {
   const {teachers,students} = useAppProvider();
   const [isShowFilter, setIsShowFilter] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
+  const [isShowQueue, setIsShowQueue] = useState(false);
   const [filterType, setFilterType] = useState("");
   const {user} = useUser();
   const params = useSearchParams();
@@ -111,17 +115,28 @@ function Filter({role}) {
       toast.error('failed to download excel');
     }
   }
+  const {recordingsQueue} = useAppProvider();
   // if(!user?._id) return;
   return (
     <div className="relative  px-2 w-fit flex gap-5">
      {user?.role === 'admin' && <button onClick={handleDownloadExcel} className="flex font-semibold hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-blue-900 text-white text-sm items-center gap-3 px-4 py-2 bg-blue-800 rounded-md shadow-(--shadow-md)">
         <TfiExport className="text-white font-bold"/> export
       </button>}
+
       <button
-        className="flex font-semibold hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-(--primary) text-white text-sm items-center gap-3 px-4 py-2 bg-(--primary-light) rounded-md shadow-(--shadow-md)"
+        className="flex font-semibold hover:cursor-pointer duration-300 ease-in-out transition-all hover:bg-(--primary text-amber-800 border text-sm items-center gap-3 px-4 py-2 bg-(--primary-light rounded-md shadow-2xl"
+        onClick={() => setIsShowQueue(!isShowQueue)}
+      >
+        <MdCloudQueue className="text-xl" /> Queue 
+        <p className="bg-(--bg-tertiary) h-5 w-5 rounded-full text-xs flex items-center justify-center font-bold">{recordingsQueue.length}</p>
+      </button>
+      {isShowQueue && <UploadQueue onClose={() => setIsShowQueue(false)}/>}
+      <button
+        className="flex font-semibold hover:cursor-pointer duration-300 ease-in-out transition-all text-white border border-amber-800 text-sm items-center gap-3 px-4 py-2 bg-(--primary-light) rounded-md shadow-(--shadow-lg)"
         onClick={() => setIsShowFilter(!isShowFilter)}
       >
         <CiFilter className="text-xl" /> Filter
+        <IoIosArrowDown />
       </button>
       {isShowFilter && (
         <CustomContextMenu

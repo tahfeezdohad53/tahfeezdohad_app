@@ -159,7 +159,7 @@ function IkhtebaarReportCard({ report }) {
           <p className="text-gray-600">Grade</p>
 
           <p className="p-1 px-2 rounded-md bg-yellow-100 text-yellow-600">
-            {report.grade || "-"}
+            {report.hifzGrade || "-"}
           </p>
         </div>
 

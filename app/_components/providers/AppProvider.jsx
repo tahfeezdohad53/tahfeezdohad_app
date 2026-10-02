@@ -10,6 +10,7 @@ function AppProvider({ children }) {
   const {user} = useUser();
     const containerRef = useRef(null);
   const [filteredGurfahStudents, setFilteredGurfahStudents] = useState([]);
+  const [recordingsQueue,setRecordingsQueue] = useState([]); 
   
     // const [teachers,setTeachers] = useState();
     // const [students,setStudents] = useState();
@@ -37,7 +38,7 @@ function AppProvider({ children }) {
 
 const teachers = data?.teachers;
 const students = data?.students;
-  return <Context.Provider value={{ teachers,students,containerRef,filteredGurfahStudents,setFilteredGurfahStudents }}>{children}</Context.Provider>;
+  return <Context.Provider value={{ teachers,students,containerRef,filteredGurfahStudents,setFilteredGurfahStudents,recordingsQueue,setRecordingsQueue }}>{children}</Context.Provider>;
 }
 
 export default AppProvider;
