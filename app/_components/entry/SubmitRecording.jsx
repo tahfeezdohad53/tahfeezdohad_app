@@ -156,7 +156,7 @@ function SubmitRecording({
             <p className=" tracking-wide text-xs">Remarks <span className="text-[0.60rem] text-gray-200">(optional)</span></p>
             <div className="flex items-center">
               {/* <CiCircleInfo /> */}
-              <p className="text-gray-200 tracking-wide text-[0.60rem]">These remarks will be sent to the student's parent via email.</p>
+              <p className="text-gray-200 tracking-wide text-[0.60rem]">This remarks will be sent to the student's parent via email.</p>
             </div>
           </div>
         </div>
