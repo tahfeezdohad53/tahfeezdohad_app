@@ -10,16 +10,19 @@ import { AiOutlineMail } from "react-icons/ai";
 
 export default function SecondaryEmailForm() {
     const {user} = useUser();
-    const [contactEmail,setContactEmail] = useState('');
+    const [contactEmail,setContactEmail] = useState(user?.contactEmail || '');
+    const [contactNumber,setContactNumber] = useState(user?.contactNumber || '');
     const [isSub,setIsSub] = useState(false);
     const querClient = useQueryClient();
     async function handleSubmit(e){
         e.preventDefault();
         if(!contactEmail) return toast.error('please enter email');
+        if(!contactNumber) return toast.error('please enter Number');
+        if(contactNumber.length !== 10) return toast.error('contact Number should be 10 digits long');
         setIsSub(true);
         try{
-            await axios.patch(`${process.env.NEXT_PUBLIC_URL}/user/contactEmail`,{contactEmail},{withCredentials:true})
-            toast.success('email submitted');
+            await axios.patch(`${process.env.NEXT_PUBLIC_URL}/user/contactEmail`,{contactEmail,contactNumber},{withCredentials:true})
+            toast.success('Info submitted');
             querClient.invalidateQueries({queryKey:['token']});
         }catch(err){
             console.log(err);
@@ -28,24 +31,32 @@ export default function SecondaryEmailForm() {
             setIsSub(false);
         }
     }
-  if(user?._id && !user?.contactEmail && !user?.name.includes('tahfeez'))return (
+  if(user?._id && (!user?.contactEmail || !user?.contactNumber) && !user?.name.includes('tahfeez'))return (
     <div className="fixed h-screen w-full flex items-center justify-center backdrop-brightness-60 z-999">
       <div className=" w-[90%] lg:w-1/4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
         <h2 className="flex items-center gap-2 border-b pb-3 border-b-gray-200  text-lg font-semibold text-gray-900">
-         <AiOutlineMail /> Add contact email
+         <AiOutlineMail /> Add contact Info
         </h2>
 
         <p className="mt-3 text-sm text-gray-500">
-          You will receive notifications from Tahfeez Dohad on this email.
+          You will receive notifications from Tahfeez Dohad on this email and Number.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-3">
           <input
             required
-            value={contactEmail}
+            value={user?.contactEmail || contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}
             type="email"
             placeholder="Enter contact email"
+            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+          <input
+            required
+            value={user?.contactNumber || contactNumber}
+            onChange={(e) => setContactNumber(e.target.value)}
+            type="number"
+            placeholder="Enter Whatsapp Number"
             className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
 
