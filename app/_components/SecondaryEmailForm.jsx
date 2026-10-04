@@ -31,6 +31,11 @@ export default function SecondaryEmailForm() {
             setIsSub(false);
         }
     }
+
+    useEffect(() => {
+      if(user?.contactEmail) setContactEmail(user?.contactEmail);
+      if(user?.contactNumber) setContactNumber(user?.contactNumber);
+    },[user])
   if(user?._id && (!user?.contactEmail || !user?.contactNumber) && !user?.name.includes('tahfeez'))return (
     <div className="fixed h-screen w-full flex items-center justify-center backdrop-brightness-60 z-999">
       <div className=" w-[90%] lg:w-1/4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
