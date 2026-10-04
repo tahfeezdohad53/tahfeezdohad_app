@@ -16,7 +16,7 @@ export default function CustomSelect({controlled=false,extValue,classname,isSubm
     params.set(filterType,el.value);
     router.replace(`${pathname}?${params}`);
    }
-
+// console.log('ext :',extValue)
   return (
     <>
       {!handler && (
@@ -25,7 +25,7 @@ export default function CustomSelect({controlled=false,extValue,classname,isSubm
       {handler && !handleOnChange && (
         <Select className={classname} options={options} onChange={(e) => setValue(e.value)} />
       )}
-      {handler && handleOnChange && (
+      {handler && handleOnChange && !controlled &&(
         <Select
           options={options}
           onChange={(e) => handler({ value: e.value, label: e.label })}
