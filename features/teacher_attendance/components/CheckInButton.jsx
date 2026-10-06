@@ -53,7 +53,7 @@ function isInsideRadius(userLat, userLon, centerLat, centerLon) {
 
   const distance = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-  return distance <= 30; // 30m radius = 60m diameter
+  return distance <= 50; // 30m radius = 60m diameter
 }
 
 async function getCurrentLocation() {
@@ -134,7 +134,7 @@ function CheckInButton() {
       
       watchPositonRef.current = navigator.geolocation.watchPosition(async lo => {
         toast.success(lo.coords.accuracy);
-        if(lo.coords.accuracy <= 70){
+        if(lo.coords.accuracy <= 100){
           toast.loading('Verifying Location...',{id:'checkIn'});
           const lat = lo.coords.latitude;
           const lng = lo.coords.longitude
