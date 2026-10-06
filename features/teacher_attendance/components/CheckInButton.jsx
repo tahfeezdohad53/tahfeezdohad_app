@@ -125,7 +125,7 @@ function CheckInButton() {
         //        timeoutRef.current = null;
         //        watchPositonRef.current = null;
         //     }
-        toast.loading('',{id:'checkIn'});
+        toast.error('GPS accuracy is bad',{id:'checkIn'});
 
         navigator.geolocation.clearWatch(watchPositonRef.current);
         timeoutRef.current = null;
