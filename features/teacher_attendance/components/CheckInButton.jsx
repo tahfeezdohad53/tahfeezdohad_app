@@ -53,7 +53,7 @@ function isInsideRadius(userLat, userLon, centerLat, centerLon) {
 
   const distance = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-  return distance <= 60; // 30m radius = 60m diameter
+  return distance <= 30; // 30m radius = 60m diameter
 }
 
 async function getCurrentLocation() {
@@ -108,28 +108,28 @@ function CheckInButton() {
         return;
       }
     }
-      toast.loading("Checking Your GPS Accuracy...", { id: "checkIn" });
+      // toast.loading("Checking Your GPS Accuracy...", { id: "checkIn" });
 
-      timeoutRef.current = setTimeout(async () => {
-        toast.loading('Your GPS Accuracy is Low, checking in...',{id:'checkIn'});
-            try {
-              await mutate.mutateAsync({ batch: selectedBatch });
-            } catch (err) {
-              toast.error("failed to check in, try again!", { id: "checkIn" });
-            } finally {
-              setIsSubmitting(false);
-              setIsOpen(false);
-              setSelectedBatch(null);
-              // if(timeoutRef.current) clearTimeout(timeoutRef.current);
-              if (watchPositonRef.current !== 'null') navigator.geolocation.clearWatch(watchPositonRef.current);
-               timeoutRef.current = null;
-               watchPositonRef.current = null;
-            }
+      // timeoutRef.current = setTimeout(async () => {
+      //   toast.loading('Your GPS Accuracy is Low, checking in...',{id:'checkIn'});
+      //       try {
+      //         await mutate.mutateAsync({ batch: selectedBatch });
+      //       } catch (err) {
+      //         toast.error("failed to check in, try again!", { id: "checkIn" });
+      //       } finally {
+      //         setIsSubmitting(false);
+      //         setIsOpen(false);
+      //         setSelectedBatch(null);
+      //         // if(timeoutRef.current) clearTimeout(timeoutRef.current);
+      //         if (watchPositonRef.current !== 'null') navigator.geolocation.clearWatch(watchPositonRef.current);
+      //          timeoutRef.current = null;
+      //          watchPositonRef.current = null;
+      //       }
             
-      }, 11000);
+      // }, 11000);
       
       watchPositonRef.current = navigator.geolocation.watchPosition(async lo => {
-        if(lo.coords.accuracy <= 40){
+        if(lo.coords.accuracy <= 30){
           toast.loading('Verifying Location...',{id:'checkIn'});
           const lat = lo.coords.latitude;
           const lng = lo.coords.longitude
@@ -160,6 +160,8 @@ function CheckInButton() {
             clearTimeout(timeoutRef.current);
             toast.error("not at location", { id: "checkIn" });
             setIsSubmitting(false);
+            timeoutRef.current = null;
+            watchPositonRef.current = null;
           }
         }
       },() => {
@@ -167,7 +169,7 @@ function CheckInButton() {
         // if(timeoutRef.current) clearTimeout(timeoutRef.current);
         if(watchPositonRef.current !== 'null') navigator.geolocation.clearWatch(watchPositonRef.current);
         setIsSubmitting(false);
-      },{enableHighAccuracy:true,timeout:10000,maximumAge:0})
+      },{enableHighAccuracy:true,timeout:30000,maximumAge:0})
   };
 
   return (
