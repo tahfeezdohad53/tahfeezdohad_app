@@ -110,26 +110,30 @@ function CheckInButton() {
     }
       // toast.loading("Checking Your GPS Accuracy...", { id: "checkIn" });
 
-      // timeoutRef.current = setTimeout(async () => {
-      //   toast.loading('Your GPS Accuracy is Low, checking in...',{id:'checkIn'});
-      //       try {
-      //         await mutate.mutateAsync({ batch: selectedBatch });
-      //       } catch (err) {
-      //         toast.error("failed to check in, try again!", { id: "checkIn" });
-      //       } finally {
-      //         setIsSubmitting(false);
-      //         setIsOpen(false);
-      //         setSelectedBatch(null);
-      //         // if(timeoutRef.current) clearTimeout(timeoutRef.current);
-      //         if (watchPositonRef.current !== 'null') navigator.geolocation.clearWatch(watchPositonRef.current);
-      //          timeoutRef.current = null;
-      //          watchPositonRef.current = null;
-      //       }
-            
-      // }, 11000);
+      timeoutRef.current = setTimeout(async () => {
+        // toast.loading('Your GPS Accuracy is Low, checking in...',{id:'checkIn'});
+        //     try {
+        //       await mutate.mutateAsync({ batch: selectedBatch });
+        //     } catch (err) {
+        //       toast.error("failed to check in, try again!", { id: "checkIn" });
+        //     } finally {
+        //       setIsSubmitting(false);
+        //       setIsOpen(false);
+        //       setSelectedBatch(null);
+        //       // if(timeoutRef.current) clearTimeout(timeoutRef.current);
+        //       if (watchPositonRef.current !== 'null') navigator.geolocation.clearWatch(watchPositonRef.current);
+        //        timeoutRef.current = null;
+        //        watchPositonRef.current = null;
+        //     }
+        toast.loading('',{id:'checkIn'});
+
+        navigator.geolocation.clearWatch(watchPositonRef.current);
+        timeoutRef.current = null;
+        watchPositonRef.current = null;
+      }, 31000);
       
       watchPositonRef.current = navigator.geolocation.watchPosition(async lo => {
-        if(lo.coords.accuracy <= 30){
+        if(lo.coords.accuracy <= 70){
           toast.loading('Verifying Location...',{id:'checkIn'});
           const lat = lo.coords.latitude;
           const lng = lo.coords.longitude
