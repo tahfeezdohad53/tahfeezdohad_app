@@ -135,6 +135,7 @@ function CheckInButton() {
       watchPositonRef.current = navigator.geolocation.watchPosition(async lo => {
         toast.success(lo.coords.accuracy);
         if(lo.coords.accuracy <= 100){
+            navigator.geolocation.clearWatch(watchPositonRef.current);
           toast.loading('Verifying Location...',{id:'checkIn'});
           const lat = lo.coords.latitude;
           const lng = lo.coords.longitude
