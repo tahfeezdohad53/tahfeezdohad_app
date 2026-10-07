@@ -1,7 +1,7 @@
 'use client';
 
 import { Html5Qrcode } from "html5-qrcode";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useCheckIn from "../hooks/useCheckIn";
 import toast from "react-hot-toast";
 import useCheckOut from "../hooks/useCheckOut";
@@ -9,14 +9,16 @@ import useCheckOut from "../hooks/useCheckOut";
 function QRScanner({close,type}) {
     const mutate = useCheckIn();
     const checkOutMutate = useCheckOut();
-
+    const processing = useRef(false);
     useEffect(() => {
         const scanner = new Html5Qrcode('qr');
-
+        // let processing = false;
         scanner.start(
           { facingMode: "environment" },
           { fps: 30, qrbox: { width: 250, height: 500 } },
           async (decodedText) => {
+            if(processing.current) return;
+            processing.current = true;
             if (type === "checkIn") {
               try {
                 await mutate.mutateAsync({ batch: decodedText });
@@ -25,6 +27,7 @@ function QRScanner({close,type}) {
                 //  toast.error("failed to check in, try again!");
               } finally {
                 close();
+                processing.current = false;
               }
             }
             if (type === "checkOut") {
@@ -33,6 +36,8 @@ function QRScanner({close,type}) {
                 await scanner.stop();
               } catch (err) {
                 // toast.error('failed to check out');
+              }finally{
+                processing.current = false;
               }
             }
           },
