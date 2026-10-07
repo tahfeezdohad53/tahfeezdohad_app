@@ -15,7 +15,7 @@ function QRScanner({close,type}) {
         // let processing = false;
         scanner.start(
           { facingMode: "environment" },
-          { fps: 30},
+          { fps: 30,qrbox:{width:300,height:400}},
           async (decodedText) => {
             if(processing.current) return;
             processing.current = true;
@@ -47,7 +47,7 @@ function QRScanner({close,type}) {
         );
     },[])
     return (
-        <div className=" z-999999 fixed w-full h-3/4  top-1/2 left-1/2 -translate-1/2">
+        <div className=" z-999999 fixed w-full h-3/4 flex justify-center items-center top-1/2 left-1/2 -translate-1/2">
             <div className=" w-full h-full rounded-md overflow-hidden" id="qr">
 
             </div>
