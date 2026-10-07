@@ -15,7 +15,7 @@ function QRScanner({close,type}) {
 
         scanner.start(
           { facingMode: "environment" },
-          { fps: 30, qrbox: { width: 250, height: 250 } },
+          { fps: 30, qrbox: { width: 300, height: 600 } },
           async (decodedText) => {
             if (type === "checkIn") {
               try {
