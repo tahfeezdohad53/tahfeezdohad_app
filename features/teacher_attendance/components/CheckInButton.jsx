@@ -5,6 +5,8 @@ import { IoIosLogOut } from "react-icons/io";
 import useCheckIn from "../hooks/useCheckIn";
 import { ImSpinner2 } from "react-icons/im";
 import toast from "react-hot-toast";
+import QRScanner from "./QRScanner";
+import { useUser } from "@/app/_components/providers/UserProvider";
 
 const batches = [
   {
@@ -35,6 +37,48 @@ const batches = [
     label: "Online Class",
     value: "online",
   },
+];
+const batches2 = [
+  // {
+  //   label: "Yaqoot Rijaal",
+  //   value: "yaqoot_mardo",
+  // },
+  // {
+  //   label: "Yaqoot Nisaa",
+  //   value: "yaqoot_bairo",
+  // },
+  // {
+  //   label: "Baneen/Banaat",
+  //   value: "atfaal",
+  // },
+  // {
+  //   label: "Sigaar",
+  //   value: "sigaar",
+  // },
+  // {
+  //   label: "Kibaar",
+  //   value: "kibaar",
+  // },
+  // {
+  //   label: "Taheri Hall",
+  //   value: "taheri_hall",
+  // },
+  {
+    label: "Online Class",
+    value: "online",
+  },
+];
+
+const allowedUsers = [
+  "6a57a6bf4a5745965fcc1a4f",
+  "6a54f70a591f80d8af05b147",
+  "6a5b88719b8732dabd07a6f6",
+  "6a57a6bf4a5745965fcc1a6f",
+  "6a66c6ec0ac99e1aa300a2de",
+  "6a64cc2942d22712f6fcd011",
+  "6a57a6bf4a5745965fcc1a73",
+  "6a64cc2942d22712f6fcd011",
+  "6a57a6bf4a5745965fcc1a74",
 ];
 
 function isInsideRadius(userLat, userLon, centerLat, centerLon) {
@@ -86,19 +130,21 @@ function checkIn() {
 // }
 
 function CheckInButton() {
+  const {user} = useUser();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [isSubmitting,setIsSubmitting] = useState(false);
   const timeoutRef = useRef(null);
   const watchPositonRef = useRef(null);
   const mutate = useCheckIn();
-
+  const [isShowScanner,setIsShowScanner] = useState(false);
   const handleCheckIn = async () => {
     if (!selectedBatch) return;
     setIsSubmitting(true);
     if(selectedBatch === 'taheri_hall' || selectedBatch === 'online') {
       try {
         await mutate.mutateAsync({ batch: selectedBatch });
+        localStorage.setItem('checkedInBatch','online');
       } catch (err) {
         // toast.error("failed to check in, try again!");
       } finally {
@@ -110,46 +156,9 @@ function CheckInButton() {
     }
       // toast.loading("Checking Your GPS Accuracy...", { id: "checkIn" });
 
-      timeoutRef.current = setTimeout(async () => {
-        // toast.loading('Your GPS Accuracy is Low, checking in...',{id:'checkIn'});
-        //     try {
-        //       await mutate.mutateAsync({ batch: selectedBatch });
-        //     } catch (err) {
-        //       toast.error("failed to check in, try again!", { id: "checkIn" });
-        //     } finally {
-        //       setIsSubmitting(false);
-        //       setIsOpen(false);
-        //       setSelectedBatch(null);
-        //       // if(timeoutRef.current) clearTimeout(timeoutRef.current);
-        //       if (watchPositonRef.current !== 'null') navigator.geolocation.clearWatch(watchPositonRef.current);
-        //        timeoutRef.current = null;
-        //        watchPositonRef.current = null;
-        //     }
-        toast.error('GPS accuracy is bad',{id:'checkIn'});
-
-        navigator.geolocation.clearWatch(watchPositonRef.current);
-        timeoutRef.current = null;
-        watchPositonRef.current = null;
-      }, 31000);
+     
       
-      watchPositonRef.current = navigator.geolocation.watchPosition(async lo => {
-        toast.success(lo.coords.accuracy);
-        if(lo.coords.accuracy <= 100){
-            navigator.geolocation.clearWatch(watchPositonRef.current);
-          toast.loading('Verifying Location...',{id:'checkIn'});
-          const lat = lo.coords.latitude;
-          const lng = lo.coords.longitude
-          const isAtLocation = isInsideDiameter(
-            lat,
-            lng,
-            22.83266222,
-            74.2558682,
-          );
-          if (isAtLocation) {
-            navigator.geolocation.clearWatch(watchPositonRef.current);
-            clearTimeout(timeoutRef.current);
-            timeoutRef.current = null;
-            watchPositonRef.current = null;
+      
             try {
               await mutate.mutateAsync({ batch: selectedBatch });
             } catch (err) {
@@ -159,23 +168,10 @@ function CheckInButton() {
               setIsOpen(false);
               setSelectedBatch(null);
             }
-          }
+        
 
-          else {
-            navigator.geolocation.clearWatch(watchPositonRef.current);
-            clearTimeout(timeoutRef.current);
-            toast.error("not at location", { id: "checkIn" });
-            setIsSubmitting(false);
-            timeoutRef.current = null;
-            watchPositonRef.current = null;
-          }
-        }
-      },() => {
-        toast.loading("Your GPS is not giving reliable location", { id: "checkIn" });
-        // if(timeoutRef.current) clearTimeout(timeoutRef.current);
-        if(watchPositonRef.current !== 'null') navigator.geolocation.clearWatch(watchPositonRef.current);
-        setIsSubmitting(false);
-      },{enableHighAccuracy:true,timeout:30000,maximumAge:0})
+        
+      
   };
 
   return (
@@ -211,21 +207,52 @@ function CheckInButton() {
             </div>
 
             {/* Batches */}
-            <div className="grid grid-cols-2 gap-2">
-              {batches.map((batch) => (
+            <div className={`grid ${allowedUsers.includes(user?._id) ? 'grid-cols-1':'grid-cols-2'} gap-2`}>
+              {!allowedUsers.includes(user?._id)
+                ? batches.map((batch) => (
+                    <button
+                      key={batch.label}
+                      onClick={() => setSelectedBatch(batch.value)}
+                      className={`${batch.value === "online" && "col-span-2"} rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${
+                        selectedBatch === batch.value
+                          ? "border-(--primary) bg-(--primary)/10 text-(--primary)"
+                          : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      {batch.label}
+                    </button>
+                  ))
+                : batches2.map((batch) => (
+                    <button
+                      key={batch.label}
+                      onClick={() => setSelectedBatch(batch.value)}
+                      className={`${batch.value === "online" && "col-span-1"} rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${
+                        selectedBatch === batch.value
+                          ? "border-(--primary) bg-(--primary)/10 text-(--primary)"
+                          : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      {batch.label}
+                    </button>
+                  ))}
+              {allowedUsers.includes(user?._id) && (
                 <button
-                  key={batch.label}
-                  onClick={() => setSelectedBatch(batch.value)}
-                  className={`${batch.value === 'online' && 'col-span-2'} rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${
-                    selectedBatch === batch.value
-                      ? "border-(--primary) bg-(--primary)/10 text-(--primary)"
-                      : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
-                  }`}
+                  onClick={() => setIsShowScanner(true)}
+                  className={` rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${"border-gray-200 bg-white text-gray-700 hover:bg-gray-50"}`}
                 >
-                  {batch.label}
+                  Scan Qr
                 </button>
-              ))}
+              )}
             </div>
+            {isShowScanner && (
+              <QRScanner
+                close={() => {
+                  setIsShowScanner(false);
+                  setIsOpen(false);
+                }}
+                type="checkIn"
+              />
+            )}
 
             {/* Actions */}
             <div className="mt-5 flex gap-2">
@@ -244,8 +271,16 @@ function CheckInButton() {
                 disabled={!selectedBatch || isSubmitting}
                 className="relative flex-1 rounded-md bg-(--primary) px-3 py-3 text-xs font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <span className={`${mutate.isPending ? 'opacity-0' : 'opacity-100'}`}>Check In</span>
-                <span className={`${mutate.isPending ? 'opacity-100':'opacity-0'} animate-spin absolute top-1/2 left-1/2 -translate-1/2`}><ImSpinner2 /></span>
+                <span
+                  className={`${mutate.isPending ? "opacity-0" : "opacity-100"}`}
+                >
+                  Check In
+                </span>
+                <span
+                  className={`${mutate.isPending ? "opacity-100" : "opacity-0"} animate-spin absolute top-1/2 left-1/2 -translate-1/2`}
+                >
+                  <ImSpinner2 />
+                </span>
               </button>
             </div>
           </div>

@@ -14,7 +14,7 @@ function useCheckIn() {
             queryClient.invalidateQueries({queryKey:['token']});
             queryClient.invalidateQueries({ queryKey: ["teacherAttendance"] });
         },
-        onError:() => toast.error('Failed to check in!',{id:'checkIn'}),
+        // onError:() => toast.error('Failed to check in!',{id:'checkIn'}),
     })
 }
 

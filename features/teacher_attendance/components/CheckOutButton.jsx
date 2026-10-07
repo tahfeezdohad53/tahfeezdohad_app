@@ -5,9 +5,22 @@ import useCheckOut from "../hooks/useCheckOut";
 import { ImSpinner2 } from "react-icons/im";
 import toast from "react-hot-toast";
 import { useUser } from "@/app/_components/providers/UserProvider";
-
+import QRScanner from "./QRScanner";
+import { useState } from "react";
+const allowedUsers = [
+  "6a57a6bf4a5745965fcc1a4f",
+  "6a54f70a591f80d8af05b147",
+  "6a5b88719b8732dabd07a6f6",
+  "6a57a6bf4a5745965fcc1a6f",
+  "6a66c6ec0ac99e1aa300a2de",
+  "6a64cc2942d22712f6fcd011",
+  "6a57a6bf4a5745965fcc1a73",
+  "6a64cc2942d22712f6fcd011",
+  "6a57a6bf4a5745965fcc1a74",
+];
 function CheckOutButton() {
   const {user} = useUser();
+  const [isShowScanner,setIsShowScanner] = useState(false);
 
   const mutate = useCheckOut();
   async function checkOut() {
@@ -21,7 +34,18 @@ function CheckOutButton() {
   }
   return (
     <button
-      onClick={checkOut}
+      onClick={async () => {
+        if(localStorage.getItem('checkedInBatch') === 'online'){
+          await mutate.mutateAsync();
+          localStorage.removeItem('checkedInBatch');
+          return;
+        }
+        if(!allowedUsers.includes(user?._id)) {
+          console.log(allowedUsers.includes(user?._id));
+          return await checkOut();
+        }
+        setIsShowScanner(true);
+      }}
       disabled={mutate.isPending}
       className="relative flex items-center gap-2 bg-red-500 text-xs py-3 px-3 shadow-(--shadow-sm) text-white rounded-md borde border-(--primary)"
     >
@@ -33,6 +57,7 @@ function CheckOutButton() {
       >
         <ImSpinner2 />
       </span>
+      {isShowScanner && <QRScanner type="checkOut" close={() => setIsShowScanner(false)}/>}
     </button>
   );
 }
