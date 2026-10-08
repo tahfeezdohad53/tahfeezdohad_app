@@ -23,6 +23,7 @@ function QRScanner({close,type}) {
               try {
                 await mutate.mutateAsync({ batch: decodedText });
                 await scanner.stop();
+                localStorage.setItem('checkedInBatch','offline');
               } catch (err) {
                 //  toast.error("failed to check in, try again!");
               } finally {

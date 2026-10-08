@@ -8,78 +8,8 @@ import toast from "react-hot-toast";
 import QRScanner from "./QRScanner";
 import { useUser } from "@/app/_components/providers/UserProvider";
 
-const batches = [
-  {
-    label: "Yaqoot Rijaal",
-    value: "yaqoot_mardo",
-  },
-  {
-    label: "Yaqoot Nisaa",
-    value: "yaqoot_bairo",
-  },
-  {
-    label: "Baneen/Banaat",
-    value: "atfaal",
-  },
-  {
-    label: "Sigaar",
-    value: "sigaar",
-  },
-  {
-    label: "Kibaar",
-    value: "kibaar",
-  },
-  {
-    label: "Taheri Hall",
-    value: "taheri_hall",
-  },
-  {
-    label: "Online Class",
-    value: "online",
-  },
-];
-const batches2 = [
-  // {
-  //   label: "Yaqoot Rijaal",
-  //   value: "yaqoot_mardo",
-  // },
-  // {
-  //   label: "Yaqoot Nisaa",
-  //   value: "yaqoot_bairo",
-  // },
-  // {
-  //   label: "Baneen/Banaat",
-  //   value: "atfaal",
-  // },
-  // {
-  //   label: "Sigaar",
-  //   value: "sigaar",
-  // },
-  // {
-  //   label: "Kibaar",
-  //   value: "kibaar",
-  // },
-  // {
-  //   label: "Taheri Hall",
-  //   value: "taheri_hall",
-  // },
-  {
-    label: "Online Class",
-    value: "online",
-  },
-];
 
-const allowedUsers = [
-  "6a57a6bf4a5745965fcc1a4f",
-  "6a54f70a591f80d8af05b147",
-  "6a5b88719b8732dabd07a6f6",
-  "6a57a6bf4a5745965fcc1a6f",
-  "6a66c6ec0ac99e1aa300a2de",
-  "6a64cc2942d22712f6fcd011",
-  "6a57a6bf4a5745965fcc1a73",
-  "6a64cc2942d22712f6fcd011",
-  "6a57a6bf4a5745965fcc1a74",
-];
+
 
 function isInsideRadius(userLat, userLon, centerLat, centerLon) {
   const R = 6371000; // Earth radius in meters
@@ -207,42 +137,28 @@ function CheckInButton() {
             </div>
 
             {/* Batches */}
-            <div className={`grid ${allowedUsers.includes(user?._id) ? 'grid-cols-1':'grid-cols-2'} gap-2`}>
-              {!allowedUsers.includes(user?._id)
-                ? batches.map((batch) => (
+            <div className={`grid grid-cols-1 gap-2`}>
+              
                     <button
-                      key={batch.label}
-                      onClick={() => setSelectedBatch(batch.value)}
-                      className={`${batch.value === "online" && "col-span-2"} rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${
-                        selectedBatch === batch.value
+                      
+                      onClick={() => setSelectedBatch('online')}
+                      className={`col-span-2 rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${
+                        selectedBatch === 'online'
                           ? "border-(--primary) bg-(--primary)/10 text-(--primary)"
                           : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
                       }`}
                     >
-                      {batch.label}
+                      Online Class
                     </button>
-                  ))
-                : batches2.map((batch) => (
-                    <button
-                      key={batch.label}
-                      onClick={() => setSelectedBatch(batch.value)}
-                      className={`${batch.value === "online" && "col-span-1"} rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${
-                        selectedBatch === batch.value
-                          ? "border-(--primary) bg-(--primary)/10 text-(--primary)"
-                          : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
-                      }`}
-                    >
-                      {batch.label}
-                    </button>
-                  ))}
-              {allowedUsers.includes(user?._id) && (
+                 
+              
                 <button
                   onClick={() => setIsShowScanner(true)}
                   className={` rounded-lg border px-3 py-3 text-xs font-medium transition truncate ${"border-gray-200 bg-white text-gray-700 hover:bg-gray-50"}`}
                 >
                   Scan Qr
                 </button>
-              )}
+            
             </div>
             {isShowScanner && (
               <QRScanner
