@@ -7,17 +7,7 @@ import toast from "react-hot-toast";
 import { useUser } from "@/app/_components/providers/UserProvider";
 import QRScanner from "./QRScanner";
 import { useState } from "react";
-const allowedUsers = [
-  "6a57a6bf4a5745965fcc1a4f",
-  "6a54f70a591f80d8af05b147",
-  "6a5b88719b8732dabd07a6f6",
-  "6a57a6bf4a5745965fcc1a6f",
-  "6a66c6ec0ac99e1aa300a2de",
-  "6a64cc2942d22712f6fcd011",
-  "6a57a6bf4a5745965fcc1a73",
-  "6a64cc2942d22712f6fcd011",
-  "6a57a6bf4a5745965fcc1a74",
-];
+
 function CheckOutButton() {
   const {user} = useUser();
   const [isShowScanner,setIsShowScanner] = useState(false);
@@ -39,10 +29,6 @@ function CheckOutButton() {
           await mutate.mutateAsync();
           localStorage.removeItem('checkedInBatch');
           return;
-        }
-        if(!allowedUsers.includes(user?._id)) {
-          console.log(allowedUsers.includes(user?._id));
-          return await checkOut();
         }
         setIsShowScanner(true);
       }}
