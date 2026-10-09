@@ -330,20 +330,20 @@ export function CallingFnProvider({ children }) {
       .catch((err) => console.log(err));
     try{
       localMedia.current = await navigator.mediaDevices.getUserMedia({
-      video: {
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-        frameRate: { ideal: 60 },
-        facingMode: "user",
-      },
-      audio: {
-        sampleRate: 48000,
-        channelCount: 1,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-      },
-    });
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          frameRate: { ideal: 30, max: 30 },
+          facingMode: "user",
+        },
+        audio: {
+          sampleRate: 48000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
     }catch(err){
       toast.error('permission denied, please enable access to camera and mic.');
       endCall();
@@ -373,20 +373,20 @@ export function CallingFnProvider({ children }) {
     async function handleChange(){
       if(isCallingRef.current || isIncomingRef.current || isInCallRef.current){
         const m = await navigator.mediaDevices.getUserMedia({
-      video: {
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-        frameRate: { ideal: 60 },
-        facingMode: "user",
-      },
-      audio: {
-        sampleRate: 48000,
-        channelCount: 1,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-      },
-    })
+          video: {
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            frameRate: { ideal: 30, max: 30 },
+            facingMode: "user",
+          },
+          audio: {
+            sampleRate: 48000,
+            channelCount: 1,
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+        });
     localVideoRef.current.srcObject = m;
     const sender = peerConnection.current?.getSenders().find(s => s.track?.kind === 'audio');
     sender.replaceTrack(m.getAudioTracks()[0]);
@@ -600,20 +600,20 @@ export function CallingFnProvider({ children }) {
         .catch((err) => console.log(err));
      try{
        localMedia.current = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-          frameRate: { ideal: 60 },
-          facingMode: "user",
-        },
-        audio: {
-          sampleRate: 48000,
-          channelCount: 1,
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-        },
-      });
+         video: {
+           width: { ideal: 1280 },
+           height: { ideal: 720 },
+           frameRate: { ideal: 30, max: 30 },
+           facingMode: "user",
+         },
+         audio: {
+           sampleRate: 48000,
+           channelCount: 1,
+           echoCancellation: true,
+           noiseSuppression: true,
+           autoGainControl: true,
+         },
+       });
      }catch(err){
       toast.error('permission denied, please enable access to camera and mic.')
       endCall();
