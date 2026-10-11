@@ -15,6 +15,70 @@ import {
 import { useRef, useState } from "react";
 import { LuClipboardList } from "react-icons/lu";
 import { CiCircleInfo } from "react-icons/ci";
+import { FaBookOpen } from "react-icons/fa";
+import { HiOutlineBookOpen } from "react-icons/hi2";
+
+const ahkaamArr = [
+  { name: "Ghunna", arabic: "غُنَّة" },
+  { name: "Qalqalah", arabic: "قَلْقَلَة" },
+  { name: "Izhar", arabic: "إِظْهَار" },
+  { name: "Idgham", arabic: "إِدْغَام" },
+  { name: "Iqlab", arabic: "إِقْلَاب" },
+  { name: "Ikhfa", arabic: "إِخْفَاء" },
+  {
+    name: "Harakaat Zaa'idah",
+    arabic: "حَرَكَات زَائِدَة",
+  },
+  {
+    name: "Ahkaam ur Raa",
+    arabic: "أَحْكَامُ الرَّاءِ",
+  },
+  {
+    name: "Tahreek us Saakin",
+    arabic: "تَحْرِيكُ السَّاكِنِ",
+  },
+  {
+  name: "Ism ul Jalalah",
+  arabic: "اسم الجلالة"
+},
+  { name: "Madd Tabee'i", arabic: "مَدّ طَبِيعِي" },
+  { name: "Madd Lazim", arabic: "مَدّ لَازِم" },
+  { name: "Madd Muttasil", arabic: "مَدّ مُتَّصِل" },
+  { name: "Madd Munfasil", arabic: "مَدّ مُنْفَصِل" },
+  { name: "Madd Aarid", arabic: "مَدّ عَارِض لِلسُّكُون" },
+  { name: "Madd Badal", arabic: "مَدّ بَدَل" },
+];
+
+const huroofArr = [
+  "ا",
+  "ب",
+  "ت",
+  "ث",
+  "ج",
+  "ح",
+  "خ",
+  "د",
+  "ذ",
+  "ر",
+  "ز",
+  "س",
+  "ش",
+  "ص",
+  "ض",
+  "ط",
+  "ظ",
+  "ع",
+  "غ",
+  "ف",
+  "ق",
+  "ك",
+  "ل",
+  "م",
+  "ن",
+  "ه",
+  "و",
+  "ي",
+];
 function SubmitRecording({
   studentId,
   studentName,
@@ -32,6 +96,8 @@ function SubmitRecording({
   const audioRef = useRef(null);
   const formattedName = formatName(studentName);
   const [remarks,setRemarks] = useState('');
+  const [ahkaam,setAhkaam] = useState([]);
+  const [huroof,sethuroof] = useState([]);
   return (
     <div className="my-auto flex w-full flex-col gap-5 rounded-3xl border border-(--border) bg-(--card) px-5 py-5 shadow-(--shadow-lg) lg:w-1/2 lg:mx-auto">
       {/* Success / Student */}
@@ -125,51 +191,99 @@ function SubmitRecording({
 
       {/* Recording Details */}
       <div className="w-full">
-        {/* <div className="flex items-center gap-2 border-b border-(--border)/60 px-4 py-3">
-          <IoInformationCircleOutline className="text-xl text-amber-800" />
 
-          <p className="text-xs font-bold">Recording Details</p>
-        </div>
-
-        <div className="flex items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-stone-100">
-              <IoIosCloudUpload className="text-lg text-stone-600" />
-            </div>
-
-            <div>
-              <p className="text-xs font-medium">File size</p>
-
-              <p className="text-[10px] text-stone-500">Audio recording</p>
-            </div>
-          </div>
-
-          <p className="text-xs font-bold">
-            {Number((audioSize / 1024 / 1024).toFixed(1))} MB
-          </p>
-        </div> */}
-        <div className="flex items-center text-xs gap-2 mb-2 bg-(--primary) text-white py-2 rounded-md px-2">
-          <div className="p-1 bg-(--primary)/30 rounded-md">
-            <LuClipboardList className="text-2xl text-white/80" />
+        <div className="flex items-center text-xs gap-2 mb-2   py-2 rounded-md px-2">
+          <div className="p-2 bg-blue-50 rounded-md">
+            <LuClipboardList className="text-xl text-blue-600" />
           </div>
           <div>
-            <p className=" tracking-wide text-xs">Remarks <span className="text-[0.60rem] text-gray-200">(optional)</span></p>
+            <p className=" tracking-wide text-xs font-bold">
+              Remarks{" "}
+              <span className="text-[0.60rem] text-gray-500">(optional)</span>
+            </p>
             <div className="flex items-center">
               {/* <CiCircleInfo /> */}
-              <p className="text-gray-200 tracking-wide text-[0.60rem]">This remarks will be sent to the student's parent via email.</p>
+              <p className="text-gray-500 tracking-wide text-[0.60rem]">
+                This remarks will be sent to the student's parent via email.
+              </p>
             </div>
           </div>
         </div>
-        <textarea
-        spellCheck={false}
-        onChange={e => setRemarks(e.target.value)}
-        value={remarks}
-        placeholder="Enter any remarks..."
-          rows={4}
-          name=""
-          id=""
-          className="focus:outline-1 outline-amber-800 p-2 px-3 rounded-md border border-(--border)/60 bg-white/60 font-semibold tracking-wider text-xs w-full"
-        ></textarea>
+        <div className="border border-gray-100 rounded-md p-3">
+          <p className="text-xs ml-1 mb-1 font-bold">Write Remarks</p>
+          <textarea
+            spellCheck={false}
+            onChange={(e) => setRemarks(e.target.value)}
+            value={remarks}
+            placeholder="Enter any remarks..."
+            rows={4}
+            name=""
+            id=""
+            className="focus:outline-1 outline-amber-800 p-2 px-3 rounded-md border border-(--border)/60 bg-white/60 font-semibold tracking-wider text-xs w-full"
+          ></textarea>
+
+          <hr className=" text-gray-200 my-3" />
+
+          <div className="flex items-center text-xs gap-2 mb-2   py-2 rounded-md px-2">
+            <div className="p-2 bg-blue-50 rounded-md">
+              <HiOutlineBookOpen className="text-xl text-blue-600" />
+            </div>
+            <div>
+              <p className=" tracking-wide text-xs font-bold">Ahkaam </p>
+              <div className="flex items-center">
+                {/* <CiCircleInfo /> */}
+                <p className="text-gray-500 tracking-wide text-[0.60rem]">
+                  Select the Ahkaam that need attention
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex  flex-wrap gap-3">
+            {ahkaamArr.map(el => {
+              return (
+                <button onClick={() => setAhkaam(ahkaams => {
+                  if(ahkaams.includes(el.arabic)) return ahkaams.filter(el2 => el2 !== el.arabic);
+                  else return [...ahkaams,el.arabic];
+                })} key={el.arabic} className="border border-gray-300 flex items-center rounded-md gap-3 px-3 py-1">
+                  <input type="checkbox" readOnly checked={ahkaam.includes(el.arabic)}/>
+                  {el.arabic}
+                </button>
+              );
+            })}
+          </div>
+
+          <hr className=" text-gray-200 my-3" />
+
+          <div className="flex items-center text-xs gap-2 mb-2   py-2 rounded-md px-2">
+            <div className="p-2 bg-blue-50 rounded-md">
+              <HiOutlineBookOpen className="text-xl text-blue-600" />
+            </div>
+            <div>
+              <p className=" tracking-wide text-xs font-bold">Makharij </p>
+              <div className="flex items-center">
+                {/* <CiCircleInfo /> */}
+                <p className="text-gray-500 tracking-wide text-[0.60rem]">
+                  Select the Huroof that need attention
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex  flex-wrap gap-3">
+            {huroofArr.map(el => {
+              return (
+                <button onClick={() => {
+                  sethuroof(preHuroof => {
+                    if(preHuroof.includes(el)) return preHuroof.filter(filteredPreHuroof => filteredPreHuroof !== el);
+                    else return [...preHuroof,el];
+                  })
+                }} key={el} className="border border-gray-300 flex items-center rounded-md gap-3 px-3 py-1">
+                  <input type="checkbox" readOnly checked={huroof.includes(el)}/>
+                  {el}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Actions */}
@@ -209,7 +323,9 @@ function SubmitRecording({
 
         <button
           disabled={isSubmitting}
-          onClick={() => submitRecording(studentId, formatName(studentName),remarks)}
+          onClick={() =>
+            submitRecording(studentId, formatName(studentName), remarks,huroof,ahkaam)
+          }
           className="
         relative flex items-center justify-center gap-2
         rounded-xl

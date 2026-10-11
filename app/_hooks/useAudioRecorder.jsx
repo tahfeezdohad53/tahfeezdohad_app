@@ -199,7 +199,7 @@ function useAudioRecorder() {
     }
   }
 
-  async function submitRecording(studentId, name,remarks) {
+  async function submitRecording(studentId, name,remarks, huroof, ahkaam) {
     
       if(audioSize < 1024) return toast.error(
         "Something went wrong while recording this class. Please do not submit this recording. Refresh your browser before recording the next class.",
@@ -383,6 +383,8 @@ function useAudioRecorder() {
                 duration: formattedDuration,
                 slot: classType,
                 remarks,
+                huroof,
+                ahkaam
               },
               { withCredentials: true },
             );
