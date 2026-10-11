@@ -32,7 +32,7 @@ function QRScanner({close,type}) {
                 if(decodedText === 'atfaal') batch = 'baneen banaat';
                 if(decodedText === 'taheri_hall') batch = 'taaheri hall';
                 const utterance = new SpeechSynthesisUtterance(`checked in ${batch || ''}`)
-                utterance.lang = "hi-IN";
+                utterance.lang = "en-UK";
                 speechSynthesis.speak(utterance);
               } catch (err) {
                 //  toast.error("failed to check in, try again!");
