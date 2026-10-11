@@ -17,7 +17,8 @@ import {
   CalendarDays,
 } from "lucide-react";
 function TodayAttendanceStatus() {
-  const {user} = useUser();
+  const {user} = useUser(); 
+  
   // const {data} = useStatus();
     return (
       <div className="w-full overflow-hidden rounded-xl border border-amber-900/20 bg-(--card) shadow-(--shadow-md)">

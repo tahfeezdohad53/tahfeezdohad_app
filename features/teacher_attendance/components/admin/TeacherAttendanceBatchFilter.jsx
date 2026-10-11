@@ -10,6 +10,7 @@ const batches = [
   { value: "yaqoot_bairo", label: "Yaqoot (bairo)" },
   { value: "atfaal", label: "Baneen/Banaat" },
   { value: "kibaar", label: "Kibar" },
+  { value: "sigaar", label: "sigaar" },
   { value: "taheri_hall", label: "Taheri hall" },
   { value: "online", label: "Online" },
 ];

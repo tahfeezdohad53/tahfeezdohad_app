@@ -30,35 +30,6 @@ function isInsideRadius(userLat, userLon, centerLat, centerLon) {
   return distance <= 50; // 30m radius = 60m diameter
 }
 
-async function getCurrentLocation() {
-  navigator.geolocation.getCurrentPosition(
-    handleCheckIn,
-    () => toast.error("failed to get location!"),
-    { enableHighAccuracy: true, timeout: 15000 },
-  );
-}
-
-function checkIn() {
-  toast.success("Checked In");
-}
-
-// async function handleCheckIn(selectedBatch) {
-//   const lat = location.coords.latitude;
-//   const lng = location.coords.longitude;
-//   console.log(lat);
-//   console.log(lng);
-//   console.log(lat, lng);
-//   const isAtLocation = isInsideDiameter(
-//     lat,
-//     lng,
-//     22.832540011580914,
-//     74.25593716500295,
-//   );
-//   alert(location.accuracy);
-//   if (isAtLocation) await mutate.mutateAsync({batch:selectedBatch});
-//   else toast.error("not at location");
-// }
-
 function CheckInButton() {
   const {user} = useUser();
   const [isOpen, setIsOpen] = useState(false);
@@ -71,7 +42,7 @@ function CheckInButton() {
   const handleCheckIn = async () => {
     if (!selectedBatch) return;
     setIsSubmitting(true);
-    if(selectedBatch === 'taheri_hall' || selectedBatch === 'online') {
+    if(selectedBatch === 'online') {
       try {
         await mutate.mutateAsync({ batch: selectedBatch });
         localStorage.setItem('checkedInBatch','online');
@@ -83,25 +54,7 @@ function CheckInButton() {
         setSelectedBatch(null);
         return;
       }
-    }
-      // toast.loading("Checking Your GPS Accuracy...", { id: "checkIn" });
-
-     
-      
-      
-            try {
-              await mutate.mutateAsync({ batch: selectedBatch });
-            } catch (err) {
-              toast.error("failed to check in, try again!");
-            } finally {
-              setIsSubmitting(false);
-              setIsOpen(false);
-              setSelectedBatch(null);
-            }
-        
-
-        
-      
+    } 
   };
 
   return (

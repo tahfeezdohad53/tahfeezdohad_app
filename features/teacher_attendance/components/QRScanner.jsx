@@ -24,6 +24,16 @@ function QRScanner({close,type}) {
                 await mutate.mutateAsync({ batch: decodedText });
                 await scanner.stop();
                 localStorage.setItem('checkedInBatch','offline');
+                let batch;
+                if(decodedText === 'yaqoot_mardo') batch = 'yaqoot rijaal';
+                if(decodedText === 'yaqoot_bairo') batch = 'yaqoot nisaa';
+                if(decodedText === 'kibaar') batch = 'kibaar';
+                if(decodedText === 'sigaar') batch = 'sigaar';
+                if(decodedText === 'atfaal') batch = 'baneen banaat';
+                if(decodedText === 'taheri_hall') batch = 'taaheri hall';
+                const utterance = new SpeechSynthesisUtterance(`checked in ${batch || ''}`)
+                utterance.lang = "hi-IN";
+                speechSynthesis.speak(utterance);
               } catch (err) {
                 //  toast.error("failed to check in, try again!");
               } finally {
@@ -35,6 +45,9 @@ function QRScanner({close,type}) {
               try {
                 await checkOutMutate.mutateAsync();
                 await scanner.stop();
+                const utterance = new SpeechSynthesisUtterance('checked out');
+                utterance.lang = 'hi-IN';
+                speechSynthesis.speak(utterance);
               } catch (err) {
                 // toast.error('failed to check out');
               }finally{

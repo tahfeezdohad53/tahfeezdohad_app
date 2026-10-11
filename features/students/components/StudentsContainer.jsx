@@ -106,6 +106,17 @@ function StudentsContainer() {
       setIsSubmitting(false);
     }
   }
+  async function download(){
+    const {data} = await api.get('student/excel',{responseType:'blob'});
+
+
+    const url = window.URL.createObjectURL(data);
+    const a = document.createElement('a');
+    document.documentElement.appendChild(a);
+    a.download = 'students';
+    a.href = url;
+    a.click();
+  }
   async function handleAssignProxy(teacherId) {
     setIsSubmitting(true);
     try {
@@ -207,6 +218,7 @@ function StudentsContainer() {
   
   return (
     <div className="">
+    {/* <button onClick={download}>download</button> */}
       <div className="mb-10 bg-(image:--gradient-primary) mt-2 rounded-xl p-5 flex items-center gap-5 w-full ">
         <div className="p-3 text-white bg-(--primary-light) rounded-lg">
           <FaBook className="text-2xl lg:4xl" />
@@ -609,6 +621,7 @@ import { handleFilterStudents } from "../helper/handleFilterStudents";
 import useUpdateStudent from "../hooks/useUpdateStudent";
 import DiaryAndProxyForm from "./DiaryAndProxyForm";
 import { formatName } from "@/helpers";
+import { api } from "@/lib/axios";
 
 export function RecordWithNumberCard({ page = "entry", userType = "teacher" }) {
   const [showSelector, setShowSelector] = useState(false);
