@@ -26,21 +26,22 @@ function QRScanner({close,type}) {
             try{
               if(type === 'checkIn') {
                 // alert('checking in...');
+                await scanner.stop();
                 await mutate.mutateAsync({ batch: decodedText });
                 localStorage.setItem("checkedInBatch", "offline");
                 // alert('checkin');
               }
               if(type === 'checkOut') {
                 // alert('checking out...')
+                await scanner.stop();
                 await checkOutMutate.mutateAsync();
                 // alert('checkout');
               }
-              close();
-              await scanner.stop();
             }catch(err){
-
+              toast.error('failed to scan, please try again');
             }finally{
               processing.current = false;
+              close();
             }
           },
           () => {
