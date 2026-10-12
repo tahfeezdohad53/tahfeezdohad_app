@@ -21,11 +21,11 @@ function QRScanner({close,type}) {
             processing.current = true;
             if (type === "checkIn") {
               try {
+                close();
                 await mutate.mutateAsync({ batch: decodedText });
                 alert("checked in");
                 await scanner.stop();
                 localStorage.setItem('checkedInBatch','offline');
-                close();
               } catch (err) {
                 //  toast.error("failed to check in, try again!");
               } finally {
@@ -34,10 +34,10 @@ function QRScanner({close,type}) {
             }
             if (type === "checkOut") {
               try {
+                close();
                 await checkOutMutate.mutateAsync();
                 alert('checked out');
                 await scanner.stop();
-                close();
               } catch (err) {
                 // toast.error('failed to check out');
               }finally{
