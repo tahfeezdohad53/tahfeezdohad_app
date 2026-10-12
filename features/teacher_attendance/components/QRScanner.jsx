@@ -19,31 +19,48 @@ function QRScanner({close,type}) {
           async (decodedText) => {
             if(processing.current) return;
             processing.current = true;
-            if (type === "checkIn") {
-              try {
-                close();
+
+            try{
+              if(type === 'checkIn') {
                 await mutate.mutateAsync({ batch: decodedText });
-                alert("checked in");
-                await scanner.stop();
-                localStorage.setItem('checkedInBatch','offline');
-              } catch (err) {
-                //  toast.error("failed to check in, try again!");
-              } finally {
-                processing.current = false;
+                localStorage.setItem("checkedInBatch", "offline");
+                alert('checkin');
               }
-            }
-            if (type === "checkOut") {
-              try {
-                close();
+              if(type === 'checkOut') {
                 await checkOutMutate.mutateAsync();
-                alert('checked out');
-                await scanner.stop();
-              } catch (err) {
-                // toast.error('failed to check out');
-              }finally{
-                processing.current = false;
+                alert('checkout');
               }
+              close();
+              await scanner.stop();
+            }catch(err){
+
+            }finally{
+              processing.current = false;
             }
+            // if (type === "checkIn") {
+            //   try {
+            //     close();
+            //     await mutate.mutateAsync({ batch: decodedText });
+            //     alert("checked in");
+            //     await scanner.stop();
+            //   } catch (err) {
+            //     //  toast.error("failed to check in, try again!");
+            //   } finally {
+            //     processing.current = false;
+            //   }
+            // }
+            // if (type === "checkOut") {
+            //   try {
+            //     close();
+            //     await checkOutMutate.mutateAsync();
+            //     alert('checked out');
+            //     await scanner.stop();
+            //   } catch (err) {
+            //     // toast.error('failed to check out');
+            //   }finally{
+            //     processing.current = false;
+            //   }
+            // }
           },
           () => {
             // console.log("try again");
