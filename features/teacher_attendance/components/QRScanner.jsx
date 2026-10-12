@@ -25,11 +25,13 @@ function QRScanner({close,type}) {
 
             try{
               if(type === 'checkIn') {
+                alert('checking in...');
                 await mutate.mutateAsync({ batch: decodedText });
                 localStorage.setItem("checkedInBatch", "offline");
                 alert('checkin');
               }
               if(type === 'checkOut') {
+                alert('checking out...')
                 await checkOutMutate.mutateAsync();
                 alert('checkout');
               }
@@ -40,30 +42,6 @@ function QRScanner({close,type}) {
             }finally{
               processing.current = false;
             }
-            // if (type === "checkIn") {
-            //   try {
-            //     close();
-            //     await mutate.mutateAsync({ batch: decodedText });
-            //     alert("checked in");
-            //     await scanner.stop();
-            //   } catch (err) {
-            //     //  toast.error("failed to check in, try again!");
-            //   } finally {
-            //     processing.current = false;
-            //   }
-            // }
-            // if (type === "checkOut") {
-            //   try {
-            //     close();
-            //     await checkOutMutate.mutateAsync();
-            //     alert('checked out');
-            //     await scanner.stop();
-            //   } catch (err) {
-            //     // toast.error('failed to check out');
-            //   }finally{
-            //     processing.current = false;
-            //   }
-            // }
           },
           () => {
             // console.log("try again");
