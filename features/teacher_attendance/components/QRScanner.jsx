@@ -28,12 +28,12 @@ function QRScanner({close,type}) {
                 // alert('checking in...');
                 await mutate.mutateAsync({ batch: decodedText });
                 localStorage.setItem("checkedInBatch", "offline");
-                alert('checkin');
+                // alert('checkin');
               }
               if(type === 'checkOut') {
                 // alert('checking out...')
                 await checkOutMutate.mutateAsync();
-                alert('checkout');
+                // alert('checkout');
               }
               close();
               await scanner.stop();

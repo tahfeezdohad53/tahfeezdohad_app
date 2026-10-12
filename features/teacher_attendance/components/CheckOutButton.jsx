@@ -25,11 +25,11 @@ function CheckOutButton() {
   return (
     <button
       onClick={async () => {
-        // if(localStorage.getItem('checkedInBatch') === 'online'){
-        //   await mutate.mutateAsync();
-        //   localStorage.removeItem('checkedInBatch');
-        //   return;
-        // }
+        if(localStorage.getItem('checkedInBatch') === 'online'){
+          await mutate.mutateAsync();
+          localStorage.removeItem('checkedInBatch');
+          return;
+        }
         setIsShowScanner(true);
       }}
       disabled={mutate.isPending}
