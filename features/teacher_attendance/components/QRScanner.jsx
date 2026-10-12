@@ -22,6 +22,7 @@ function QRScanner({close,type}) {
             if (type === "checkIn") {
               try {
                 await mutate.mutateAsync({ batch: decodedText });
+                console.log("checked in");
                 await scanner.stop();
                 localStorage.setItem('checkedInBatch','offline');
                 close();
@@ -34,6 +35,7 @@ function QRScanner({close,type}) {
             if (type === "checkOut") {
               try {
                 await checkOutMutate.mutateAsync();
+                console.log('checked out');
                 await scanner.stop();
                 close();
               } catch (err) {
