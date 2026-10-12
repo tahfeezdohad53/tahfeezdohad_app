@@ -11,6 +11,9 @@ function QRScanner({close,type}) {
     const checkOutMutate = useCheckOut();
     const processing = useRef(false);
     useEffect(() => {
+      alert('checkout qr open');
+    },[])
+    useEffect(() => {
         const scanner = new Html5Qrcode('qr');
         // let processing = false;
         scanner.start(
