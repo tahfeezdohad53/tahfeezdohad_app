@@ -11,7 +11,7 @@ function QRScanner({close,type}) {
     const checkOutMutate = useCheckOut();
     const processing = useRef(false);
     useEffect(() => {
-      alert('checkout qr open');
+      // alert('checkout qr open');
     },[])
     useEffect(() => {
         const scanner = new Html5Qrcode('qr');
@@ -25,13 +25,13 @@ function QRScanner({close,type}) {
 
             try{
               if(type === 'checkIn') {
-                alert('checking in...');
+                // alert('checking in...');
                 await mutate.mutateAsync({ batch: decodedText });
                 localStorage.setItem("checkedInBatch", "offline");
                 alert('checkin');
               }
               if(type === 'checkOut') {
-                alert('checking out...')
+                // alert('checking out...')
                 await checkOutMutate.mutateAsync();
                 alert('checkout');
               }
