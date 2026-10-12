@@ -13,23 +13,23 @@ function CheckOutButton() {
   const [isShowScanner,setIsShowScanner] = useState(false);
 
   const mutate = useCheckOut();
-  async function checkOut() {
+  // async function checkOut() {
     // const date = new Date(user.lastStatusTime);
     // const hour = date.getHours();
 
     // if(hour > 12 && hour < 16) return toast.error('you cannot checkout now, please contact admin!');
     // if(hour > 18) return toast.error("you cannot checkout now, please contact admin!");
     // if(hour >= 0 && 7) return toast.error("you cannot checkout now, please contact admin!");
-    await mutate.mutateAsync();
-  }
+  //   await mutate.mutateAsync();
+  // }
   return (
     <button
       onClick={async () => {
-        if(localStorage.getItem('checkedInBatch') === 'online'){
-          await mutate.mutateAsync();
-          localStorage.removeItem('checkedInBatch');
-          return;
-        }
+        // if(localStorage.getItem('checkedInBatch') === 'online'){
+        //   await mutate.mutateAsync();
+        //   localStorage.removeItem('checkedInBatch');
+        //   return;
+        // }
         setIsShowScanner(true);
       }}
       disabled={mutate.isPending}
