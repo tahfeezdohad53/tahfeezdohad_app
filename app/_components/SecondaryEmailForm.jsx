@@ -18,7 +18,7 @@ export default function SecondaryEmailForm() {
         e.preventDefault();
         if(!contactEmail) return toast.error('please enter email');
         if(!contactNumber) return toast.error('please enter Number');
-        if(contactNumber.length !== 10) return toast.error('contact Number should be 10 digits long');
+        // if(contactNumber.length !== 10) return toast.error('contact Number should be 10 digits long');
         setIsSub(true);
         try{
             await axios.patch(`${process.env.NEXT_PUBLIC_URL}/user/contactEmail`,{contactEmail,contactNumber},{withCredentials:true})
