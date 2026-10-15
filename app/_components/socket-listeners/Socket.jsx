@@ -139,7 +139,7 @@ export function CallingFnProvider({ children }) {
           notificationRef.current.currentTime = 0;
           notificationRef.current.play();
         }
-        toast.error('call has been disconnected, please end call and try again',{duration:8000});
+        toast.error('one of the person on call has lost internet connection, please end call and try again',{duration:8000});
         // navigator.vibrate([1000]);
         // await restartIce();
         // toast.dismiss("call");
@@ -251,7 +251,7 @@ export function CallingFnProvider({ children }) {
     remoteSource.connect(destination);
     recorderRef.current = new MediaRecorder(destination.stream, {
       mimeType: "audio/webm;codecs=opus",
-      audioBitsPerSecond: 256000,
+      audioBitsPerSecond: 96000,
     });
 
     recorderRef.current.ondataavailable = (event) => {
@@ -331,9 +331,9 @@ export function CallingFnProvider({ children }) {
     try{
       localMedia.current = await navigator.mediaDevices.getUserMedia({
         video: {
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-          frameRate: { ideal: 30, max: 30 },
+          width: { ideal: 640, max: 640 },
+          height: { ideal: 360, max: 360 },
+          frameRate: { ideal: 24, max: 24 },
           facingMode: "user",
         },
         audio: {
@@ -374,9 +374,9 @@ export function CallingFnProvider({ children }) {
       if(isCallingRef.current || isIncomingRef.current || isInCallRef.current){
         const m = await navigator.mediaDevices.getUserMedia({
           video: {
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
-            frameRate: { ideal: 30, max: 30 },
+            width: { ideal: 640, max: 640 },
+            height: { ideal: 360, max: 360 },
+            frameRate: { ideal: 24, max: 24 },
             facingMode: "user",
           },
           audio: {
@@ -601,9 +601,9 @@ export function CallingFnProvider({ children }) {
      try{
        localMedia.current = await navigator.mediaDevices.getUserMedia({
          video: {
-           width: { ideal: 1280 },
-           height: { ideal: 720 },
-           frameRate: { ideal: 30, max: 30 },
+           width: { ideal: 640, max: 640 },
+           height: { ideal: 360, max: 360 },
+           frameRate: { ideal: 24, max: 24 },
            facingMode: "user",
          },
          audio: {
