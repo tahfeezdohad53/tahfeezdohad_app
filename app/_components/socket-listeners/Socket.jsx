@@ -814,6 +814,7 @@ export function CallingFnProvider({ children }) {
         else return data;
       });
       if (id === targetUserRef.current) {
+        toast.error("The other person has gone offline.");
         if (audioRef.current) {
           audioRef.current.loop = false;
           audioRef.current.pause();
