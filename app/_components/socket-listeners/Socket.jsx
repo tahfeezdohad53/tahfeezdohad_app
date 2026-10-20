@@ -315,6 +315,16 @@ export function CallingFnProvider({ children }) {
   //   };
   // }
 
+async function setVideoBitrate(sender, bitrate) {
+  const params = sender.getParameters();
+
+  if (!params.encodings.length) return;
+
+  params.encodings[0].maxBitrate = bitrate;
+
+  await sender.setParameters(params);
+}
+
   async function startCall(receiverId, callerId) {
     // const res = await axios.get(
     //   `${process.env.NEXT_PUBLIC_URL}/turn-credentials`,
@@ -350,11 +360,27 @@ export function CallingFnProvider({ children }) {
       return;
     }
 
+    let videoSender;
+
     localMedia.current
       .getTracks()
       .forEach((track) =>
-        peerConnection.current.addTrack(track, localMedia.current),
+       {
+         const sender = peerConnection.current.addTrack(track, localMedia.current);
+
+         if (track.kind === "video") {
+           videoSender = sender;
+         }
+       }
       );
+      if (videoSender) {
+        await setVideoBitrate(videoSender, 300_000);
+      }
+    // localMedia.current
+    //   .getTracks()
+    //   .forEach((track) =>
+    //     peerConnection.current.addTrack(track, localMedia.current),
+    //   );
     const offer = await peerConnection.current.createOffer();
     // localVideoRef.current.srcObject = localMedia.current;
     await peerConnection.current.setLocalDescription(offer);
@@ -619,11 +645,26 @@ export function CallingFnProvider({ children }) {
       endCall();
       return;
      }
+     let videoSender;
       localMedia.current
         .getTracks()
         .forEach((track) =>
-          peerConnection.current.addTrack(track, localMedia.current),
+        {
+          peerConnection.current.addTrack(track,localMedia.current);
+
+          if(track.kind === 'video'){
+            videoSender = sender;
+          }
+        }
         );
+        if(videoSender){
+          await setVideoBitrate(videoSender,300_000);
+        }
+      // localMedia.current
+      //   .getTracks()
+      //   .forEach((track) =>
+      //     peerConnection.current.addTrack(track, localMedia.current),
+      //   );
       localVideoRef.current.srcObject = localMedia.current;
     });
 
