@@ -135,42 +135,42 @@ function VideoCallUI() {
 
     return `${hours}:${mins}:${secs}`;
   };
-  useEffect(() => {
-    let stream;
+  // useEffect(() => {
+  //   let stream;
 
-    async function getMedia() {
-      if (isCalling) return;
+  //   async function getMedia() {
+  //     if (isCalling) return;
 
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            width: { ideal: 1920 },
-            height: { ideal: 1080 },
-            frameRate: { ideal: 60 },
-          },
-          audio: {
-            sampleRate: 48000,
-            channelCount: 2,
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
-          },
-        });
+  //     try {
+  //       stream = await navigator.mediaDevices.getUserMedia({
+  //         video: {
+  //           width: { ideal: 1920 },
+  //           height: { ideal: 1080 },
+  //           frameRate: { ideal: 60 },
+  //         },
+  //         audio: {
+  //           sampleRate: 48000,
+  //           channelCount: 2,
+  //           echoCancellation: true,
+  //           noiseSuppression: true,
+  //           autoGainControl: true,
+  //         },
+  //       });
 
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
+  //       if (videoRef.current) {
+  //         videoRef.current.srcObject = stream;
+  //       }
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
 
-    getMedia();
+  //   getMedia();
 
-    return () => {
-      stream?.getTracks().forEach((track) => track.stop());
-    };
-  }, [isCalling]);
+  //   return () => {
+  //     stream?.getTracks().forEach((track) => track.stop());
+  //   };
+  // }, [isCalling]);
 
   async function handleFix() {
     try {
