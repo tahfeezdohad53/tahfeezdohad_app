@@ -374,7 +374,7 @@ async function setVideoBitrate(sender, bitrate) {
        }
       );
       if (videoSender) {
-        await setVideoBitrate(videoSender, 300_000);
+        await setVideoBitrate(videoSender, 200_000);
       }
     // localMedia.current
     //   .getTracks()
@@ -658,7 +658,7 @@ async function setVideoBitrate(sender, bitrate) {
         }
         );
         if(videoSender){
-          await setVideoBitrate(videoSender,300_000);
+          await setVideoBitrate(videoSender,200_000);
         }
       // localMedia.current
       //   .getTracks()
