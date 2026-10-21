@@ -44,13 +44,12 @@ const ahkaamArr = [
   { name: "Madd Tabee'i", arabic: "مَدّ طَبِيعِي" },
   { name: "Madd Lazim", arabic: "مَدّ لَازِم" },
   { name: "Madd Muttasil", arabic: "مَدّ مُتَّصِل" },
-  { name: "Madd Munfasil", arabic: "مَدّ مُنْفَصِل" },
   { name: "Madd Aarid", arabic: "مَدّ عَارِض لِلسُّكُون" },
   { name: "Madd Badal", arabic: "مَدّ بَدَل" },
 ];
 
 const huroofArr = [
-  "ا",
+  "ء",
   "ب",
   "ت",
   "ث",
