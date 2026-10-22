@@ -650,7 +650,7 @@ async function setVideoBitrate(sender, bitrate) {
         .getTracks()
         .forEach((track) =>
         {
-          peerConnection.current.addTrack(track,localMedia.current);
+          const sender = peerConnection.current.addTrack(track,localMedia.current);
 
           if(track.kind === 'video'){
             videoSender = sender;
