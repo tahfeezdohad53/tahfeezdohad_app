@@ -102,6 +102,7 @@ function RecordingEntry({el,i,isDummy=false,role}) {
                   src={el.audio}
                   className="w-full rounded-md"
                   controls
+                  controlsList="nodownload"
                 />
 
                 <div className="flex gap-2">
