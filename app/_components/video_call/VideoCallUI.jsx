@@ -16,7 +16,7 @@ import {
   FiCheck,
 } from "react-icons/fi";
 import { IoIosCall } from "react-icons/io";
-import { MdCallEnd } from "react-icons/md";
+import { MdCallEnd, MdFullscreen } from "react-icons/md";
 import Draggable from "react-draggable";
 import { useUser } from "../providers/UserProvider";
 import { BsExclamationCircle, BsFillRecordCircleFill } from "react-icons/bs";
@@ -55,6 +55,10 @@ function VideoCallUI() {
   const [showModal, setShowModal] = useState(false);
   const [showFix, setShowFix] = useState(false);
   const [networkQuality,setNetworkQuality] = useState(false);
+  const [isFullScreen,setIsFullScreen] = useState(false);
+  const [isShowElements,setIsShowElements] = useState(true);
+  const controllerRef = useRef(null);
+  const controllerIntervalRef = useRef(null);
   useEffect(() => {
     if (!isInCall) return;
     const interval = setInterval(() => {
@@ -135,42 +139,6 @@ function VideoCallUI() {
 
     return `${hours}:${mins}:${secs}`;
   };
-  // useEffect(() => {
-  //   let stream;
-
-  //   async function getMedia() {
-  //     if (isCalling) return;
-
-  //     try {
-  //       stream = await navigator.mediaDevices.getUserMedia({
-  //         video: {
-  //           width: { ideal: 1920 },
-  //           height: { ideal: 1080 },
-  //           frameRate: { ideal: 60 },
-  //         },
-  //         audio: {
-  //           sampleRate: 48000,
-  //           channelCount: 2,
-  //           echoCancellation: true,
-  //           noiseSuppression: true,
-  //           autoGainControl: true,
-  //         },
-  //       });
-
-  //       if (videoRef.current) {
-  //         videoRef.current.srcObject = stream;
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-
-  //   getMedia();
-
-  //   return () => {
-  //     stream?.getTracks().forEach((track) => track.stop());
-  //   };
-  // }, [isCalling]);
 
   async function handleFix() {
     try {
@@ -210,14 +178,65 @@ function VideoCallUI() {
     }
   }
 
-  // if(isAdminJoined)return <div className="fixed h-[90%] w-full inset-0 z-10000 lg:flex">
-  //   <video ref={adminMediaOfferRefOne} src="" className="bg-black w-full h-1/2 lg:h-full object-contain" ></video>
-  //   <video ref={adminMediaOfferReftwo} src="" className="bg-gray-500 w-full h-1/2 lg:h-full object-contain" ></video>
-  // </div>;
+  useEffect(() => {
+    function handleFullScreen(){
+      if (document.fullscreenElement) setIsFullScreen(true);
+      else setIsFullScreen(false);
+    }
+    document.addEventListener("fullscreenchange",handleFullScreen);
+    return () => document.removeEventListener('fullscreenchange',handleFullScreen);
+  },[])
+
+  useEffect(() => {
+    let timeout;
+    function handleHover(){
+      console.log(timeout);
+      clearTimeout(timeout);
+      setIsShowElements(true);
+      timeout = setTimeout(() => {
+        setIsShowElements(false);
+      }, 7000);
+    }
+    document.documentElement.addEventListener("mousemove",handleHover);
+    return () => document.documentElement.removeEventListener("mousemove",handleHover);
+  },[])
+
+  useEffect(() => {
+    function toggleElements(e){
+      if(e.target.closest('.controller')) return;
+      setIsShowElements(preState => {
+        clearTimeout(controllerIntervalRef.current);
+        if(!preState) controllerIntervalRef.current = setTimeout(() => {
+          setIsShowElements(false)
+        }, 7000);
+        return !preState;
+      });
+     
+
+    }
+    document.documentElement.addEventListener("click",toggleElements);
+    return () => document.documentElement.removeEventListener('click',toggleElements);
+  },[isShowElements])
+
+  async function toggleFullScreen(){
+    try{
+      if(isFullScreen) document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    }catch(err){
+      console.log(err);
+    }
+  }
   return (
     <>
-      {showCallControls && (
-        <div className="h-[12%] w-full fixed z-9999 bottom-0 left-0 bg-black backdrop-blur-md border-t border-white/10 flex items-center justify-between px-6">
+      <div
+        className={`${
+          !isInCall && "opacity-0"
+        } text-white z-999999999 absolute left-1/2 -translate-x-1/2 top-5 text-sm font-semibold tracking-wide`}
+      >
+        {formatTime(videoCallSeconds)}
+      </div>
+      {showCallControls &&(
+        <div ref={controllerRef} onClick={(e) => e.stopPropagation()} className={`controller h-[13%] w-[90%] lg:w-1/2 fixed z-99999 bottom-10 left-1/2 -translate-x-1/2 rounded-full bg-black/60  border-t border-white/10 flex items-center justify-between duration-300 transition ease-in-out  px-6 ${!isShowElements && 'translate-y-10 opacity-0 pointer-events-none '}`}>
           {/* LEFT — Timer */}
           <div className="flex-1 flex items-center">
             <div
@@ -225,7 +244,10 @@ function VideoCallUI() {
                 !isInCall && "opacity-0"
               } text-white text-lg font-semibold tracking-wide`}
             >
-              {formatTime(videoCallSeconds)}
+              {/* {formatTime(videoCallSeconds)} */}
+              <div onClick={toggleFullScreen} className="hover:cursor-pointer">
+                <MdFullscreen className="text-2xl" />
+              </div>
             </div>
           </div>
 
@@ -322,7 +344,7 @@ function VideoCallUI() {
           </div>
         </div>
       )}
-      <div className="fixed h-[88%] w-full inset-0 z-10000">
+      <div className="fixed h-screen w-full inset-0 z-10000">
         {(isCalling || isIncoming) && !isInCall && (
           <>
             {isCalling && !isIncoming && (
@@ -348,7 +370,7 @@ function VideoCallUI() {
         {(isCalling || isIncoming) && isInCall && (
           <>
             {showModal && <SelectStudent onclose={() => setShowModal(false)} />}
-            <div className="fixed top-3 left-3 z-99 bg-black rounded-md">
+            {/* <div className="fixed top-3 left-3 z-99 bg-black rounded-md">
               <HiOutlineDotsVertical
                 onClick={() => setShowFix(!showFix)}
                 className="text-white text-2xl"
@@ -361,7 +383,7 @@ function VideoCallUI() {
                   Fix
                 </button>
               )}
-            </div>
+            </div> */}
             <div onClick={() => setShowModal(false)} className="h-full w-full">
               <div className="absolute h-full w-full">
                 <video
@@ -373,7 +395,7 @@ function VideoCallUI() {
               <Draggable nodeRef={dragRef}>
                 <div
                   ref={dragRef}
-                  className="absolute top-3 right-3 rounded-lg bg-black border border-black/20 overflow-auto shadow-2xl w-30 h-40 z-999999"
+                  className="absolute top-3 right-3 rounded-lg bg-black border border-black/20 overflow-auto shadow-2xl w-30 h-40 lg:h-auto lg:w-70 z-999999"
                 >
                   <video
                     ref={localVideoRef}
