@@ -191,6 +191,7 @@ function VideoCallUI() {
     let timeout;
     function handleHover(){
       console.log(timeout);
+      console.log('hover')
       clearTimeout(timeout);
       setIsShowElements(true);
       timeout = setTimeout(() => {
@@ -203,6 +204,7 @@ function VideoCallUI() {
 
   useEffect(() => {
     function toggleElements(e){
+      if(e.pointerType !== 'touch') return;
       if(e.target.closest('.controller')) return;
       setIsShowElements(preState => {
         clearTimeout(controllerIntervalRef.current);
@@ -214,8 +216,8 @@ function VideoCallUI() {
      
 
     }
-    document.documentElement.addEventListener("click",toggleElements);
-    return () => document.documentElement.removeEventListener('click',toggleElements);
+    document.documentElement.addEventListener("pointerdown",toggleElements);
+    return () => document.documentElement.removeEventListener('pointerdown',toggleElements);
   },[isShowElements])
 
   async function toggleFullScreen(){
