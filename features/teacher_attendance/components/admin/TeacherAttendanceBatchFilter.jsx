@@ -15,15 +15,19 @@ const batches = [
   { value: "online", label: "Online" },
 ];
 
+
+
 function TeacherAttendanceBatchFilter() {
     const { searchParams,pathname,router } = useFilter();
     const {user} = useUser();
     function handleChangeSearchParams(key,value) {
         const url = new URLSearchParams(searchParams);
+        if(url.get('status')) url.delete('status');
         url.set(key,value);
         url.set('page',"1");
         router.replace(`${pathname}?${url}`,{scroll:false});
     }
+    const isActiveStatus = searchParams.get('status');
 
     // useSetSearchParams({paramsList:[{key:'batch',value:'all'}],guardClause:() => {
     //     if(searchParams.get('batch') && user?.role !== 'admin') return false;
@@ -47,6 +51,17 @@ function TeacherAttendanceBatchFilter() {
             </button>
           );
         })}
+        <button
+         
+          onClick={() => handleChangeSearchParams("status", 'pending')}
+          className={`${
+            isActiveStatus
+              ? "bg-(--primary) text-white -translate-y-1 border-(--border)"
+              : "bg-gray-100 text-whit"
+          } border border-gray-200  hover:cursor-pointer ease-in-out duration-300 transition-all shadow-(--shadow-sm) p-2 rounded-md`}
+        >
+          Pending
+        </button>
       </div>
     );
 }

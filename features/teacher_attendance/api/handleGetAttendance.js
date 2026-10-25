@@ -5,10 +5,11 @@ export async function handleGetAttendance({
   startDate,
   endDate,
   teacher,
-  batch
+  batch,
+  status
 }) {
   const { data } = await api.get(
-    `/teacherAttendance/get?page=${page}&startDate=${startDate || ""}&endDate=${endDate || ""}&teacher=${teacher || ""}&batch=${batch || ""}`,
+    `/teacherAttendance/get?page=${page}&startDate=${startDate || ""}&endDate=${endDate || ""}&teacher=${teacher || ""}&batch=${batch || ""}&status=${status || ''}`,
   );
 
   return data;

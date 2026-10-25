@@ -11,10 +11,11 @@ function useAttendance() {
   const endDate = searchParams.get('endDate');
   const teacher = searchParams.get('teacher');
   const batch = searchParams.get('batch');
+  const status = searchParams.get('status');
 
   return useQuery({
-    queryKey: ["teacherAttendance",page,startDate,endDate,teacher,batch],
-    queryFn: () => handleGetAttendance({page,startDate,endDate,teacher,batch}),
+    queryKey: ["teacherAttendance",page,startDate,endDate,teacher,batch,status],
+    queryFn: () => handleGetAttendance({page,startDate,endDate,teacher,batch,status}),
     placeholderData:keepPreviousData,
     refetchOnWindowFocus: false,
   });
