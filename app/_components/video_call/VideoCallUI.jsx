@@ -202,23 +202,23 @@ function VideoCallUI() {
     return () => document.documentElement.removeEventListener("mousemove",handleHover);
   },[])
 
-  useEffect(() => {
-    function toggleElements(e){
-      if(e.pointerType !== 'touch') return;
-      if(e.target.closest('.controller')) return;
-      setIsShowElements(preState => {
-        clearTimeout(controllerIntervalRef.current);
-        if(!preState) controllerIntervalRef.current = setTimeout(() => {
-          setIsShowElements(false)
-        }, 7000);
-        return !preState;
-      });
+  // useEffect(() => {
+  //   function toggleElements(e){
+  //     if(e.pointerType !== 'touch') return;
+  //     if(e.target.closest('.controller')) return;
+  //     setIsShowElements(preState => {
+  //       clearTimeout(controllerIntervalRef.current);
+  //       if(!preState) controllerIntervalRef.current = setTimeout(() => {
+  //         setIsShowElements(false)
+  //       }, 7000);
+  //       return !preState;
+  //     });
      
 
-    }
-    document.documentElement.addEventListener("pointerdown",toggleElements);
-    return () => document.documentElement.removeEventListener('pointerdown',toggleElements);
-  },[isShowElements])
+  //   }
+  //   document.documentElement.addEventListener("pointerdown",toggleElements);
+  //   return () => document.documentElement.removeEventListener('pointerdown',toggleElements);
+  // },[isShowElements])
 
   async function toggleFullScreen(){
     try{
@@ -241,8 +241,8 @@ function VideoCallUI() {
         <div
           ref={controllerRef}
           onClick={(e) => e.stopPropagation()}
-          className={`controller bg-slate-900/75 
-border border-white/15 shadow-2xl h-[13%] w-[90%] lg:w-1/2 fixed z-99999 bottom-10 left-1/2 -translate-x-1/2 rounded-full flex items-center justify-between duration-300 transition ease-in-out  px-6 ${!isShowElements && "translate-y-10 opacity-0 pointer-events-none "}`}
+          className={`controller bg-[#20242D]/90
+border border-white/10 shadow-2xl h-[12%] w-[90%] lg:w-1/2 fixed z-99999 bottom-10 left-1/2 -translate-x-1/2 rounded-full flex items-center justify-between duration-300 transition ease-in-out  px-6 ${!isShowElements && "translate-y-10 opacity-0 pointer-events-none "}`}
         >
           {/* LEFT — Timer */}
           <div className="flex-1 flex items-center">
