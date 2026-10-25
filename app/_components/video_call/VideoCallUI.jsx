@@ -237,8 +237,13 @@ function VideoCallUI() {
       >
         {formatTime(videoCallSeconds)}
       </div>
-      {showCallControls &&(
-        <div ref={controllerRef} onClick={(e) => e.stopPropagation()} className={`controller h-[13%] w-[90%] lg:w-1/2 fixed z-99999 bottom-10 left-1/2 -translate-x-1/2 rounded-full bg-black/60  border-t border-white/10 flex items-center justify-between duration-300 transition ease-in-out  px-6 ${!isShowElements && 'translate-y-10 opacity-0 pointer-events-none '}`}>
+      {showCallControls && (
+        <div
+          ref={controllerRef}
+          onClick={(e) => e.stopPropagation()}
+          className={`controller bg-slate-900/75 
+border border-white/15 shadow-2xl h-[13%] w-[90%] lg:w-1/2 fixed z-99999 bottom-10 left-1/2 -translate-x-1/2 rounded-full flex items-center justify-between duration-300 transition ease-in-out  px-6 ${!isShowElements && "translate-y-10 opacity-0 pointer-events-none "}`}
+        >
           {/* LEFT — Timer */}
           <div className="flex-1 flex items-center">
             <div
