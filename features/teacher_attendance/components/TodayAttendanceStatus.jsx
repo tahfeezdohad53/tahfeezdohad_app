@@ -129,7 +129,7 @@ function TodayAttendanceStatus() {
                 </div>
 
                 <p className="mt-1 ml-5 text-xs font-semibold text-gray-800">
-                  {data.previousMonthMin ? Math.ceil(data?.previousMonthMin / 60) : '0'} Hours
+                  {data?.previousMonthMin ? Math.ceil(data?.previousMonthMin / 60) : '0'} Hours
                 </p>
               </div>
 
@@ -142,7 +142,7 @@ function TodayAttendanceStatus() {
                 </div>
 
                 <p className="mt-1 ml-5 text-xs font-bold text-gray-800">
-                  {data.thisMonthMin ? Math.ceil(data?.thisMonthMin / 60) : '0'} Hours
+                  {data?.thisMonthMin ? Math.ceil(data?.thisMonthMin / 60) : '0'} Hours
                 </p>
               </div>
             </div>
