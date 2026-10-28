@@ -6,7 +6,7 @@ import useStatus from "../hooks/useStatus";
 import { useUser } from "@/app/_components/providers/UserProvider";
 import { format } from "date-fns";
 import CheckOutButton from "./CheckOutButton";
-import { CiClock2 } from "react-icons/ci";
+import { CiCircleInfo, CiClock2 } from "react-icons/ci";
 import { Activity, Clock3, Timer } from "lucide-react";
 import { LuClipboardList } from "react-icons/lu";
 import {
@@ -16,10 +16,11 @@ import {
   // Clock3,
   CalendarDays,
 } from "lucide-react";
+import { SlCalender } from "react-icons/sl";
 function TodayAttendanceStatus() {
   const {user} = useUser(); 
   
-  // const {data} = useStatus();
+  const {data} = useStatus();
     return (
       <div className="w-full overflow-hidden rounded-xl border border-amber-900/20 bg-(--card) shadow-(--shadow-md)">
         {/* Header */}
@@ -86,10 +87,10 @@ function TodayAttendanceStatus() {
           </div>
 
           {/* Details */}
-          <div className="mt-5 border-t border-amber-900/10 pt-4">
+          <div className="mt-5 border-y border-amber-900/10 py-4">
             <div className="grid grid-cols-2">
               {/* Last Status Time */}
-              <div className="pr-4">
+              <div className="pr-4 pb-3">
                 <div className="flex items-center gap-1.5">
                   <Clock3 size={13} className="text-amber-800/50" />
 
@@ -108,7 +109,7 @@ function TodayAttendanceStatus() {
               </div>
 
               {/* Total Khidmat */}
-              <div className="border-l border-amber-900/10 pl-4">
+              <div className="border-l border-amber-900/10 pl-4 pb-3">
                 <div className="flex items-center gap-1.5">
                   <Timer size={13} className="text-amber-800/50" />
 
@@ -119,9 +120,35 @@ function TodayAttendanceStatus() {
                   {user?.teacherTotalMin || 0} min
                 </p>
               </div>
+
+              <div className="pr-4 mt- border-t border-t-gray-100 pt-3">
+                <div className="flex items-center gap-1.5">
+                  <SlCalender size={11} className="text-amber-800/50" />
+
+                  <p className="text-[0.65rem] text-gray-500">Previous Month</p>
+                </div>
+
+                <p className="mt-1 ml-5 text-xs font-semibold text-gray-800">
+                  {Math.ceil(data?.previousMonthMin / 60)} Hours
+                </p>
+              </div>
+
+              {/* Total Khidmat */}
+              <div className="border-l mt- border-amber-900/10 pl-4 border-t border-t-gray-100 pt-3">
+                <div className="flex items-center gap-1.5">
+                  <SlCalender size={11} className="text-amber-800/50" />
+
+                  <p className="text-[0.65rem] text-gray-500">This Month</p>
+                </div>
+
+                <p className="mt-1 ml-5 text-xs font-bold text-gray-800">
+                  {Math.ceil(data?.thisMonthMin / 60)} Hours
+                </p>
+              </div>
             </div>
           </div>
         </div>
+        <h1 className="text-xs text-[0.65rem] text-gray-500 flex gap-2 px-3 mt- pb-2"><CiCircleInfo className="text-black"/>Previous Month Hours and This Month Hours are Rounded Up.</h1>
       </div>
     );
 }
