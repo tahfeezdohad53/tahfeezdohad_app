@@ -7,10 +7,12 @@ import { useSearchParams } from "next/navigation";
 function useReports() {
     const searchParams = useSearchParams();
     const student = searchParams.get('student');
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
 
     return useQuery({
-        queryKey:['reports',student],
-        queryFn:() => getReports({student}),
+        queryKey:['reports',student,startDate,endDate],
+        queryFn:() => getReports({student,startDate,endDate}),
         refetchOnWindowFocus:false,
         placeholderData:keepPreviousData,
     })
