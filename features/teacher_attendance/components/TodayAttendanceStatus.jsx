@@ -1,21 +1,12 @@
 'use client';
-
-import { IoIosLogOut } from "react-icons/io";
 import CheckInButton from "./CheckInButton";
 import useStatus from "../hooks/useStatus";
 import { useUser } from "@/app/_components/providers/UserProvider";
 import { format } from "date-fns";
 import CheckOutButton from "./CheckOutButton";
-import { CiCircleInfo, CiClock2 } from "react-icons/ci";
+import { CiCircleInfo } from "react-icons/ci";
 import { Activity, Clock3, Timer } from "lucide-react";
 import { LuClipboardList } from "react-icons/lu";
-import {
-  ClipboardCheck,
-  LogIn,
-  LogOut,
-  // Clock3,
-  CalendarDays,
-} from "lucide-react";
 import { SlCalender } from "react-icons/sl";
 function TodayAttendanceStatus() {
   const {user} = useUser(); 
@@ -121,6 +112,7 @@ function TodayAttendanceStatus() {
                 </p>
               </div>
 
+                {/* previous month hours */}
               <div className="pr-4 mt- border-t border-t-gray-100 pt-3">
                 <div className="flex items-center gap-1.5">
                   <SlCalender size={11} className="text-amber-800/50" />
@@ -133,7 +125,7 @@ function TodayAttendanceStatus() {
                 </p>
               </div>
 
-              {/* Total Khidmat */}
+              {/* This month hours */}
               <div className="border-l mt- border-amber-900/10 pl-4 border-t border-t-gray-100 pt-3">
                 <div className="flex items-center gap-1.5">
                   <SlCalender size={11} className="text-amber-800/50" />

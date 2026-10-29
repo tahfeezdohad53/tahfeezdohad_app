@@ -13,6 +13,7 @@ function useCheckOut() {
             toast.success("Checked Out!",{id:'checkOut'});
             queryClient.invalidateQueries({queryKey:['token']});
             queryClient.invalidateQueries({queryKey:['teacherAttendance']});
+            queryClient.invalidateQueries({queryKey:['teacherAttendanceStatus']});
         },
         // onError:() => toast.error('Failed to check out!',{id:'checkOut'}),
     })
