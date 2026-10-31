@@ -66,10 +66,10 @@ export function CallingFnProvider({ children }) {
     isIncomingRef.current = isIncoming;
   }, [isInCall, isIncoming, isCalling]);
 
-  const restartIce =useCallback(
-     async () => {
+ 
+     async function restartIce() {
     // const peerConnection.current = peerConnection.current;
-
+      toast.loading('reconnecting call...');
     if (!peerConnection.current || isRestarting.current) return;
 
     isRestarting.current = true;
@@ -93,7 +93,6 @@ export function CallingFnProvider({ children }) {
       }, 3000);
     }
   }
-  )
   async function turn() {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_URL}/turn-credentials`,
@@ -158,7 +157,13 @@ export function CallingFnProvider({ children }) {
         if(isInCall) await restartIce();
       }, 1000);
     }
+
+    async function handleOffline(){
+      if(isInCallRef.current) toast.error('internet connection lost');
+    }
+
     window.addEventListener('online',handleOnline);
+    window.addEventListener('offline',handleOffline);
     return () => window.removeEventListener('online',handleOnline);
   },[isInCall,restartIce])
 
