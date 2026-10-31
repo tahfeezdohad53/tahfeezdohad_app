@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef } from "react";
 import { useSocketContext } from "@/app/_components/providers/SocketProvider";
 import { useVideoCallContext } from "../providers/VideoCallProvider";
 import { useUser } from "../providers/UserProvider";
@@ -66,7 +66,8 @@ export function CallingFnProvider({ children }) {
     isIncomingRef.current = isIncoming;
   }, [isInCall, isIncoming, isCalling]);
 
-  const restartIce = async () => {
+  const restartIce =useCallback(
+     async () => {
     // const peerConnection.current = peerConnection.current;
 
     if (!peerConnection.current || isRestarting.current) return;
@@ -91,7 +92,8 @@ export function CallingFnProvider({ children }) {
         isRestarting.current = false;
       }, 3000);
     }
-  };
+  }
+  )
   async function turn() {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_URL}/turn-credentials`,
@@ -139,9 +141,10 @@ export function CallingFnProvider({ children }) {
           notificationRef.current.currentTime = 0;
           notificationRef.current.play();
         }
+        console.log('failed')
         toast.error('one of the person on call has lost internet connection, please end call and try again',{duration:8000});
         // navigator.vibrate([1000]);
-        // await restartIce();
+        await restartIce();
         // toast.dismiss("call");
       }
     };

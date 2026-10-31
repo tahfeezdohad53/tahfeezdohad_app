@@ -30,10 +30,11 @@ export default CreateLeave
 
 function LeaveForm({onClose}){
 
-  const {register,handleSubmit,} = useForm();
+  const {register,handleSubmit,watch} = useForm();
     const [date, setDate] = useState([
       { startDate: new Date(), endDate: new Date(), key: "range1" },
     ]);
+    const type = watch('type');
   const queryClient = useQueryClient();
   const [isSubmitting,setIsSubmitting] = useState(false);
   const [showDateSelect,setShowDateSelect] = useState(false);
@@ -93,6 +94,7 @@ function LeaveForm({onClose}){
               >
                 <option value="casual">casual leave</option>
                 <option value="sick">sick leave</option>
+                <option value="half-day">Half Day leave</option>
               </select>
             </div>
           </div>
@@ -156,21 +158,36 @@ function LeaveForm({onClose}){
             )}
           </div>
 
-          <div className="flex flex-col gap-2">
-            <p className="font-bold text-sm">No of days</p>
-            <div className="relative">
-              <input
-              value={differenceInDays(date[0].endDate,date[0].startDate) + 1}
-                required
-                {...register("days", { required: true })}
-                type="Number"
-                className="p-2  rounded-md focus:outline-none w-full border border-(--border)"
-              />
-              {/* <div className="p-2 absolute top-1/2 -translate-y-1/2  left-1 rounded-md bg-(--bg-tertiary)/50 shadow-(--shadow-sm)">
+          
+            <div className="flex flex-col gap-2">
+              <p className="font-bold text-sm">No of days</p>
+              <div className="relative">
+                <input
+                  value={
+                    differenceInDays(date[0].endDate, date[0].startDate) + 1
+                  }
+                  required
+                  {...register("days", { required: true })}
+                  type="Number"
+                  className="p-2  rounded-md focus:outline-none w-full border border-(--border)"
+                />
+                {/* <div className="p-2 absolute top-1/2 -translate-y-1/2  left-1 rounded-md bg-(--bg-tertiary)/50 shadow-(--shadow-sm)">
                 <CiCalendar />
               </div> */}
+              </div>
             </div>
-          </div>
+         
+
+          {type === 'half-day' && <div className="grid grid-cols-2 gap-3">
+            <div className="">
+              <p className="text-sm font-bold mb-2">From</p>
+              <input {...register('fromTime',{required:true})} type="time" className="border border-(--border) px-2 py-1 rounded-md w-full" defaultValue={"00:00"}/>
+            </div>
+            <div className="">
+              <p className="text-sm font-bold mb-2">To</p>
+              <input {...register('toTime',{required:true})}  type="time" className="border border-(--border) px-2 py-1 rounded-md w-full" defaultValue="00:00"/>
+            </div>
+          </div>}
 
           <button
             disabled={isSubmitting}

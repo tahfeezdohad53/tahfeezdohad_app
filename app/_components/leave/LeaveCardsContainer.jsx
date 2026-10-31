@@ -128,6 +128,8 @@ function LeaveCardsContainer({ setShow, show }) {
                 to={el.to}
                 days={el.days}
                 profileImage={el?.user?.profileImage}
+                fromTime={el?.fromTime}
+                toTime={el?.toTime}
               />
             ))}
             {leaves?.length > 0 && (
@@ -286,6 +288,8 @@ function LeaveCardsContainer({ setShow, show }) {
                   from={el.from}
                   to={el.to}
                   days={el.days}
+                  fromTime={el?.fromTime}
+                  toTime={el?.toTime}
                   setShowLeaveDetails={setShowLeaveDetails}
                   profileImage={el?.user?.profileImage}
                 />
@@ -414,7 +418,7 @@ function LeaveCardsContainer({ setShow, show }) {
                   </div>
                 </div>
 
-                <div className=" border-r border-gray-200 flex items-center gap-3 p-6 px-3">
+                <div className="  border-r border-gray-200 flex items-center gap-3 p-6 px-3">
                   <p className="p-2 bg-blue-500/10 rounded-md h-fit">
                     <CiCalendar className="text-lg text-blue-600" />
                   </p>
@@ -430,7 +434,7 @@ function LeaveCardsContainer({ setShow, show }) {
                   </div>
                 </div>
 
-                <div className="  border-gray-200 flex items-center gap-3 p-6 px-3">
+                <div className="   border-gray-200 flex items-center gap-3 p-6 px-3">
                   <p className="p-2 bg-indigo-500/10 rounded-md h-fit">
                     <CiCalendar className="text-lg text-indigo-600" />
                   </p>
@@ -445,6 +449,35 @@ function LeaveCardsContainer({ setShow, show }) {
                     </h3>
                   </div>
                 </div>
+
+                {showLeaveDetails.details?.toTime && (
+                  <>
+                    <div className="border-t  border-gray-200 flex items-center gap-3 p-6 px-3">
+                      <p className="p-2 bg-indigo-500/10 rounded-md h-fit">
+                        <CiCalendar className="text-lg text-indigo-600" />
+                      </p>
+
+                      <div>
+                        <p className="text-xs text-gray-500">From</p>
+                        <h3 className="font-semibold text-xs">
+                          {showLeaveDetails.details?.fromTime}
+                        </h3>
+                      </div>
+                    </div>
+                    <div className="border-l border-t border-gray-200 flex items-center gap-3 p-6 px-3">
+                      <p className="p-2 bg-indigo-500/10 rounded-md h-fit">
+                        <CiCalendar className="text-lg text-indigo-600" />
+                      </p>
+
+                      <div>
+                        <p className="text-xs text-gray-500">To</p>
+                        <h3 className="font-semibold text-xs">
+                          {showLeaveDetails.details?.toTime}
+                        </h3>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Reason Card */}
@@ -555,6 +588,8 @@ function PhoneLeaveCard({
   reason,
   setShowLeaveDetails,
   profileImage,
+  fromTime,
+  toTime
 }) {
   const src = role !== 'admin' && profileImage
   const formattedName = formatName(name);
@@ -574,7 +609,9 @@ function PhoneLeaveCard({
             days,
             createdAt,
             status,
-            profileImage
+            profileImage,
+            fromTime,
+            toTime,
           },
         })
       }

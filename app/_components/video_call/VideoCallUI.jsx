@@ -255,6 +255,7 @@ border border-white/10 shadow-2xl h-[12%] w-[90%] lg:w-1/2 fixed z-99999 bottom-
               <div onClick={toggleFullScreen} className="hover:cursor-pointer">
                 <MdFullscreen className="text-2xl" />
               </div>
+             
             </div>
           </div>
 
