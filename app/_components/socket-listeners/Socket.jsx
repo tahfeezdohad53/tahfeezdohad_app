@@ -881,7 +881,7 @@ async function setVideoBitrate(sender, bitrate) {
             if (el._id === id) return { ...el, status: "offline" };
             else return el;
           });
-        });
+        }); 
       } 
       querClient.setQueriesData({ queryKey: ["gurfahData"] }, (data) => {
         if (data?.user?._id === id)
