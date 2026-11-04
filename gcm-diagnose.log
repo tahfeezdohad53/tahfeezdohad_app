@@ -1,0 +1,184 @@
+﻿Diagnose log at 2026-11-03T17:12:55Z
+
+AppPath: C:\Program Files\Git\mingw64\bin\git-credential-manager.exe
+InstallDir: C:\Program Files\Git\mingw64\bin\
+Version: 2.5.0+d34930736e131ad80e5690e5634ced1808aff3e2
+
+------------
+Diagnostic: Environment
+Skipped: False
+Success: True
+Exception: None
+Log:
+OSType: Windows
+OSVersion: 10.0 (build 26300)
+Reading environment variables... OK
+ Variables:
+HOMEPATH=\Users\Hozefa
+DriverData=C:\Windows\System32\Drivers\DriverData
+COMPUTERNAME=MSI
+GIT_TRACE2_PARENT_SID=5988ed50-12d5-4eb9-88e1-3031c7d80123
+CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
+ProgramW6432=C:\Program Files
+OneDrive=C:\Users\Hozefa\OneDrive
+WT_PROFILE_ID={61c54bbd-c2c6-5271-96e7-009a87ff44bf}
+TMP=C:\Users\Hozefa\AppData\Local\Temp
+HOME=C:\Users\Hozefa
+PROCESSOR_REVISION=5000
+PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL
+GIT_EXEC_PATH=C:/Program Files/Git/mingw64/libexec/git-core
+TEMP=C:\Users\Hozefa\AppData\Local\Temp
+LOCALAPPDATA=C:\Users\Hozefa\AppData\Local
+MSYSTEM=MINGW64
+TERM=xterm-256color
+__PSLockDownPolicy=0
+COLORTERM=truecolor
+USERDOMAIN=MSI
+ProgramFiles(x86)=C:\Program Files (x86)
+Path=C:/Program Files/Git/mingw64/libexec/git-core;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Hozefa\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\MinGW\bin;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\Hozefa\AppData\Local\Programs\Python\Python311\Scripts\;C:\Users\Hozefa\AppData\Local\Programs\Python\Python311\;C:\Users\Hozefa\AppData\Local\Microsoft\WindowsApps;C:\Users\Hozefa\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Hozefa\Downloads\stripe_1.30.0_windows_x86_64;C:\Users\Hozefa\AppData\Roaming\npm;C:\Users\Hozefa\AppData\Local\Programs\Microsoft VS Code\bin\copilot-shim
+PROCESSOR_LEVEL=25
+PROCESSOR_IDENTIFIER=AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD
+TMPDIR=C:\Users\Hozefa\AppData\Local\Temp
+configsetroot=C:\WINDOWS\ConfigSetRoot
+PSModulePath=C:\Users\Hozefa\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+PUBLIC=C:\Users\Public
+NUMBER_OF_PROCESSORS=12
+CommonProgramFiles=C:\Program Files (x86)\Common Files
+WT_SESSION=850db986-1e9a-4c3c-8297-20806f93f4be
+WSLENV=WT_SESSION:WT_PROFILE_ID:
+PLINK_PROTOCOL=ssh
+ProgramData=C:\ProgramData
+MSYS=disable_pcon
+ProgramFiles=C:\Program Files (x86)
+SystemRoot=C:\WINDOWS
+SESSIONNAME=Console
+LC_CTYPE=C.UTF-8
+CommonProgramW6432=C:\Program Files\Common Files
+LOGONSERVER=\\MSI
+USERPROFILE=C:\Users\Hozefa
+USERDOMAIN_ROAMINGPROFILE=MSI
+APPDATA=C:\Users\Hozefa\AppData\Roaming
+HOMEDRIVE=C:
+VBOX_HWVIRTEX_IGNORE_SVM_IN_USE=1
+USERNAME=Hozefa
+PROCESSOR_ARCHITEW6432=AMD64
+PROCESSOR_ARCHITECTURE=x86
+OS=Windows_NT
+ComSpec=C:\WINDOWS\system32\cmd.exe
+SystemDrive=C:
+windir=C:\WINDOWS
+ALLUSERSPROFILE=C:\ProgramData
+
+
+------------
+Diagnostic: File system
+Skipped: False
+Success: True
+Exception: None
+Log:
+Temporary directory is 'C:\Users\Hozefa\AppData\Local\Temp\'...
+Checking basic file I/O...
+Writing to temporary file 'C:\Users\Hozefa\AppData\Local\Temp\ec6040529ab637e24e79ad01'... OK
+Reading from temporary file 'C:\Users\Hozefa\AppData\Local\Temp\ec6040529ab637e24e79ad01'... OK
+Deleting temporary file 'C:\Users\Hozefa\AppData\Local\Temp\ec6040529ab637e24e79ad01'... OK
+Testing IFileSystem instance...
+UserHomePath: C:\Users\Hozefa
+UserDataDirectoryPath: C:\Users\Hozefa\.gcm
+GetCurrentDirectory(): C:\Users\Hozefa\tahfeezdohad_app
+
+------------
+Diagnostic: Networking
+Skipped: False
+Success: True
+Exception: None
+Log:
+Checking networking and HTTP stack...
+Creating HTTP client... OK
+IsNetworkAvailable: True
+Sending HEAD request to http://example.com...Sending HEAD request to https://example.com... OK
+ OK
+Acquiring free TCP port... OK
+Testing local HTTP loopback connections...
+Creating new HTTP listener for http://localhost:49677/... OK
+Waiting for loopback connection... OK
+Writing response... OK
+Waiting for response data... OK
+Loopback connection data OK
+
+------------
+Diagnostic: Git
+Skipped: False
+Success: True
+Exception: None
+Log:
+Getting Git version... OK
+Git version is '2.45.0.windows.1'
+Locating current repository...Git repository at 'C:/Users/Hozefa/tahfeezdohad_app/.git'
+ OK
+Listing all Git configuration... OK
+Git configuration:
+file:C:/Program Files/Git/etc/gitconfig	diff.astextplain.textconv=astextplain
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.clean=git-lfs clean -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.process=git-lfs filter-process
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.required=true
+file:C:/Program Files/Git/etc/gitconfig	http.sslbackend=openssl
+file:C:/Program Files/Git/etc/gitconfig	http.sslcainfo=C:/Program Files/Git/mingw64/etc/ssl/certs/ca-bundle.crt
+file:C:/Program Files/Git/etc/gitconfig	core.autocrlf=true
+file:C:/Program Files/Git/etc/gitconfig	core.fscache=true
+file:C:/Program Files/Git/etc/gitconfig	core.symlinks=false
+file:C:/Program Files/Git/etc/gitconfig	pull.rebase=false
+file:C:/Program Files/Git/etc/gitconfig	credential.helper=manager
+file:C:/Program Files/Git/etc/gitconfig	credential.https://dev.azure.com.usehttppath=true
+file:C:/Program Files/Git/etc/gitconfig	init.defaultbranch=master
+file:C:/Users/Hozefa/.gitconfig	user.email=huzefaratlam63@gmail.com
+file:C:/Users/Hozefa/.gitconfig	credential.https://github.com.usehttppath=true
+file:.git/config	core.repositoryformatversion=0
+file:.git/config	core.filemode=false
+file:.git/config	core.bare=false
+file:.git/config	core.logallrefupdates=true
+file:.git/config	core.symlinks=false
+file:.git/config	core.ignorecase=true
+file:.git/config	remote.upstream.url=https://github.com/tahfeezdohad53/tahfeezdohad_app.git
+file:.git/config	remote.upstream.fetch=+refs/heads/*:refs/remotes/upstream/*
+file:.git/config	branch.main.remote=origin
+file:.git/config	branch.main.merge=refs/heads/main
+file:.git/config	remote.origin.url=https://github.com/huzefa63/tahfeez-dohad-app.git
+file:.git/config	remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+
+
+------------
+Diagnostic: Credential storage
+Skipped: False
+Success: True
+Exception: None
+Log:
+ICredentialStore instance is of type: CredentialStore
+Writing test credential... OK
+Reading test credential... OK
+Deleting test credential... OK
+
+------------
+Diagnostic: Microsoft authentication (AAD/MSA)
+Skipped: False
+Success: True
+Exception: None
+Log:
+Broker is not enabled.
+Flow type is: Auto
+Gathering MSAL token cache data... OK
+CacheDirectory: C:\Users\Hozefa\AppData\Local\.IdentityService
+CacheFileName: msal.cache
+CacheFilePath: C:\Users\Hozefa\AppData\Local\.IdentityService\msal.cache
+Creating cache helper... OK
+Verifying MSAL token cache persistence... OK
+
+------------
+Diagnostic: GitHub API
+Skipped: False
+Success: True
+Exception: None
+Log:
+Using 'https://github.com/' as API target.
+Querying '/meta' endpoint... OK
+

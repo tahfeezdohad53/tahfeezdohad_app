@@ -18,7 +18,7 @@ export default function Page() {
           <p className="mt-2 text-sm text-[#6b4d36]">
             Sign in to continue
           </p>
-        </div> */}
+        </div> */} 
         <img src="/Dohad.png" className="w-1/2 mx-auto" alt="" />
           <AuthForm />
       </div>
