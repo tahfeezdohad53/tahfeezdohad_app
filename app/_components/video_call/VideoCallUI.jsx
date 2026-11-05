@@ -31,6 +31,7 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { formatName } from "@/helpers";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { api } from "@/lib/axios";
+import { useSocketContext } from "../providers/SocketProvider";
 // import WaveSurfer from "wavesurfer.js";
 // import RecordPlugin from "wavesurfer.js/dist/plugins/record.js";
 // let wavesurfer;
@@ -64,6 +65,7 @@ function VideoCallUI() {
   const [isShowElements,setIsShowElements] = useState(true);
   const controllerRef = useRef(null);
   const controllerIntervalRef = useRef(null);
+  const {socket} = useSocketContext();
 
   
   // useEffect(() => {
@@ -251,6 +253,35 @@ function VideoCallUI() {
   //   return () => document.documentElement.removeEventListener('pointerdown',toggleElements);
   // },[isShowElements])
 
+  async function restartIce() {
+    // const peerConnection.current = peerConnection.current;
+    if (!peerConnection.current || isRestarting.current) return;
+    if (user?.role === "student") return;
+    toast.loading("reconnecting call...", { id: "reconnecting-call" });
+    // toast.success('sending restart offer');
+
+    isRestarting.current = true;
+
+    try {
+      const offer = await peerConnection.current.createOffer({
+        iceRestart: true,
+      });
+
+      await peerConnection.current.setLocalDescription(offer);
+
+      socket.emit("ice-restart-offer", {
+        offer: peerConnection.current.localDescription,
+        to: callingTo,
+      });
+    } catch (error) {
+      console.error("ICE restart failed:", error);
+    } finally {
+      setTimeout(() => {
+        isRestarting.current = false;
+      }, 3000);
+    }
+  }
+
   async function toggleFullScreen(){
     try{
       if(isFullScreen) document.exitFullscreen();
@@ -412,7 +443,7 @@ border border-white/10 shadow-2xl h-[12%] w-[90%] lg:w-1/2 fixed z-99999 bottom-
         {(isCalling || isIncoming) && isInCall && (
           <>
             {showModal && <SelectStudent onclose={() => setShowModal(false)} />}
-            {/* <div className="fixed top-3 left-3 z-99 bg-black rounded-md">
+            <div className="fixed top-3 left-3 z-99 bg-black rounded-md">
               <HiOutlineDotsVertical
                 onClick={() => setShowFix(!showFix)}
                 className="text-white text-2xl"
@@ -420,12 +451,12 @@ border border-white/10 shadow-2xl h-[12%] w-[90%] lg:w-1/2 fixed z-99999 bottom-
               {showFix && (
                 <button
                   className="absolute top-[150%] left-1 bg-(--primary) text-white px-6 py-1 rounded-md"
-                  onClick={handleFix}
+                  onClick={restartIce}
                 >
-                  Fix
+                  Reconnect
                 </button>
               )}
-            </div> */}
+            </div>
             <div onClick={() => setShowModal(false)} className="h-full w-full">
               <div className="absolute h-full w-full">
                 <video
